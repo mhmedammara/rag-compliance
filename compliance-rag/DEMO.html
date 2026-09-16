@@ -1,0 +1,545 @@
+<title>Présenter l'assistant conformité</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --encre:      #14202b;
+    --papier:     #f5f7f8;
+    --papier-2:   #eceff1;
+    --ardoise:    #5c6d7c;
+    --trait:      #d3dade;
+    --petrole:    #0f6e78;
+    --petrole-pale: #e2eff0;
+    --cuivre:     #a8563a;
+    --sur:        #2f7d4f;
+    --relire:     #b3402c;
+
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans:  "Source Sans 3", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono:  "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --encre:      #e6ecef;
+      --papier:     #10181f;
+      --papier-2:   #18232c;
+      --ardoise:    #9aabb7;
+      --trait:      #2b3a45;
+      --petrole:    #5fc2cb;
+      --petrole-pale: #143135;
+      --cuivre:     #d99372;
+      --sur:        #6fc08c;
+      --relire:     #e8836c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --encre:      #e6ecef;
+    --papier:     #10181f;
+    --papier-2:   #18232c;
+    --ardoise:    #9aabb7;
+    --trait:      #2b3a45;
+    --petrole:    #5fc2cb;
+    --petrole-pale: #143135;
+    --cuivre:     #d99372;
+    --sur:        #6fc08c;
+    --relire:     #e8836c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--papier);
+    color: var(--encre);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.62;
+    margin: 0;
+    padding: 0 24px 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 43rem; margin: 0 auto; }
+  
+  /* ---------------------------------------------------------- en-tête */
+  header { padding: 72px 0 40px; border-bottom: 2px solid var(--encre); }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .74rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--petrole);
+    margin: 0 0 20px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 5.5vw, 3.05rem);
+    line-height: 1.08;
+    letter-spacing: -.015em;
+    text-wrap: balance;
+    margin: 0 0 18px;
+  }
+  .chapeau {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--ardoise);
+    margin: 0;
+    max-width: 34rem;
+  }
+
+  /* ---------------------------------------------------------- rythme */
+  section { padding-top: 56px; }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.62rem;
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 0 0 6px;
+  }
+  .sous-titre {
+    font-size: .95rem;
+    color: var(--ardoise);
+    margin: 0 0 28px;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.02rem;
+    margin: 32px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  strong { font-weight: 600; }
+  code {
+    font-family: var(--mono);
+    font-size: .87em;
+    background: var(--papier-2);
+    padding: .1em .34em;
+    border-radius: 3px;
+  }
+  .ref { font-family: var(--mono); font-size: .87em; color: var(--petrole); white-space: nowrap; }
+
+  /* ---------------------------------------------------------- déroulé */
+  ol.deroule { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 30px; }
+  ol.deroule > li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 4px 18px;
+    align-items: start;
+  }
+  .num {
+    font-family: var(--mono);
+    font-size: .95rem;
+    color: var(--petrole);
+    border-top: 2px solid var(--petrole);
+    padding-top: 6px;
+    grid-row: span 2;
+  }
+  .acte { font-weight: 600; font-size: 1.05rem; margin: 0 0 6px; }
+  ol.deroule p { margin: 0 0 10px; }
+  ol.deroule p:last-child { margin-bottom: 0; }
+  .dire {
+    border-left: 2px solid var(--trait);
+    padding: 2px 0 2px 16px;
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    color: var(--ardoise);
+    font-style: italic;
+  }
+
+  /* ---------------------------------------------------------- moment clé */
+  .moment {
+    background: var(--petrole-pale);
+    border: 1px solid var(--petrole);
+    border-radius: 2px;
+    padding: 26px 28px;
+    margin: 8px 0 0;
+  }
+  .moment .label {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--petrole);
+    margin: 0 0 12px;
+  }
+  .moment p:last-child { margin-bottom: 0; }
+  blockquote {
+    margin: 14px 0;
+    padding: 0;
+    font-family: var(--serif);
+    font-size: 1.07rem;
+    line-height: 1.55;
+  }
+  blockquote p { margin: 0; }
+
+  /* ---------------------------------------------------------- chiffres */
+  .chiffres {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1px;
+    background: var(--trait);
+    border: 1px solid var(--trait);
+    margin: 0 0 8px;
+  }
+  .chiffres div { background: var(--papier); padding: 16px 18px; }
+  .chiffres dt {
+    font-size: .78rem;
+    color: var(--ardoise);
+    margin: 0 0 4px;
+    line-height: 1.35;
+  }
+  .chiffres dd {
+    font-family: var(--mono);
+    font-size: 1.32rem;
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+    letter-spacing: -.02em;
+  }
+
+  /* ---------------------------------------------------------- tableaux */
+  .cadre { overflow-x: auto; margin: 0 0 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+  th, td { text-align: left; padding: 10px 14px 10px 0; vertical-align: top; border-bottom: 1px solid var(--trait); }
+  th {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: .74rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ardoise);
+    border-bottom: 1px solid var(--encre);
+    white-space: nowrap;
+  }
+  td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .pastille {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: .18em .5em;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .p-haute   { color: var(--sur);    border: 1px solid var(--sur); }
+  .p-relire  { color: var(--relire); border: 1px solid var(--relire); }
+
+  /* ---------------------------------------------------------- listes */
+  ul.puces { margin: 0 0 16px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  ul.puces > li { padding-left: 20px; position: relative; }
+  ul.puces > li::before {
+    content: "";
+    position: absolute;
+    left: 2px; top: .62em;
+    width: 6px; height: 6px;
+    background: var(--petrole);
+  }
+
+  .limites > li::before { background: var(--cuivre); }
+
+  /* ---------------------------------------------------------- pipeline */
+  .tuyau { display: flex; flex-direction: column; gap: 1px; background: var(--trait); border: 1px solid var(--trait); margin: 0 0 10px; }
+  .etape { background: var(--papier); padding: 13px 18px; display: grid; grid-template-columns: 1.6rem 1fr auto; gap: 14px; align-items: baseline; }
+  .etape .i { font-family: var(--mono); font-size: .82rem; color: var(--ardoise); }
+  .etape .quoi { font-size: .95rem; }
+  .etape .qui { font-family: var(--mono); font-size: .76rem; color: var(--ardoise); white-space: nowrap; }
+  .etape.gratuit { background: var(--papier-2); }
+
+  footer {
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--trait);
+    font-size: .87rem;
+    color: var(--ardoise);
+  }
+  a { color: var(--petrole); }
+  a:focus-visible, li:focus-visible { outline: 2px solid var(--petrole); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  @media (max-width: 560px) {
+    body { font-size: 16px; padding: 0 18px 64px; }
+    ol.deroule > li { grid-template-columns: 2.2rem 1fr; gap: 4px 12px; }
+    .etape { grid-template-columns: 1.4rem 1fr; }
+    .etape .qui { grid-column: 2; }
+  }
+</style>
+
+<div class="page">
+  <header>
+    <p class="eyebrow">Support de démonstration · Logiclever</p>
+    <h1>Répondre aux questionnaires des services achats</h1>
+    <p class="chapeau">Ce que l'outil fait, comment le montrer en dix minutes, et
+      ce qu'il faut savoir répondre quand on vous demandera s'il invente.</p>
+  </header>
+
+  <section>
+    <h2>Le problème, en une phrase</h2>
+    <p class="sous-titre">À dire en ouverture, avant de montrer quoi que ce soit.</p>
+    <p>Chaque client envoie son propre questionnaire RSE ou sécurité, dans son
+      propre format. Les réponses existent — elles sont dispersées dans
+      <strong>49 fichiers</strong> : politiques, bilan carbone, rapports EcoVadis et
+      CyberVadis, registres SSI, tableurs d'indicateurs. Les retrouver, vérifier
+      qu'elles sont à jour, et citer le bon document à la bonne page prend une
+      journée par questionnaire.</p>
+    <p>Le risque n'est pas la lenteur. C'est de <strong>se contredire d'une ligne à
+      l'autre</strong>, ou de <strong>surdéclarer</strong> — annoncer une certification
+      qu'on ne détient pas. Un acheteur qui le remarque ne renégocie pas la ligne :
+      il doute de tout le formulaire.</p>
+  </section>
+
+  <section>
+    <h2>Ce qui a été indexé</h2>
+    <p class="sous-titre">Les chiffres à citer si on vous demande sur quoi il s'appuie.</p>
+    <dl class="chiffres">
+      <div><dt>Documents de preuve retenus</dt><dd>38</dd></div>
+      <div><dt>Pages indexées</dt><dd>614</dd></div>
+      <div><dt>Doublons et versions écartés</dt><dd>10</dd></div>
+      <div><dt>Réponses déjà validées</dt><dd>173</dd></div>
+      <div><dt>Indicateurs × 3 exercices</dt><dd>129</dd></div>
+      <div><dt>Extraits recherchables</dt><dd>837</dd></div>
+    </dl>
+    <p>Les 10 fichiers écartés sont de vrais doublons — même contenu au bit près,
+      ou version antérieure d'une politique. La <span class="ref">Politique
+      Social V1.2</span> a été remplacée par la <span class="ref">V1.3</span>, la
+      Politique SSI par sa <span class="ref">version E</span>. L'outil ne
+      répondra jamais à partir d'une version périmée.</p>
+    <p>Les deux rapports CyberVadis sont rédigés en anglais par l'évaluateur. Ils
+      ont été <strong>traduits en français à l'indexation</strong> — 387 termes du
+      référentiel — sinon la recherche française n'aurait jamais pu les atteindre,
+      alors que c'est le domaine où Logiclever est le mieux noté.</p>
+  </section>
+
+  <section>
+    <h2>La démo, en quatre temps</h2>
+    <p class="sous-titre">Comptez dix minutes. Le questionnaire TotalEnergies est le
+      meilleur support : la version remplie à la main existe, la comparaison est
+      immédiate.</p>
+
+    <ol class="deroule">
+      <li>
+        <span class="num">01</span>
+        <div>
+          <p class="acte">Déposer le questionnaire tel qu'il est arrivé</p>
+          <p>Un formulaire web, trois champs, le fichier Excel du client. Aucun
+            gabarit à respecter : l'outil détecte seul la colonne qui contient les
+            questions.</p>
+          <p class="dire">« Je ne reformate rien. Chaque client a son modèle,
+            l'outil s'adapte au sien. »</p>
+        </div>
+      </li>
+
+      <li>
+        <span class="num">02</span>
+        <div>
+          <p class="acte">Laisser tourner, et expliquer pendant ce temps</p>
+          <p>Comptez une vingtaine de secondes par question. C'est le moment
+            d'expliquer les quatre sources interrogées et le double contrôle — le
+            tableau de la section suivante suffit.</p>
+        </div>
+      </li>
+
+      <li>
+        <span class="num">03</span>
+        <div>
+          <p class="acte">Ouvrir le classeur produit</p>
+          <p>Une ligne par question. Ce qui compte n'est pas la colonne
+            « Réponse » : c'est les deux d'à côté.</p>
+          <div class="cadre">
+            <table>
+              <thead>
+                <tr><th>Colonne</th><th>Ce qu'elle prouve</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sources</strong></td>
+                  <td>Le document et la page exacte, ex. <span class="ref">Bilan d'émissions de GES 2023 (p. 12)</span>. C'est ce que l'acheteur réclame.</td>
+                </tr>
+                <tr>
+                  <td><strong>Niveau</strong></td>
+                  <td><span class="pastille p-haute">haute</span> quand la preuve est directe et datée, <span class="pastille p-relire">à vérifier</span> quand elle est partielle ou le périmètre incertain.</td>
+                </tr>
+                <tr>
+                  <td><strong>À relire</strong></td>
+                  <td><span class="pastille p-relire">oui</span> sur toute ligne qui n'est pas en confiance haute. Vous relisez ces lignes-là, pas les quarante.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="dire">« L'outil ne prétend pas être sûr de tout. Il vous dit
+            où regarder. »</p>
+        </div>
+      </li>
+
+      <li>
+        <span class="num">04</span>
+        <div>
+          <p class="acte">Poser la question piège</p>
+          <p>C'est le moment qui convainc. Demandez en direct :
+            <em>« Êtes-vous certifiés ISO 9001 ? »</em></p>
+          <div class="moment">
+            <p class="label">Réponse attendue</p>
+            <blockquote>
+              <p>« Logiclever n'est pas certifiée ISO 27001. Sa Politique de
+              Sécurité des Systèmes d'Information est toutefois construite sur le
+              référentiel ISO 27001, un objectif de certification y est inscrit, et
+              le dispositif a été évalué par un tiers indépendant : CyberVadis
+              attribue 860/1000, niveau Mature. »</p>
+            </blockquote>
+            <p>Le système <strong>refuse de dire oui</strong>, puis dit ce qui existe
+              réellement à la place. Trois sujets sont verrouillés de la même
+              manière : les certifications ISO, l'objectif SBTi, et l'existence
+              d'un CSE — Logiclever a un PV de carence.</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Pourquoi on peut lui faire confiance</h2>
+    <p class="sous-titre">Les trois arguments, dans l'ordre où ils portent.</p>
+
+    <h3>1. Chaque affirmation est adossée à une preuve, citée à la page</h3>
+    <p>L'outil ne « connaît » rien. Pour chaque question il va chercher dans
+      quatre sources, et ne rédige qu'à partir de ce qu'il a trouvé. S'il ne
+      trouve rien, il le dit et met la confiance au plancher.</p>
+    <div class="cadre">
+      <table>
+        <thead>
+          <tr><th>Source interrogée</th><th>Contenu</th><th>Fiabilité</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Réponses déjà validées</td><td>11 faits vérifiés à la main, 30 réponses EcoVadis, 95 contrôles CyberVadis, 37 réponses déjà envoyées à des clients</td><td>la plus haute</td></tr>
+          <tr><td>Extraits documentaires</td><td>837 extraits des 38 documents, ancrés à leur page</td><td>haute</td></tr>
+          <tr><td>Indicateurs chiffrés</td><td>129 indicateurs, exercices 2023 à 2025, avec norme GRI et objectif</td><td>haute, datée</td></tr>
+          <tr><td>Registre documentaire</td><td>titre exact et date de chaque document, pour la citation</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2. Une seconde relecture, indépendante de la rédaction</h3>
+    <p>La réponse est rédigée, puis <strong>relue par une seconde passe qui ne
+      voit que les preuves</strong>. Elle traque l'affirmation non étayée, la
+      certification revendiquée à tort, le chiffre déformé, la source qui ne dit
+      pas ce qu'on lui fait dire. Ce qu'elle corrige apparaît dans la colonne
+      « Alerte ».</p>
+
+    <h3>3. La cohérence de l'ensemble du formulaire</h3>
+    <p>Une dernière passe relit <em>toutes</em> les réponses ensemble. Elle cherche
+      les incompatibilités factuelles — le genre d'écart qu'une relecture question
+      par question ne peut structurellement pas voir :</p>
+    <ul class="puces">
+      <li>« 100 % des salariés en CDI » ligne 7, « hors alternants » ligne 23</li>
+      <li>« bilan carbone annuel » d'un côté, « tous les deux ans » de l'autre</li>
+    </ul>
+    <p>Quand elle en trouve une, elle corrige la formulation la moins étayée et
+      marque les deux lignes à relire. Elle ne voit pas les preuves : elle peut
+      donc <strong>nuancer ou retirer</strong> une affirmation, jamais en ajouter
+      une.</p>
+  </section>
+
+  <section>
+    <h2>Le traitement d'une question</h2>
+    <p class="sous-titre">Si on vous demande « comment ça marche, concrètement ». Les
+      étapes grisées ne coûtent rien : ce sont du calcul, pas de l'IA.</p>
+    <div class="tuyau">
+      <div class="etape gratuit"><span class="i">01</span><span class="quoi">Reformuler la question dans le vocabulaire des documents internes</span><span class="qui">Haiku</span></div>
+      <div class="etape gratuit"><span class="i">02</span><span class="quoi">Vectoriser la question et ses sous-questions</span><span class="qui">calcul</span></div>
+      <div class="etape gratuit"><span class="i">03</span><span class="quoi">Interroger les quatre sources — sémantique + plein texte français</span><span class="qui">calcul</span></div>
+      <div class="etape"><span class="i">04</span><span class="quoi">Noter chaque preuve trouvée de 0 à 10 pour cette question</span><span class="qui">Sonnet</span></div>
+      <div class="etape"><span class="i">05</span><span class="quoi">Rédiger la réponse, avec ses citations</span><span class="qui">Opus</span></div>
+      <div class="etape"><span class="i">06</span><span class="quoi">Relire la réponse contre les preuves</span><span class="qui">Sonnet</span></div>
+      <div class="etape"><span class="i">07</span><span class="quoi">Vérifier la cohérence de tout le formulaire</span><span class="qui">Sonnet, 1×</span></div>
+    </div>
+    <p>Une précision qui compte si la question vient d'un profil technique :
+      <strong>la même question posée deux fois donne la même réponse</strong>.
+      L'outil interroge systématiquement les quatre sources, il ne choisit pas.
+      Sur un document opposable à un client, c'est indispensable.</p>
+  </section>
+
+  <section>
+    <h2>Ce que ça coûte</h2>
+    <p class="sous-titre">Pour un questionnaire de 40 questions.</p>
+    <div class="cadre">
+      <table>
+        <thead>
+          <tr><th>Poste</th><th>Montant</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Traitement d'un questionnaire de 40 questions</td><td class="n">≈ 2,80 €</td><td>rédaction incluse</td></tr>
+          <tr><td>Durée</td><td class="n">≈ 15 min</td><td>sans intervention</td></tr>
+          <tr><td>Indexation initiale du corpus</td><td class="n">&lt; 0,10 €</td><td>une seule fois</td></tr>
+          <tr><td>Mise à jour après un nouveau document</td><td class="n">&lt; 0,10 €</td><td>deux commandes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>À comparer à la journée passée aujourd'hui par questionnaire. Le modèle le
+      plus coûteux n'est utilisé que pour la rédaction — le seul texte que
+      l'acheteur lit réellement.</p>
+  </section>
+
+  <section>
+    <h2>Ce que l'outil ne fait pas</h2>
+    <p class="sous-titre">À dire spontanément. En démo, énoncer ses limites soi-même
+      vaut mieux que se les faire trouver.</p>
+    <ul class="puces limites">
+      <li><strong>Il ne remplit pas le formulaire du client.</strong> Il produit un
+        classeur avec les réponses et leurs sources ; le report se fait par
+        copier-coller, parce que la mise en forme varie trop d'un client à l'autre.</li>
+      <li><strong>Il ne remplace pas la relecture.</strong> Les lignes marquées
+        <span class="pastille p-relire">oui</span> attendent un humain. C'est un
+        choix : l'outil préfère signaler un doute que de le masquer.</li>
+      <li><strong>Il ne sait rien de ce qui n'est pas dans les documents.</strong>
+        Le dernier bilan carbone porte sur 2023 — l'outil répond 2023 et mentionne
+        la fréquence biennale, il ne devine pas 2025.</li>
+      <li><strong>Il ne crée pas de conformité.</strong> Là où un indicateur est en
+        retrait de son objectif, il donne la valeur réelle, le dispositif en place
+        et l'échéance. Il ne l'embellit pas.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Questions à poser en direct</h2>
+    <p class="sous-titre">Chacune montre une capacité différente. Les réponses
+      attendues sont vérifiables dans les documents.</p>
+    <div class="cadre">
+      <table>
+        <thead>
+          <tr><th>Question</th><th>Ce qu'elle démontre</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>« Quel est votre dernier bilan carbone, scopes 1, 2 et 3 ? »</td><td>un chiffre précis, daté, sourcé à la page : scope 3 à 183 tCO2e, soit 1,6 t par collaborateur</td></tr>
+          <tr><td>« Êtes-vous certifiés ISO 9001 ? »</td><td>le refus de surdéclarer, et la contrepartie réelle</td></tr>
+          <tr><td>« Comment contrôlez-vous la conformité de vos fournisseurs ? »</td><td>une réponse construite en recoupant politique, registre et indicateurs</td></tr>
+          <tr><td>« Quel est votre taux de turnover ? »</td><td>un indicateur chiffré sur trois exercices : 14 % en 2025, contre 37,9 % en 2024</td></tr>
+          <tr><td>« Avez-vous un CSE ? »</td><td>une réponse négative assumée — PV de carence — sans détour</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>À vérifier avant la démo</h2>
+    <p class="sous-titre">Dix minutes, la veille. Tout est scripté.</p>
+    <ul class="puces">
+      <li><code>python scripts/verifier.py</code> — le corpus et les pourcentages
+        sont conformes. Doit afficher « Tous les contrôles passent ».</li>
+      <li><code>python scripts/deploy_supabase.py --test</code> — la base répond.
+        Les six questions de test doivent remonter des preuves.</li>
+      <li>Dans n8n : le workflow est <strong>Active</strong>, et les trois
+        identifiants sont rattachés.</li>
+      <li>Faire <strong>un passage complet à blanc</strong> sur le questionnaire
+        TotalEnergies, et garder le classeur produit ouvert dans un onglet — au cas
+        où le réseau lâche pendant la démo.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Assistant de réponse aux questionnaires de conformité · Logiclever ·
+      procédure complète dans <code>GUIDE-DEPLOIEMENT.md</code></p>
+  </footer>
+</div>

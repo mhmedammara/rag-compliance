@@ -1,0 +1,10 @@
+# Chargement de la base et des vecteurs
+psycopg[binary]>=3.1        # connexion Postgres / Supabase
+requests>=2.31              # appels API embeddings
+
+# Extraction du corpus (regeneration des fichiers seed/)
+pymupdf>=1.24               # lecture des PDF, page par page
+openpyxl>=3.1               # lecture des classeurs Excel
+
+# Tests de non-regression du code JavaScript des noeuds n8n
+dukpy>=0.3

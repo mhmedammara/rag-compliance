@@ -1,0 +1,1196 @@
+{
+  "name": "Logiclever - Reponses aux questionnaires de conformite",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 1 - Entree\n**Noeuds couverts** : Depot d'un questionnaire (formulaire n8n) -> Lire le fichier -> Normaliser les questions -> Parametres.\n\nLe formulaire est la seule porte d'entree : on y depose le questionnaire client (.xlsx/.csv) recu du service achats.\n\nLa colonne des questions est detectee automatiquement : chaque client a son propre gabarit, il n'y a rien a normaliser en amont.\n\n**En sortie** : une liste de questions normalisees, traitee ensuite une par une (boucle Chaque question).\n\nPour une question isolee, deposer un fichier d'une seule ligne.",
+        "height": 320,
+        "width": 440,
+        "color": 7
+      },
+      "id": "44f814ee-94f1-4ece-a915-948124188e84",
+      "name": "Note -700_-300",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -10048,
+        -272
+      ]
+    },
+    {
+      "parameters": {
+        "formTitle": "Questionnaire de conformite client",
+        "formDescription": "Deposez le questionnaire RSE / securite recu du service achats. Les reponses sont redigees a partir des documents de preuve Logiclever et systematiquement sourcees.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Client",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Intitule du questionnaire"
+            },
+            {
+              "fieldLabel": "Fichier",
+              "fieldType": "file",
+              "acceptFileTypes": ".xlsx,.xls,.csv",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Consignes particulieres",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "85440123-be13-401c-9a88-900c03aa4e54",
+      "name": "Depot d'un questionnaire",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -10016,
+        80
+      ],
+      "webhookId": "c1c1f7a0-eb10-419c-936e-f53d367a8694"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "Fichier",
+        "options": {
+          "headerRow": false,
+          "includeEmptyCells": true
+        }
+      },
+      "id": "b50e6f6e-d66f-4dc8-ba61-dca7137947fd",
+      "name": "Lire le fichier",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -9776,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Transforme la feuille deposee en une liste homogene de questions.\n//\n// La colonne des questions n'est jamais au meme endroit d'un client a l'autre :\n// on retient celle qui contient le plus de cellules ressemblant a une question.\n\nconst sansAccent = (s) => (s || '').toString()\n  .normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();\n\n// Le nœud de lecture (sans ligne d'en-tete) sort chaque ligne comme un\n// tableau brut sous la cle \"row\" : { row: [valA, valB, ...] }. On re-ecrit\n// chaque ligne en objet indexe (c0, c1, ...) pour que la detection de\n// colonnes ci-dessous fonctionne quel que soit le gabarit client.\nconst lignes = $input.all().map(i => {\n  const j = i.json;\n  if (Array.isArray(j.row)) {\n    const o = {};\n    j.row.forEach((v, k) => { o['c' + k] = v; });\n    return o;\n  }\n  return j;\n});\nif (!lignes.length) throw new Error(\"Aucune ligne exploitable dans le fichier.\");\n\nconst colonnes = [];\nfor (const l of lignes) {\n  for (const k of Object.keys(l)) if (!colonnes.includes(k)) colonnes.push(k);\n}\n\nconst estQuestion = (v) => {\n  const s = sansAccent(v).trim();\n  if (s.length < 12) return 0;\n  if (v.includes('?')) return 1;\n  if (/^(merci de|veuillez|precisez|decrivez|indiquez|detaillez|listez|fournissez|expliquez|donnez|joignez)/.test(s)) return 1;\n  if (/^(quel|quelle|quels|quelles|comment|combien|pourquoi|quand|qui |ou )/.test(s)) return 1;\n  if (/^(avez-vous|disposez-vous|etes-vous|pouvez-vous|existe-t-il|y a-t-il|est-ce|si oui|si non)/.test(s)) return 1;\n  if (/^(votre|vos) (entreprise|organisation|societe|groupe|structure)/.test(s)) return 1;\n  if (/(-vous|-elle|-il)\\b/.test(s)) return 0.7;\n  return 0;\n};\n// Un simple comptage suffit : estQuestion est assez strict pour ne pas\n// confondre une colonne de reponses avec une colonne de questions. Verifie par\n// ablation sur les 3 classeurs reels (voir scripts/verifier.py).\nconst scoreColonne = (col) => {\n  const vals = lignes.map(l => String(l[col] ?? '').trim()).filter(v => v.length > 0);\n  if (vals.length < 2) return 0;\n  return vals.reduce((a, v) => a + estQuestion(v), 0);\n};\n\nconst classement = colonnes.map(c => [c, scoreColonne(c)]).sort((a, b) => b[1] - a[1]);\nif (!classement.length || classement[0][1] <= 0) {\n  // Aucune cellule ne ressemble a une question : le plus souvent, le fichier\n  // depose n'est pas la feuille du questionnaire (onglet de listes de choix,\n  // extrait partiel...). On montre un apercu pour rendre l'erreur parlante.\n  const apercu = lignes.map(l => colonnes.map(c => String(l[c] ?? '').trim()).join(' | '))\n    .filter(Boolean).slice(0, 8).join(' / ').slice(0, 300);\n  throw new Error(\"Aucune question detectee dans le fichier : verifiez que la feuille deposee \"\n                  + \"est bien celle du questionnaire (colonnes : \" + colonnes.join(', ')\n                  + (apercu ? \" ; apercu : \" + apercu : \" ; fichier vide ?\") + \")\");\n}\nconst col = classement[0][0];\n\n// colonne de section : celle qui precede, si elle est courte et peu interrogative\nconst idx = colonnes.indexOf(col);\nlet colSection = null;\nfor (const cand of [colonnes[idx - 1], colonnes[idx - 2]]) {\n  if (!cand) continue;\n  const vals = lignes.map(l => String(l[cand] ?? '').trim()).filter(Boolean);\n  if (vals.length < 2) continue;\n  const moy = vals.reduce((a, v) => a + v.length, 0) / vals.length;\n  const interro = vals.reduce((a, v) => a + estQuestion(v), 0) / vals.length;\n  if (moy < 60 && interro < 0.3) { colSection = cand; break; }\n}\n\nconst meta = $('Depot d\\'un questionnaire').isExecuted\n  ? $('Depot d\\'un questionnaire').first().json : {};\n\nconst sorties = [];\nlignes.forEach((l, i) => {\n  const q = String(l[col] ?? '').trim();\n  if (estQuestion(q) < 0.7) return;\n  sorties.push({ json: {\n    ligne: i + 1,\n    section: colSection ? String(l[colSection] ?? '').trim() : '',\n    question: q,\n    client: meta['Client'] || 'Client',\n    intitule: meta['Intitule du questionnaire'] || 'Questionnaire de conformite',\n    consignes: meta['Consignes particulieres'] || '',\n  }});\n});\nif (!sorties.length) throw new Error(\"Aucune question detectee dans la colonne \" + col + \".\");\nsorties.forEach(s => s.json.total = sorties.length);\nreturn sorties;\n"
+      },
+      "id": "e102231c-3592-4427-a7ab-5d520fbb41ca",
+      "name": "Normaliser les questions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -9536,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "p1",
+              "name": "modele_embedding",
+              "value": "text-embedding-3-large",
+              "type": "string"
+            },
+            {
+              "id": "p2",
+              "name": "dimensions",
+              "value": 1536,
+              "type": "number"
+            },
+            {
+              "id": "p3",
+              "name": "nb_candidats",
+              "value": 40,
+              "type": "number"
+            },
+            {
+              "id": "p4",
+              "name": "seuil_haute_confiance",
+              "value": 0.75,
+              "type": "number"
+            },
+            {
+              "id": "p5",
+              "name": "seuil_a_verifier",
+              "value": 0.5,
+              "type": "number"
+            },
+            {
+              "id": "p6",
+              "name": "supabase_url",
+              "value": "https://sansaibuzdwdmenfgcic.supabase.co",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "8805b941-a45a-4cae-83bb-14775309c5de",
+      "name": "Parametres",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -9296,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Une chaine LLM s'execute une fois par item : on agrege les N reponses en un\n// seul item pour n'avoir qu'un appel par formulaire.\nconst reponses = $input.all().map(i => i.json)\n  .filter(r => r && r.question)\n  .sort((a, b) => (a.ligne || 0) - (b.ligne || 0));\nif (!reponses.length) throw new Error(\"Aucune reponse produite.\");\nreturn [{ json: {\n  client: reponses[0].client,\n  questionnaire: reponses[0].questionnaire,\n  nombre: reponses.length,\n  reponses,\n  resume: reponses.map(r => 'Ligne ' + r.ligne + ' | ' + r.question\n                          + '\\nReponse : ' + String(r.reponse).slice(0, 400)).join('\\n\\n'),\n}}];\n"
+      },
+      "id": "f108315b-df00-4a5f-8605-5a689d387238",
+      "name": "Rassembler les reponses",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -6208,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu relis l'ensemble des reponses d'un meme questionnaire client avant envoi,\npour y traquer les **contradictions**.\n\nClient : {{ $json.client }} - {{ $json.questionnaire }}\n{{ $json.nombre }} reponses.\n\n{{ $json.resume }}\n\n## CE QUE TU CHERCHES\nUne incompatibilite **factuelle** entre deux reponses : un chiffre, une date, un\nperimetre, un oui/non qui ne peuvent pas etre vrais en meme temps.\n\nExemples de vraies contradictions :\n  - « 100 % des salaries en CDI » et « hors alternants et stagiaires »\n  - « bilan carbone annuel » et « bilan carbone tous les deux ans »\n  - « pas de CSE » et « les representants du personnel sont consultes »\n\n## CE QUE TU NE SIGNALES PAS\n  - une difference de formulation, de longueur ou de ton ;\n  - une reponse plus detaillee qu'une autre sur le meme sujet ;\n  - une repetition.\nCes cas ne sont pas des contradictions. En l'absence d'incompatibilite factuelle,\nrenvoie une liste vide : c'est le resultat normal et attendu.\n\n## CORRECTION\nPour chaque contradiction, corrige la ligne la **moins etayee** (la plus vague,\nou celle qui generalise). Tu ne vois pas les preuves : tu peux donc **nuancer ou\nretirer** une affirmation, jamais en **ajouter** une. Si tu ne peux pas trancher\nsans preuve, signale la contradiction sans proposer de correction et laisse le\nrelecteur humain arbitrer.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        }
+      },
+      "id": "7fe31ed6-9e33-4301-8112-2d7fea8f0c7a",
+      "name": "Controle de coherence",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -5968,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.6-luna",
+          "mode": "list",
+          "cachedResultName": "gpt-5.6-luna"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 8000
+        }
+      },
+      "id": "cb959758-ed30-42d3-bf8e-6fc4c8821cc0",
+      "name": "Modele : Controle de coherence",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -6016,
+        288
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "rRf1C6SnDHsWWTQY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\n    \"contradictions\"\n  ],\n  \"properties\": {\n    \"contradictions\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"lignes\",\n          \"nature\"\n        ],\n        \"properties\": {\n          \"lignes\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"integer\"\n            }\n          },\n          \"nature\": {\n            \"type\": \"string\"\n          },\n          \"ligne_a_corriger\": {\n            \"type\": [\n              \"integer\",\n              \"null\"\n            ]\n          },\n          \"reponse_corrigee\": {\n            \"type\": [\n              \"string\",\n              \"null\"\n            ]\n          }\n        }\n      }\n    }\n  }\n}"
+      },
+      "id": "397848d8-ba62-41ce-8269-5ece502c4ecc",
+      "name": "Schema : Controle de coherence",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -5856,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Applique les corrections de coherence, puis construit le classeur.\nconst base = $('Rassembler les reponses').first().json;\nconst contradictions = ($json.output && $json.output.contradictions) || [];\nconst reponses = base.reponses.map(r => ({ ...r }));\nconst parLigne = new Map(reponses.map(r => [r.ligne, r]));\n\nfor (const c of contradictions) {\n  for (const l of (c.lignes || [])) {\n    const r = parLigne.get(l);\n    if (!r) continue;\n    r.alerte = [r.alerte, 'Coherence : ' + c.nature].filter(Boolean).join(' | ');\n    if (r.niveau === 'haute') r.niveau = 'moyenne';\n  }\n  const cible = parLigne.get(c.ligne_a_corriger);\n  if (cible && c.reponse_corrigee) {\n    cible.reponse = c.reponse_corrigee;\n    cible.alerte = [cible.alerte, 'Reponse ajustee pour coherence'].filter(Boolean).join(' | ');\n    cible.niveau = 'a_verifier';\n  }\n}\n\nreturn reponses.map(r => ({ json: {\n  'Ligne': r.ligne,\n  'Section': r.section || '',\n  'Question': r.question,\n  'Reponse': r.reponse,\n  'Reponse courte': r.reponse_courte || '',\n  'Sources (document et page)': r.citation,\n  'Confiance': r.confiance,\n  'Niveau': r.niveau,\n  'A relire': r.niveau === 'haute' ? '' : 'OUI',\n  'Alerte': r.alerte || '',\n}}));\n"
+      },
+      "id": "a305be65-e3f0-43a7-a669-af31cd80a635",
+      "name": "Preparer la restitution",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -5680,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "reponses-questionnaire.xlsx",
+          "sheetName": "Reponses"
+        }
+      },
+      "id": "2d0d1e9a-3172-4b67-9b27-8183a4d20358",
+      "name": "Classeur de reponses",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -5440,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Parametres').first().json.supabase_url }}/rest/v1/reponses_generees",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify((() => { const base = $('Rassembler les reponses').first().json; const sources = new Map(base.reponses.map(r => [r.ligne, r.sources])); return $('Preparer la restitution').all().map(i => ({ client: base.client, questionnaire: base.questionnaire, ligne: i.json.Ligne, section: i.json.Section, question: i.json.Question, reponse: i.json.Reponse, sources: sources.get(i.json.Ligne) || [], confiance: i.json.Confiance, niveau: i.json.Niveau, alerte: i.json.Alerte })); })()) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "aca0bff4-a3bf-4cce-a8a1-84771548fe77",
+      "name": "Journaliser la campagne",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -5440,
+        224
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUFjwTelCDib2Zv",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu prepares la recherche documentaire qui permettra de repondre a une question\nd'un service achats sur la conformite RSE / securite de LOGICLEVER.\n\nLOGICLEVER : ESN francaise de conseil en systemes d'information, 50 salaries\n(48 Paris, 2 Lyon), entreprise liberee, SASU sans groupe. Evaluee EcoVadis\n(79/100, top 2%) et CyberVadis (860/1000, niveau Mature).\n\nQUESTION DU CLIENT\nSection : {{ $json.section || 'non precisee' }}\nQuestion : {{ $json.question }}\n{{ $json.consignes ? 'Consignes du client : ' + $json.consignes : '' }}\n\nTRAVAIL DEMANDE\n1. Reformule la question en francais clair et autonome (question_normalisee).\n2. Produis 2 a 4 sous-requetes de recherche complementaires, dans le\n   **vocabulaire des documents internes**, pas celui de la question.\n   Exemples :\n     \"controle de vos fournisseurs\" -> \"politique achats responsables clauses RSE\n      contrats fournisseurs\", \"evaluation SSI fournisseurs dependance\",\n      \"code de conduite fournisseurs KYC\"\n     \"bilan carbone\" -> \"bilan emissions gaz a effet de serre scope 1 2 3 tCO2e\",\n      \"objectif reduction emissions trajectoire\"\n3. Determine le type de reponse attendu :\n   oui_non | chiffre | description | date | liste | mixte\n4. Si la question porte sur une annee precise, donne annee_cible (sinon null).\n   Sans annee explicite, vise l'exercice le plus recent disponible.\n5. Signale les points de vigilance : toute formulation qui pousserait a\n   sur-declarer. En particulier, LOGICLEVER **n'est certifiee ni ISO 9001,\n   ni ISO 14001, ni ISO 27001**, n'a **pas** d'objectif valide SBTi, et n'a\n   **pas** de CSE (PV de carence).",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        }
+      },
+      "id": "351dc362-ea88-4f93-8ad8-25d50978cae4",
+      "name": "Analyser la question",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -8768,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.6-luna",
+          "mode": "list",
+          "cachedResultName": "gpt-5.6-luna"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 4000,
+          "reasoningEffort": "low"
+        }
+      },
+      "id": "91eed62b-83ee-4c8c-a67f-e731d586b0d4",
+      "name": "Modele : Analyser la question",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -8816,
+        288
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "rRf1C6SnDHsWWTQY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\n    \"question_normalisee\",\n    \"sous_requetes\",\n    \"type_reponse\",\n    \"points_de_vigilance\"\n  ],\n  \"properties\": {\n    \"question_normalisee\": {\n      \"type\": \"string\"\n    },\n    \"sous_requetes\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"minItems\": 2,\n      \"maxItems\": 4\n    },\n    \"type_reponse\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"oui_non\",\n        \"chiffre\",\n        \"description\",\n        \"date\",\n        \"liste\",\n        \"mixte\"\n      ]\n    },\n    \"annee_cible\": {\n      \"type\": [\n        \"integer\",\n        \"null\"\n      ]\n    },\n    \"points_de_vigilance\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  }\n}"
+      },
+      "id": "5f5f7fc8-d6a3-4c7f-bffa-2c368f8f153b",
+      "name": "Schema : Analyser la question",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -8656,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).modele_embedding, dimensions: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).dimensions, input: [$json.output.question_normalisee].concat($json.output.sous_requetes).slice(0, 5) }) }}",
+        "options": {}
+      },
+      "id": "8d39f275-6f6e-4b7e-8dc8-e3a49dcf8e13",
+      "name": "Vectoriser les requetes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -8336,
+        80
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "rRf1C6SnDHsWWTQY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).supabase_url }}/rest/v1/rpc/recherche_globale",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ requetes: [$('Analyser la question').item.json.output.question_normalisee].concat($('Analyser la question').item.json.output.sous_requetes).slice(0, 5), requete_embeddings: $json.data.sort((a, b) => a.index - b.index).map(d => d.embedding), annee_cible: $('Analyser la question').item.json.output.annee_cible ?? null, nb_candidats: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).nb_candidats }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "25054dd7-9f31-47dc-a1c7-4f8097c68fca",
+      "name": "Recherche",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -8096,
+        80
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUFjwTelCDib2Zv",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu selectionnes les preuves qui serviront a repondre a une question de conformite.\n\nQUESTION : {{ $('Preparer la question').isExecuted ? $('Preparer la question').item.json.question : $('Chaque question').item.json.question }}\nReformulation : {{ $('Analyser la question').item.json.output.question_normalisee }}\nType de reponse attendu : {{ $('Analyser la question').item.json.output.type_reponse }}\n\nCANDIDATS\n{{ ($json.candidats || []).map(c => '#' + c.index + ' [' + c.type + ' | ' + c.reference\n   + (c.page_debut ? ' p.' + c.page_debut + (c.page_fin && c.page_fin !== c.page_debut ? '-' + c.page_fin : '') : '')\n   + '] ' + (c.titre || '') + '\\n' + String(c.texte).slice(0, 600)).join('\\n\\n---\\n\\n') }}\n\nAttribue a chaque candidat une note de pertinence de 0 a 10 :\n  10  repond directement et integralement a la question\n  7-9 apporte un element de reponse important (chiffre, mesure, engagement)\n  4-6 contexte utile mais insuffisant seul\n  0-3 hors sujet\n\nNe retiens que les candidats notes 4 et plus, au maximum 8, classes par note\ndecroissante. Si aucun candidat n'atteint 4, renvoie une liste vide : il vaut\nmieux signaler l'absence de preuve que citer un document a cote du sujet.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        }
+      },
+      "id": "0b42c8af-2611-477d-ad78-495e35a3cfa2",
+      "name": "Reclasser les preuves",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -7808,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.6-luna",
+          "mode": "list",
+          "cachedResultName": "gpt-5.6-luna"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 6000
+        }
+      },
+      "id": "3138bf84-6190-41a0-9f55-6f66e3fe07c7",
+      "name": "Modele : Reclasser les preuves",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -7856,
+        288
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "rRf1C6SnDHsWWTQY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\n    \"selection\"\n  ],\n  \"properties\": {\n    \"selection\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"index\",\n          \"note\"\n        ],\n        \"properties\": {\n          \"index\": {\n            \"type\": \"integer\"\n          },\n          \"note\": {\n            \"type\": \"number\"\n          },\n          \"motif\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+      },
+      "id": "2eb3e7c5-5548-46ef-b171-41583e2b92d4",
+      "name": "Schema : Reclasser les preuves",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -7696,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Construit le dossier de preuves transmis au redacteur.\n//\n// Repli borne : si le reclassement n'a rien retenu, on reprend les 5 meilleurs\n// candidats du RRF plutot que de renoncer. Ils sont deja en memoire : cela ne\n// coute ni appel ni latence, et la confiance restera basse.\n\nconst recherche = $('Recherche').item.json;\nconst candidats = recherche.candidats || [];\nconst q = $('Preparer la question').isExecuted\n  ? $('Preparer la question').item.json\n  : $('Chaque question').item.json;\nconst analyse = $('Analyser la question').item.json.output;\nconst selection = ($json.output && $json.output.selection) || [];\nconst parIndex = new Map(candidats.map(c => [c.index, c]));\n\nlet retenus = selection\n  .filter(s => s.note >= 4)\n  .sort((a, b) => b.note - a.note)\n  .slice(0, 8)\n  .map(s => ({ candidat: parIndex.get(s.index), note: s.note }))\n  .filter(x => x.candidat);\n\nlet repli = false;\nif (!retenus.length && candidats.length) {\n  repli = true;\n  retenus = candidats.slice(0, 5).map(c => ({ candidat: c, note: 0 }));\n}\n\nconst dossier = retenus.map((x, i) => {\n  const c = x.candidat;\n\n  // Une reponse validee porte ses propres documents justificatifs : c'est eux\n  // qu'il faut citer au client, pas la reference interne de la banque\n  // (FAIT/GES-SCOPES, ECOVADIS/LAB100...).\n  if (c.type === 'reponse_validee' && Array.isArray(c.sources) && c.sources.length) {\n    const refs = [...new Set(c.sources\n      .filter(s => s && s.document)\n      .map(s => s.document + (s.pages ? ', p. ' + s.pages : '')))].slice(0, 3);\n    return {\n      rang: i + 1, type: c.type, note: x.note,\n      document: c.sources[0].document,\n      titre: c.titre || c.sources[0].document,\n      page: c.sources[0].pages || '',\n      citation: refs.join(' ; ') || c.reference,\n      texte: String(c.texte).slice(0, 1200),\n    };\n  }\n\n  const page = c.page_debut\n    ? (c.page_fin && c.page_fin !== c.page_debut\n        ? 'p. ' + c.page_debut + '-' + c.page_fin : 'p. ' + c.page_debut)\n    : '';\n  return {\n    rang: i + 1, type: c.type, note: x.note, document: c.reference,\n    titre: c.titre || c.reference, page,\n    citation: c.reference + (page ? ', ' + page : ''),\n    texte: String(c.texte).slice(0, 1200),\n  };\n});\n\nreturn [{ json: {\n  ligne: q.ligne, section: q.section, question_client: q.question,\n  client: q.client, intitule: q.intitule,\n  consignes: q.consignes || '', analyse,\n  dossier, nb_preuves: dossier.length, repli,\n  registre: recherche.registre || [],\n}}];\n"
+      },
+      "id": "6a3a2f45-65e9-43e5-8913-4d876f8ecc71",
+      "name": "Constituer le dossier de preuves",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -7552,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu rédiges la réponse officielle de LOGICLEVER au questionnaire du client.\n\nTa mission n’est PAS d’auditer, de commenter ou de résumer le dossier documentaire.\nTa mission est de **répondre directement au client au nom de Logiclever**, à partir des éléments de preuve fournis.\n\n## 1. SOURCES ET PÉRIMÈTRE\n\nLes preuves du dossier constituent la source de vérité pour les faits que tu affirmes.\n\nLe contexte général de l’entreprise fourni dans ce prompt peut t’aider à comprendre Logiclever, mais **ne constitue pas une preuve**. Pour une affirmation factuelle, appuie-toi sur les preuves du dossier.\n\nN’invente jamais :\n\n* chiffre, date, certification, label ou classement ;\n* politique, procédure, engagement ou objectif ;\n* résultat, fréquence ou périmètre ;\n* conformité réglementaire ;\n* dispositif ou pratique non documenté.\n\nTu peux reformuler, synthétiser et organiser les informations présentes dans les preuves.\n\nTu peux également combiner plusieurs preuves lorsqu’elles portent clairement sur le même sujet et permettent de construire une réponse cohérente.\n\nEn revanche, ne combine jamais des éléments distincts pour créer une conclusion qui n’est pas explicitement étayée.\n\n## 2. PRIORITÉ ABSOLUE : RÉPONDRE COMME LOGICLEVER\n\nLa réponse doit être formulée **comme une réponse de Logiclever au client**.\n\nNe parle pas du dossier, des documents, des preuves ou de ton analyse.\n\n### À ÉVITER\n\n* « Le dossier présente… »\n* « Les éléments disponibles indiquent… »\n* « Les documents transmis permettent de confirmer… »\n* « D’après les preuves… »\n* « La valeur doit être confirmée. »\n* « Il existe des informations contradictoires… »\n* « Les éléments disponibles ne permettent pas de confirmer… »\n\nsauf si le client demande explicitement une analyse documentaire ou si une contradiction empêche réellement de fournir une réponse fiable.\n\n### À PRIVILÉGIER\n\n* « Oui, Logiclever… »\n* « Logiclever met en œuvre… »\n* « En 2025, Logiclever… »\n* « Notre politique prévoit… »\n* « Nous suivons… »\n* « Nous avons mis en place… »\n* « Le score obtenu par Logiclever est… »\n* « L’objectif suivi est… »\n\nLe ton doit être celui d’une **entreprise répondant à un questionnaire commercial, fournisseur ou conformité** : professionnel, direct, factuel, clair et assuré.\n\nNe transforme pas une réponse fournisseur en rapport d’audit.\n\n## 3. RÈGLE DE COMPORTEMENT FACE AUX PREUVES\n\nUtilise la meilleure information pertinente disponible pour répondre à la question.\n\nNe signale pas spontanément toutes les ambiguïtés ou divergences internes du dossier.\n\nSi plusieurs preuves donnent des valeurs différentes :\n\n1. privilégie la preuve la plus directement pertinente pour la question ;\n2. privilégie une information explicitement présentée comme actuelle, récente ou applicable à la période demandée ;\n3. privilégie une source clairement identifiable et spécifique au sujet ;\n4. ne mentionne la divergence que si elle empêche raisonnablement de répondre de façon fiable.\n\n**Ne transforme pas une divergence documentaire en réponse d’auditeur.**\n\nExemple :\n\nSi une preuve pertinente indique :\n« EcoVadis : 79/100, 98e percentile »\n\net qu'une autre preuve moins directement pertinente indique une autre valeur, réponds simplement avec la valeur retenue si elle est suffisamment étayée.\n\nNe réponds pas automatiquement :\n« Le dossier présente des informations contradictoires… »\n\n## 4. NIVEAU DE PRÉCISION DES AFFIRMATIONS\n\nRespecte exactement la force de ce que les preuves permettent d’affirmer.\n\nNe transforme jamais :\n\n* « certifié » en « conforme » ou inversement ;\n* « évalué » en « certifié » ;\n* « score obtenu » en « conformité réglementaire » ;\n* « objectif » en « résultat atteint » ;\n* « politique » en « pratique effectivement réalisée » ;\n* « audit » en « conformité » ;\n* « aligné avec » en « certifié selon » ;\n* « inspiré de » en « conforme à » ;\n* « engagement » en « résultat ».\n\nNe renforce jamais une affirmation pour la rendre plus commerciale.\n\nTu peux toutefois présenter une information de manière **positive et professionnelle** lorsqu’elle est réellement étayée.\n\nExemple :\n\nPreuve :\n« Logiclever suit la proportion de femmes dans l’effectif et par grade. »\n\nBonne réponse :\n« Logiclever suit la représentation des femmes dans l’effectif global et par grade. »\n\nMauvaise réponse :\n« Logiclever garantit une représentation équitable des femmes à tous les niveaux. »\n\n## 5. CONTEXTE ENTREPRISE\n\nLogiclever est une SASU française de conseil informatique.\n\nÉléments de contexte disponibles :\n\n* 50 collaborateurs ;\n* 48 à Paris et 2 à Lyon ;\n* aucun groupe ou maison mère ;\n* fonctionnement en « entreprise libérée » depuis 2018 ;\n* environ 90 % du chiffre d’affaires dans le secteur de l’énergie.\n\nCes informations servent uniquement à contextualiser la réponse.\n\nPour les sujets de conformité, RSE, sécurité, RH, certifications, engagements, résultats ou politiques, **les preuves du dossier priment**.\n\nÉvaluations externes connues :\n\n* EcoVadis : 79/100, 98e percentile / top 2 % ;\n* CyberVadis : 860/1000, niveau Mature, benchmark 654 ;\n* Great Place To Work Trust Index : 96 %.\n\nNe présente jamais ces éléments comme des certifications.\n\n## 6. CERTIFICATIONS ET ENGAGEMENTS\n\nNe prétends jamais que Logiclever possède une certification, un label, une adhésion ou un engagement qui n’est pas explicitement étayé.\n\nEn particulier, ne présente jamais Logiclever comme certifiée :\n\n* ISO 9001 ;\n* ISO 14001 ;\n* ISO 27001 ;\n* SBTi.\n\nNe prétends pas non plus à l’existence :\n\n* d’un CSE ou d’une représentation syndicale ;\n* d’un accord collectif ;\n* d’un label ;\n* d’une adhésion ;\n* d’un objectif validé ;\n* d’une certification réglementaire,\n\nsans preuve explicite.\n\nSi une absence doit être mentionnée parce que la question la demande, réponds simplement et professionnellement, sans posture défensive.\n\n## 7. STYLE DE RÉPONSE\n\nCommence par répondre directement à la question.\n\nPour une question fermée :\n\n* généralement 1 à 3 phrases ;\n* commence par « Oui », « Non » ou une formulation directe lorsque pertinent.\n\nPour une question ouverte :\n\n* généralement 3 à 8 phrases ;\n* développe suffisamment pour répondre à tous les aspects de la question ;\n* privilégie les informations concrètes : pratiques, dispositifs, indicateurs, résultats, fréquence, périmètre.\n\nÉvite les listes à puces dans la réponse sauf si elles améliorent clairement la lisibilité.\n\nUtilise les chiffres avec leur unité et leur année lorsqu'elles sont disponibles.\n\nMets en avant les résultats ou évaluations externes lorsqu’ils répondent directement à la question.\n\n## 8. FAIBLESSES ET INFORMATIONS MANQUANTES\n\nNe fabrique jamais une information pour rendre la réponse plus favorable.\n\nSi un élément demandé n’est pas documenté, ne l’invente pas.\n\nMais ne transforme pas automatiquement cette absence en commentaire d’audit.\n\n### Mauvais :\n\n« Les éléments disponibles ne permettent toutefois pas de confirmer l’existence d’un plan d’action formalisé. »\n\n### Préférer, lorsque la question exige réellement cette information :\n\n« Logiclever n’a pas documenté de plan d’action formalisé spécifiquement sur ce point dans les éléments disponibles. »\n\nEt lorsque l’absence n’est pas nécessaire pour répondre à la question, **ne la mentionne pas**.\n\nL’objectif est de donner au client la réponse la plus utile, complète et professionnelle possible, sans masquer ni inventer les faits.\n\n## 9. DATES ET INFORMATIONS HISTORIQUES\n\nNe crée jamais de date.\n\nSi une donnée est explicitement rattachée à une année, conserve cette année.\n\nUne information ancienne ne doit pas être présentée comme actuelle si les preuves ne permettent pas de l'établir.\n\n## 10. CONFIANCE\n\nAttribue une confiance comprise entre 0 et 1 selon la solidité de la réponse :\n\n* 0.90–1.00 : réponse directement étayée par une preuve claire, précise et actuelle ;\n* 0.70–0.89 : réponse bien étayée, avec une légère incertitude de périmètre ou de formulation ;\n* 0.50–0.69 : réponse construite à partir de plusieurs éléments ou comportant une incertitude significative ;\n* 0.30–0.49 : réponse partielle, ancienne ou faiblement étayée ;\n* < 0.30 : absence de preuve réellement exploitable.\n\nSi `repli` est activé, la confiance doit être au maximum de 0.35.\n\nLa confiance mesure la **solidité de la réponse**, pas son caractère commercial.\n\n## 11. SOURCES\n\nDans le champ `sources`, indique uniquement les références effectivement utilisées pour construire la réponse.\n\nNe cite pas systématiquement toutes les preuves disponibles.\n\n## 12. VARIABLES\n\nQuestion et contexte :\n\nSection :\n{{ $json.section || 'non precisee' }}\n\nQuestion du client :\n{{ $json.question_client }}\n\nType de réponse :\n{{ $json.analyse.type_reponse }}\n\n{{ $json.consignes ? 'Consignes du client : ' + $json.consignes : '' }}\n\n{{ ($json.analyse.points_de_vigilance || []).length ? 'Points de vigilance : ' + $json.analyse.points_de_vigilance.join(' | ') : '' }}\n\n## 13. DOSSIER DOCUMENTAIRE\n\n{{ $json.dossier.length === 0 ? 'AUCUNE PREUVE PERTINENTE TROUVEE.' : $json.dossier.map(d => '### Preuve ' + d.rang + ' - ' + d.citation + ' (' + d.titre + ')\\n' + d.texte).join('\\n\\n') }}\n\n{{ $json.repli ? '\\nATTENTION : aucune preuve n a passe le seuil de pertinence. Les elements ci-dessus sont approximatifs : reponds prudemment et mets confiance a 0.35 au maximum.' : '' }}\n\n## 14. CONTRÔLE FINAL SILENCIEUX\n\nAvant de répondre, vérifie silencieusement :\n\n1. Ai-je répondu exactement à la question ?\n2. La réponse parle-t-elle comme Logiclever ?\n3. Chaque affirmation factuelle importante est-elle étayée ?\n4. Ai-je évité toute invention ou extrapolation ?\n5. Ai-je évité de transformer la réponse en analyse d’auditeur ?\n6. Ai-je conservé le bon niveau de force des affirmations ?\n7. Ai-je utilisé la meilleure preuve pertinente plutôt que de sur-exposer les divergences documentaires ?\n8. La confiance correspond-elle réellement à la solidité de la réponse ?\n9. Les sources correspondent-elles uniquement aux éléments utilisés ?\n\nNe révèle pas ce raisonnement.\n\nRespecte strictement le format imposé par l’Output Parser. N’ajoute aucun contenu en dehors des champs attendus par celui-ci.\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        }
+      },
+      "id": "2019fb55-a629-4939-9dc3-b91b6a28205e",
+      "name": "Rediger la reponse",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -7280,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.6-luna",
+          "mode": "list",
+          "cachedResultName": "gpt-5.6-luna"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 8000
+        }
+      },
+      "id": "e29b6c95-efe0-4bf0-bfb3-e7186894e394",
+      "name": "Modele : Rediger la reponse",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -7312,
+        288
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "rRf1C6SnDHsWWTQY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\n    \"reponse\",\n    \"sources\",\n    \"confiance\"\n  ],\n  \"properties\": {\n    \"reponse\": {\n      \"type\": \"string\",\n      \"description\": \"Reponse en francais, prete a coller dans le questionnaire client.\"\n    },\n    \"reponse_courte\": {\n      \"type\": \"string\",\n      \"description\": \"Oui / Non / la valeur seule, pour une case a cocher.\"\n    },\n    \"sources\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"document\",\n          \"page\"\n        ],\n        \"properties\": {\n          \"document\": {\n            \"type\": \"string\"\n          },\n          \"page\": {\n            \"type\": \"string\"\n          },\n          \"element\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    },\n    \"confiance\": {\n      \"type\": \"number\",\n      \"minimum\": 0,\n      \"maximum\": 1\n    },\n    \"elements_manquants\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  }\n}"
+      },
+      "id": "dba78428-8af4-40c4-8d15-396843599ec8",
+      "name": "Schema : Rediger la reponse",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -7168,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu es le relecteur conformite de LOGICLEVER. Tu verifies un projet de reponse\navant envoi a un client. Ton role n'est pas de reecrire par gout, mais\nd'empecher qu'une affirmation non etayee parte chez le client.\n\n## QUESTION POSEE\n{{ $('Constituer le dossier de preuves').item.json.question_client }}\n\n## PROJET DE REPONSE\n{{ $json.output.reponse }}\n\n## SOURCES CITEES\n{{ JSON.stringify($json.output.sources) }}\n\n## DOSSIER DE PREUVES DISPONIBLE\n{{ $('Constituer le dossier de preuves').item.json.dossier.length === 0 ? 'VIDE' : $('Constituer le dossier de preuves').item.json.dossier.map(d => '### ' + d.citation + ' (' + d.titre + ')\\n' + d.texte).join('\\n\\n') }}\n\n## CONTROLES\n\n1. **Affirmation non etayee** - chaque fait, chiffre, date ou nom de dispositif\n   figure-t-il dans le dossier ? Tout element absent doit etre supprime ou\n   requalifie.\n2. **Certification revendiquee a tort** - la reponse laisse-t-elle croire a une\n   certification ISO 9001 / 14001 / 27001, a un objectif valide SBTi, ou a\n   l'existence d'un CSE ? Aucun des trois n'existe chez LOGICLEVER. Une\n   formulation ambigue compte comme une erreur.\n3. **Chiffre deforme** - valeur, unite, annee et perimetre exacts ? Un\n   pourcentage donne pour une annee ne doit pas etre attribue a une autre.\n4. **Source mal citee** - le document cite contient-il bien l'element avance ?\n5. **Omission dommageable** - un element favorable et pertinent du dossier a-t-il\n   ete laisse de cote ? Si oui, l'integrer.\n6. **Registre** - la reponse est-elle affirmative et complete, ou trop prudente au\n   point de desservir Logiclever a preuve egale ? Renforce la formulation **sans\n   jamais ajouter de fait absent du dossier**.\n\n## SORTIE\n- valide : true si le projet part tel quel.\n- reponse_finale : la version a envoyer (identique au projet si valide).\n- anomalies : ce que tu as corrige, en francais, une ligne par point.\n- confiance_finale : ton evaluation apres corrections.\n- niveau : haute (>= 0.75 et aucune anomalie bloquante) | moyenne (>= 0.5) |\n  a_verifier (< 0.5, anomalie non resolue, ou sujet sensible) |\n  sans_reponse (dossier vide ou hors perimetre Logiclever).\n- alerte : message court au relecteur humain, chaine vide si rien a signaler.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        }
+      },
+      "id": "1cdc7511-339a-4132-aa13-3fa44ad774ad",
+      "name": "Controler la veracite",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -6768,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5.6-luna",
+          "mode": "list",
+          "cachedResultName": "gpt-5.6-luna"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 8000
+        }
+      },
+      "id": "fc9a70d4-4238-4fe8-8596-20c086f73451",
+      "name": "Modele : Controler la veracite",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -6816,
+        288
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "rRf1C6SnDHsWWTQY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\n    \"valide\",\n    \"reponse_finale\",\n    \"anomalies\",\n    \"confiance_finale\",\n    \"niveau\",\n    \"alerte\"\n  ],\n  \"properties\": {\n    \"valide\": {\n      \"type\": \"boolean\"\n    },\n    \"reponse_finale\": {\n      \"type\": \"string\"\n    },\n    \"anomalies\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"confiance_finale\": {\n      \"type\": \"number\",\n      \"minimum\": 0,\n      \"maximum\": 1\n    },\n    \"niveau\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"haute\",\n        \"moyenne\",\n        \"a_verifier\",\n        \"sans_reponse\"\n      ]\n    },\n    \"alerte\": {\n      \"type\": \"string\"\n    }\n  }\n}"
+      },
+      "id": "8d64c81d-532d-48cc-aa11-138106c1a8a0",
+      "name": "Schema : Controler la veracite",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -6656,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Assemble le resultat de la question et le renvoie dans la boucle.\n// Dans une boucle SplitInBatches, .first() relit toujours le 1er item du node :\n// .item renvoie l'item du tour courant (l'appariement se fait par index/pairing).\nconst d = $('Constituer le dossier de preuves').item.json;\nconst redaction = $('Rediger la reponse').item.json.output;\nconst controle = $json.output;\nconst p = $('Preparer la question').isExecuted\n  ? $('Preparer la question').first().json\n  : $('Parametres').first().json;\nconst q = { client: d.client, intitule: d.intitule, question: d.question_client, ligne: d.ligne, section: d.section };\n\nconst confiance = controle.confiance_finale ?? redaction.confiance ?? 0;\nconst niveau = controle.niveau\n  || (confiance >= p.seuil_haute_confiance ? 'haute'\n      : confiance >= p.seuil_a_verifier ? 'moyenne' : 'a_verifier');\n\nconst sources = (redaction.sources || []).map(s => {\n  const fiche = (d.registre || []).find(r => r.code === s.document);\n  return { document: s.document, titre: fiche ? fiche.titre : s.document,\n           page: s.page || '' };\n});\n\nconst alertes = [];\nif (controle.alerte) alertes.push(controle.alerte);\nif (!controle.valide && (controle.anomalies || []).length) {\n  alertes.push('Corrections : ' + controle.anomalies.join(' / '));\n}\nif (!sources.length) alertes.push('Reponse sans source documentaire.');\nif (d.repli) alertes.push('Aucune preuve au-dessus du seuil : recherche elargie.');\nif ((redaction.elements_manquants || []).length) {\n  alertes.push('Elements manquants : ' + redaction.elements_manquants.join(' / '));\n}\n\nreturn [{ json: {\n  client: q.client, questionnaire: q.intitule,\n  ligne: d.ligne, section: d.section, question: d.question_client,\n  reponse: controle.reponse_finale || redaction.reponse,\n  reponse_courte: redaction.reponse_courte || '',\n  sources,\n  citation: sources.map(s => s.titre + (s.page ? ' (p. ' + s.page + ')' : '')).join(' ; '),\n  confiance: Number(confiance.toFixed(3)),\n  niveau,\n  alerte: alertes.join(' | '),\n  nb_preuves: d.nb_preuves,\n}}];\n"
+      },
+      "id": "de0cc738-fb17-487f-81ab-e27671173326",
+      "name": "Consolider la reponse",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -6512,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.questionnaire }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "Question isolee (chat)",
+                    "id": "0ae42889-764f-4f92-93e5-1d11e349f466"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Chat"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Formulaire (suite de boucle)"
+        }
+      },
+      "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "name": "Aiguiller vers chat",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -6352,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Forme la reponse affichee dans le chat (reponse + sources + confiance).\nconst r = $json;\nconst blocs = [r.reponse];\nif (r.citation) blocs.push('Sources : ' + r.citation);\nblocs.push('Confiance : ' + Math.round((r.confiance || 0) * 100) + ' % (' + r.niveau + ')');\nif (r.alerte) blocs.push('A relire : ' + r.alerte);\nreturn [{ json: { output: blocs.join(String.fromCharCode(10, 10)) } }];\n"
+      },
+      "id": "e0b4f5a6-7d8c-4b9e-af10-4d5e6f7a8b9c",
+      "name": "Formater la reponse chat",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -5696,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "6aaab4f9-90f7-435c-bad6-71298e9d9650",
+      "name": "Chaque question",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -9056,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Posez une question d'un questionnaire de conformite : la reponse est redigee a partir des documents de preuve Logiclever et sourcee.",
+        "options": {
+          "inputPlaceholder": "Votre question...",
+          "subtitle": "Une question, une reponse sourcee.",
+          "title": "Assistant questionnaires Logiclever",
+          "responseMode": "lastNode"
+        }
+      },
+      "id": "b7e1c2d3-4a5f-4e6b-9c8d-1a2b3c4d5e6f",
+      "name": "Question du chat",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -10032,
+        336
+      ],
+      "webhookId": "3afa3cc1-0b6a-4d7a-a778-1c8f1b8754c7"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Remet la question du chat au format attendu par la chaine d'analyse\n// (memes champs qu'en sortie de \"Normaliser les questions\").\nconst q = String($json.chatInput ?? $json.question ?? '').trim();\nif (!q) throw new Error(\"Aucune question recue du chat.\");\nreturn [{ json: {\n  ligne: 1,\n  section: '',\n  question: q,\n  client: 'Chat',\n  intitule: 'Question isolee (chat)',\n  consignes: '',\n  // Parametres de la branche formulaire, rejoues ici pour que la chaine\n  // d'analyse (Vectoriser / Recherche / Consolider) puisse les lire sans\n  // toucher au nœud \"Parametres\".\n  modele_embedding: 'text-embedding-3-large',\n  dimensions: 1536,\n  nb_candidats: 40,\n  seuil_haute_confiance: 0.75,\n  seuil_a_verifier: 0.5,\n  supabase_url: 'https://sansaibuzdwdmenfgcic.supabase.co',\n}}];\n"
+      },
+      "id": "c8f2d3e4-5b6a-4f7c-8d9e-2b3c4d5e6f7a",
+      "name": "Preparer la question",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -9536,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2 - Analyse de la question\n**Noeud** : Analyser la question (LLM + parser structure).\n\nReformule la question et produit 2 a 4 **sous-requetes** exprimees dans le vocabulaire des documents internes.\n\nC'est ce qui separe une recherche mot-a-mot d'une recherche qui trouve la bonne preuve : « controle de vos fournisseurs » devient « politique achats responsables clauses RSE contrats fournisseurs ».\n\n**Sortie** : JSON valide par le schema (question reformulee + sous-requetes).\n\nModele : Haiku - tache cadree, la qualite de redaction n'intervient pas.",
+        "height": 468,
+        "width": 420,
+        "color": 7
+      },
+      "id": "a632b1a5-c271-40b8-8af2-35955fd2f592",
+      "name": "Note 540_-300",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -8880,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3 - Recherche\n**Noeuds** : Vectoriser les requetes (embeddings) -> Recherche (fonction SQL `recherche_globale`).\n\n**Un seul appel HTTP par question.**\n\n`recherche_globale` interroge cote SQL les quatre sources - banque de reponses validees, extraits documentaires, indicateurs chiffres, registre - pour chacune des sous-requetes, puis fusionne les rangs (RRF).\n\nFusion et dedoublonnage sont faits en SQL : le workflow n'a plus de code de tri a maintenir, et la logique se teste directement en base.\n\n**Sortie** : liste de passages candidats, chacun avec source, page et rang RRF.",
+        "height": 468,
+        "width": 460,
+        "color": 7
+      },
+      "id": "b73ac794-365b-4b66-8f2a-8558ffa5d620",
+      "name": "Note 980_-300",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -8432,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 4 - Reclassement\n**Noeuds** : Reclasser les preuves (LLM + parser structure) -> Constituer le dossier de preuves.\n\nLe RRF classe par **convergence** entre sous-requetes, pas par pertinence reelle. Sonnet note ici chaque candidat de 0 a 10 pour cette question precise.\n\nC'est l'etape qui evite de citer la bonne politique a la mauvaise page.\n\n**Sortie** : le dossier de preuves - les passages retenus, tries par note, qui serviront de seule base factuelle a la redaction.",
+        "height": 396,
+        "width": 400,
+        "color": 7
+      },
+      "id": "90ba3b19-3a33-4f61-86d7-af2938afad47",
+      "name": "Note 1500_-300",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -7920,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 5 - Redaction\n**Noeud** : Rediger la reponse (LLM + parser structure).\n\n**Seule etape sur Opus** : c'est le texte que l'acheteur lit.\n\nRegle centrale : chaque affirmation doit etre portee par une preuve du dossier. Une force se dit pleinement ; une faiblesse se dit avec la mesure compensatoire et l'echeance - jamais en la niant.\n\n**Sortie** : la reponse redigee, avec la ou les citations (document + page) rattachees a chaque affirmation.",
+        "height": 332,
+        "width": 440,
+        "color": 7
+      },
+      "id": "3bda4a5a-5208-463d-8bb6-c4cac4d6363c",
+      "name": "Note 2040_-340",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -7376,
+        -480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 6 - Controle de veracite\n**Noeuds** : Controler la veracite (LLM + parser structure) -> Consolider la reponse.\n\nSecond passage, avec un oeil neuf : chaque affirmation est confrontee au dossier de preuves.\n\nDetecte l'affirmation non etayee, la certification revendiquee a tort, le chiffre deforme, la source qui ne dit pas ce qu'on lui fait dire.\n\n**Sortie** : la reponse corrigee, son niveau de confiance et le drapeau **A relire** si une relecture humaine s'impose.",
+        "height": 372,
+        "width": 420,
+        "color": 7
+      },
+      "id": "94961af7-d786-415a-a2d7-ecf1f04765a7",
+      "name": "Note 2540_-340",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -6880,
+        -480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 7 - Coherence d'ensemble\n**Noeuds** : Rassembler les reponses -> Controle de coherence (LLM).\n\n**Un seul appel pour tout le formulaire**, apres la fin de la boucle question par question.\n\nUne contradiction entre deux reponses du meme formulaire (« 100 % de CDI » ligne 7, « hors alternants » ligne 23) est reperee immediatement par un acheteur et discredite l'ensemble.\n\nLe traitement question par question ne peut structurellement pas la voir : il faut cette passe sur l'ensemble.\n\n**Sortie** : l'ensemble des reponses, avec corrections de coherence appliquees et signalees.",
+        "height": 472,
+        "width": 440,
+        "color": 7
+      },
+      "id": "8778f4c3-290a-4c78-8a4b-a4d6baea92f5",
+      "name": "Note 3100_-340",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -6320,
+        -480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 8 - Restitution\n**Noeuds** : Preparer la restitution -> Classeur de reponses (Excel) + Journaliser la campagne (Supabase).\n\nUn classeur Excel par questionnaire : la reponse, la citation exacte (document + page), la confiance et l'alerte de relecture.\n\nLes lignes **A relire = OUI** sont a reprendre en priorite.\n\nLe journal Supabase est ecrit **apres** la passe de coherence : il contient donc la version finale corrigee, en un seul insert.",
+        "height": 420,
+        "width": 420,
+        "color": 7
+      },
+      "id": "2daa5c2a-e0eb-41bb-aaac-c3628d540ddc",
+      "name": "Note 3640_-340",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5776,
+        -480
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Depot d'un questionnaire": {
+      "main": [
+        [
+          {
+            "node": "Lire le fichier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lire le fichier": {
+      "main": [
+        [
+          {
+            "node": "Normaliser les questions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normaliser les questions": {
+      "main": [
+        [
+          {
+            "node": "Parametres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parametres": {
+      "main": [
+        [
+          {
+            "node": "Chaque question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rassembler les reponses": {
+      "main": [
+        [
+          {
+            "node": "Controle de coherence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Controle de coherence": {
+      "main": [
+        [
+          {
+            "node": "Preparer la restitution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modele : Controle de coherence": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Controle de coherence",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schema : Controle de coherence": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Controle de coherence",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparer la restitution": {
+      "main": [
+        [
+          {
+            "node": "Classeur de reponses",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Journaliser la campagne",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyser la question": {
+      "main": [
+        [
+          {
+            "node": "Vectoriser les requetes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modele : Analyser la question": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyser la question",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schema : Analyser la question": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Analyser la question",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vectoriser les requetes": {
+      "main": [
+        [
+          {
+            "node": "Recherche",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recherche": {
+      "main": [
+        [
+          {
+            "node": "Reclasser les preuves",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reclasser les preuves": {
+      "main": [
+        [
+          {
+            "node": "Constituer le dossier de preuves",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modele : Reclasser les preuves": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Reclasser les preuves",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schema : Reclasser les preuves": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Reclasser les preuves",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Constituer le dossier de preuves": {
+      "main": [
+        [
+          {
+            "node": "Rediger la reponse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rediger la reponse": {
+      "main": [
+        [
+          {
+            "node": "Controler la veracite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modele : Rediger la reponse": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Rediger la reponse",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schema : Rediger la reponse": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Rediger la reponse",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Controler la veracite": {
+      "main": [
+        [
+          {
+            "node": "Consolider la reponse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modele : Controler la veracite": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Controler la veracite",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schema : Controler la veracite": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Controler la veracite",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolider la reponse": {
+      "main": [
+        [
+          {
+            "node": "Aiguiller vers chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aiguiller vers chat": {
+      "main": [
+        [
+          {
+            "node": "Formater la reponse chat",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Chaque question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chaque question": {
+      "main": [
+        [
+          {
+            "node": "Rassembler les reponses",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Analyser la question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Question du chat": {
+      "main": [
+        [
+          {
+            "node": "Preparer la question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparer la question": {
+      "main": [
+        [
+          {
+            "node": "Analyser la question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "57caeeff-2625-4b9c-810f-120c99e73925",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "74dee1457f1001ecffe3b9835a80a8dfe59724a095b06a3618c07151203c574b"
+  },
+  "nodeGroups": [],
+  "id": "6ef4kUybrbAzVNEd",
+  "tags": [
+    {
+      "updatedAt": "2026-09-09T19:51:14.934Z",
+      "createdAt": "2026-09-09T19:51:14.934Z",
+      "id": "8PRE9whuIvz3d56t",
+      "name": "RSE"
+    },
+    {
+      "updatedAt": "2026-09-09T19:51:14.874Z",
+      "createdAt": "2026-09-09T19:51:14.874Z",
+      "id": "cLkTFFw2qu5PvZqz",
+      "name": "conformite"
+    },
+    {
+      "updatedAt": "2026-09-09T19:51:14.902Z",
+      "createdAt": "2026-09-09T19:51:14.902Z",
+      "id": "gpObNNWNTIdSMiQJ",
+      "name": "RAG"
+    }
+  ]
+}

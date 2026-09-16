@@ -1,0 +1,2195 @@
+[
+ {
+  "theme": "Environnement",
+  "contribue_a": "Bilan carbone & RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre d’évaluations RSE effectuées par an",
+  "norme_gri": "GRI 102-44",
+  "objectif": "Tous les deux ans",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "OK - Fait en 2022 sur 2021",
+   "2024": "1.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Bilan carbone & RSE",
+  "enjeu_materiel": "Empreinte environnementale (émissions, consommations, déchets)",
+  "indicateur": "Fréquence du Bilan Carbone",
+  "norme_gri": "GRI 305-1 à 305-5",
+  "objectif": "Tous les deux ans",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "OK - Fait en 2022 sur 2021",
+   "2024": "0.0",
+   "2025": "1.0"
+  },
+  "statut": "Bi annuel",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Bilan carbone & RSE",
+  "enjeu_materiel": "Empreinte environnementale (émissions, consommations, déchets)",
+  "indicateur": "Participation des employés au Quiz de formation climat",
+  "norme_gri": "GRI 404-2",
+  "objectif": "30 %",
+  "methode": "Greenly",
+  "valeurs": {
+   "2023": "15 %",
+   "2024": "20 %",
+   "2025": "25 %"
+  },
+  "statut": "",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Bilan carbone & RSE",
+  "enjeu_materiel": "Empreinte environnementale (émissions, consommations, déchets)",
+  "indicateur": "Réduction des Émissions de GES",
+  "norme_gri": "GRI 305-5",
+  "objectif": "-2% par an",
+  "methode": "Greenly",
+  "valeurs": {
+   "2023": "1,8 t/collaborateur",
+   "2024": "1,6 t/collaborateur soit -11,11%",
+   "2025": "Evaluation en cours"
+  },
+  "statut": "",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Bilan carbone & RSE",
+  "enjeu_materiel": "Empreinte environnementale (émissions, consommations, déchets)",
+  "indicateur": "Participation au Télétravail",
+  "norme_gri": "GRI 401-2",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Déchets de Bureau et Electroniques (DEEE)",
+  "enjeu_materiel": "Empreinte environnementale (émissions, consommations, déchets)",
+  "indicateur": "Pourcentage de déchets recyclés",
+  "norme_gri": "GRI 306-4",
+  "objectif": "Sans objet",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "Non mesurable",
+   "2024": "Non applicable",
+   "2025": "Non applicable"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Déchets de Bureau et Electroniques (DEEE)",
+  "enjeu_materiel": "Empreinte environnementale (émissions, consommations, déchets)",
+  "indicateur": "Quantité de papier acheté = 0",
+  "norme_gri": "GRI 301-1",
+  "objectif": "0.0",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Déchets de Bureau et Electroniques (DEEE)",
+  "enjeu_materiel": "Empreinte environnementale (émissions, consommations, déchets)",
+  "indicateur": "Nombre d’équipements électroniques recyclés",
+  "norme_gri": "GRI 306-4",
+  "objectif": "Sans objet",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Numérique responsable",
+  "enjeu_materiel": "Numérique responsable",
+  "indicateur": "% de salariés ayant suivi la sensibilisation",
+  "norme_gri": "GRI 404-2",
+  "objectif": "75 %",
+  "methode": "App LL - Cf rapport",
+  "valeurs": {
+   "2023": "55 %",
+   "2024": "37 %",
+   "2025": "37 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Numérique responsable",
+  "enjeu_materiel": "Numérique responsable",
+  "indicateur": "% de salariés ayant obtenu la certification",
+  "norme_gri": "GRI 404-1",
+  "objectif": "33 %",
+  "methode": "App LL - Cf rapport",
+  "valeurs": {
+   "2023": "16 %",
+   "2024": "8 %",
+   "2025": "8 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Numérique responsable",
+  "enjeu_materiel": "Numérique responsable",
+  "indicateur": "% de salariés ayant suivi le MOOC",
+  "norme_gri": "GRI 404-2",
+  "objectif": "33 %",
+  "methode": "App LL - Cf rapport",
+  "valeurs": {
+   "2023": "16 %",
+   "2024": "8 %",
+   "2025": "8 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Environnement",
+  "contribue_a": "Production et achat d’énergies renouvelables",
+  "enjeu_materiel": "Empreinte environnementale (émissions, consommations, déchets)",
+  "indicateur": "Quantité d’énergie produite ou achetée.",
+  "norme_gri": "GRI 302-1",
+  "objectif": "0.0",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0 KW/h",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Formation et sensibilisation",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Pourcentage d’employés formés à la détection des cas de fraude et à la lutte anti fraude.",
+  "norme_gri": "GRI 205-2",
+  "objectif": "50 %",
+  "methode": "App LL",
+  "valeurs": {
+   "2023": "1,67 %",
+   "2024": "15 %",
+   "2025": "16,67 %"
+  },
+  "statut": "evol ?",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Formation et sensibilisation",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Pourcentage d’employés formés aux risques de corruption, aux situations à risque, et aux conséquences légales et éthiques des pratiques corrompues",
+  "norme_gri": "GRI 205-2",
+  "objectif": "50 %",
+  "methode": "App LL",
+  "valeurs": {
+   "2023": "1,67 %",
+   "2024": "18 %",
+   "2025": "20 %"
+  },
+  "statut": "ok (j'ai ajouté les salariés en mission chez GRDF au calcul)",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Formation et sensibilisation",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Pourcentage de personnes à la Direction générale ou Office management formés à la reconnaissance des pratiques de blanchiment",
+  "norme_gri": "GRI 205-2",
+  "objectif": "90 %",
+  "methode": "App LL",
+  "valeurs": {
+   "2023": "33,33 %",
+   "2024": "33,33 %",
+   "2025": "33,33 %"
+  },
+  "statut": "evol? ou retirer l'indicateur",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre d'incidents de corruption confirmés",
+  "norme_gri": "GRI 205-3",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de cas de concurrence déloyale confirmé",
+  "norme_gri": "GRI 206-1",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de cas de fraude confirmés",
+  "norme_gri": "GRI 205-3",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombres de situations pour conflit d'intérêt confirmés",
+  "norme_gri": "GRI 102-25",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de cas de blanchiment d’argent confirmés",
+  "norme_gri": "GRI 205-3",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de cas de concurrence déloyale détectés",
+  "norme_gri": "GRI 206-1",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de signalement pour corruption",
+  "norme_gri": "GRI 205-3",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de signalements pour conflit d'intérêt",
+  "norme_gri": "GRI 102-25",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de signalements pour fraude enregistrés",
+  "norme_gri": "GRI 205-3",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de transactions financières inhabituelles détectées",
+  "norme_gri": "GRI 205-3",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Pourcentage de contrats commerciaux incluant des clauses de non concurrence et de confidentialité",
+  "norme_gri": "GRI 102-16",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Pourcentage de contrats commerciaux incluant des clauses de respect des lois anti-blanchiment",
+  "norme_gri": "GRI 205-3",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "4 %",
+   "2024": "",
+   "2025": ""
+  },
+  "statut": "Voir le nombre de nouveaux contrats depuis 2024 et renouvelés chaque années",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Pourcentage de fournisseurs incluant des clauses anti-corruption dans leur contrat",
+  "norme_gri": "GRI 205-2 et 205-3",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "4 %",
+   "2024": "",
+   "2025": ""
+  },
+  "statut": "Voir le nombre de nouveaux contrats depuis 2024 et renouvelés chaque années",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Pourcentage des fournisseurs ayant signé le code de conduite",
+  "norme_gri": "GRI 102-16",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0 %",
+   "2024": "0 %",
+   "2025": "0 %"
+  },
+  "statut": "KO",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Sécurité informatique",
+  "enjeu_materiel": "Cybersécurité",
+  "indicateur": "Pourcentage d' employés formés aux bonnes pratiques de cybersécurité",
+  "norme_gri": "GRI 418-1",
+  "objectif": "50 %",
+  "methode": "App LL",
+  "valeurs": {
+   "2023": "0 %",
+   "2024": "58 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Sécurité informatique",
+  "enjeu_materiel": "Cybersécurité",
+  "indicateur": "Nombre d'incident sur la sécurité de l'information confirmés",
+  "norme_gri": "GRI 418-1",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Sécurité informatique",
+  "enjeu_materiel": "Cybersécurité",
+  "indicateur": "Nombre de sauvegarde des données critiques effectuées",
+  "norme_gri": "GRI 418-1",
+  "objectif": "Sans objet",
+  "methode": "Calendrier des sauvegardes",
+  "valeurs": {
+   "2023": "Sauvergarde automatique",
+   "2024": "Sauvergarde automatique",
+   "2025": "Sauvergarde automatique"
+  },
+  "statut": "Sauvergarde automatique",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Ethics",
+  "contribue_a": "Intégrité & Signalement",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Taux de conformité KYC",
+  "norme_gri": "GRI 205-2",
+  "objectif": "100 %",
+  "methode": "Pourcentage de freelance pour lesquels nous avons un document d'identité et un Kbis pour la création d'un contrat",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "Ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Conditions de Travail Équitables",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "% d’employés en CDI",
+  "norme_gri": "GRI 401-1",
+  "objectif": "100% des effectifs soit X salariés",
+  "methode": "",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Conditions de Travail Équitables",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Age moyen des employés en CDI",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Sans objet",
+  "methode": "",
+  "valeurs": {
+   "2023": "33.5",
+   "2024": "34.0",
+   "2025": "34.42"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Conditions de Travail Équitables",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Effectifs par tranche d'âge (inf.30)",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Sans objet",
+  "methode": "",
+  "valeurs": {
+   "2023": "13.0",
+   "2024": "13.0",
+   "2025": "12.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Conditions de Travail Équitables",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Effectifs par tranche d'âge (entre 30 et 50)",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Sans objet",
+  "methode": "",
+  "valeurs": {
+   "2023": "38.0",
+   "2024": "40.0",
+   "2025": "45.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Conditions de Travail Équitables",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Effectifs par tranche d'âge (plus de 50)",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Sans objet",
+  "methode": "",
+  "valeurs": {
+   "2023": "1.0",
+   "2024": "1.0",
+   "2025": "2.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Conditions de Travail Équitables",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Pourcentage d’employés bénéficiant de prime exceptionnelles (anciennété min 3 mois)",
+  "norme_gri": "GRI 401-2",
+  "objectif": "Sans objet",
+  "methode": "",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Conditions de Travail Équitables",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Pourcentage d’employés payés au-delà du salaire minimum",
+  "norme_gri": "GRI 202-1",
+  "objectif": "100% des effectifs soit X salariés",
+  "methode": "",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Conditions de Travail Équitables",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Turnover des employés en CDI",
+  "norme_gri": "GRI 401-1",
+  "objectif": "Inférieur à X%",
+  "methode": "[(Nombre de départs sur l'année en cours + le nombre d’arrivée) /2] / Effectif au 1er janvier de l'année en cours. Le total est à multiplier par 100 pour avoir un pourcentage.",
+  "valeurs": {
+   "2023": "50 %",
+   "2024": "37,9 %",
+   "2025": "14 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Ecart de salaire moyen homme femme par grade",
+  "norme_gri": "GRI 405-2",
+  "objectif": "Ecart inférieur à 5% sur les juniors",
+  "methode": "basé sur le brut annuel",
+  "valeurs": {
+   "2023": "NC",
+   "2024": "-2,79 %",
+   "2025": "Non applicable"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Ecart de salaire moyen homme femme par grade",
+  "norme_gri": "GRI 405-2",
+  "objectif": "Ecart inférieur à 5% sur les confirmés",
+  "methode": "basé sur le brut annuel",
+  "valeurs": {
+   "2023": "-2,64 %",
+   "2024": "-1,74 %",
+   "2025": "-3,83 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Ecart de salaire moyen homme femme par grade",
+  "norme_gri": "GRI 405-2",
+  "objectif": "Ecart inférieur à 5% sur les seniors",
+  "methode": "basé sur le brut annuel",
+  "valeurs": {
+   "2023": "-0,32 %",
+   "2024": "-1,12 %",
+   "2025": "5,84 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Ecart de salaire moyen homme femme par grade",
+  "norme_gri": "GRI 405-2",
+  "objectif": "Ecart inférieur à 5% sur les experts",
+  "methode": "basé sur le brut annuel",
+  "valeurs": {
+   "2023": "-4,55 %",
+   "2024": "3,04 %",
+   "2025": "0,56 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Ecart de salaire moyen homme femme par grade",
+  "norme_gri": "GRI 405-2",
+  "objectif": "Ecart inférieur à 5%",
+  "methode": "basé sur le brut annuel",
+  "valeurs": {
+   "2023": "",
+   "2024": "0,72 %",
+   "2025": "0,49 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Pourcentage de femme dans l’entreprise (global)",
+  "norme_gri": "GRI 405-1",
+  "objectif": "50 %",
+  "methode": "Nombre de femmes / Total * 100",
+  "valeurs": {
+   "2023": "33 %",
+   "2024": "34 %",
+   "2025": "36,6 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Pourcentage de femme dans l’entreprise (par grade)",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Pourcentage compris entre % et %",
+  "methode": "Nombre de femmes de grade junior / Total de juiniors * 100",
+  "valeurs": {
+   "2023": "0 %",
+   "2024": "25 %",
+   "2025": "0 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Pourcentage de femme dans l’entreprise (par grade)",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Pourcentage compris entre % et %",
+  "methode": "Nombre de femmes de grade confirmé / Total de confirmés * 100",
+  "valeurs": {
+   "2023": "38 %",
+   "2024": "46,15 %",
+   "2025": "38,46 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Pourcentage de femme dans l’entreprise (par grade)",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Pourcentage compris entre % et %",
+  "methode": "Nombre de femmes de grade senior / Total de seniors * 100",
+  "valeurs": {
+   "2023": "44 %",
+   "2024": "25 %",
+   "2025": "28,57 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Pourcentage de femme dans l’entreprise (par grade)",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Pourcentage compris entre % et %",
+  "methode": "Nombre de femmes de grade expert / Total d'experts * 100",
+  "valeurs": {
+   "2023": "32 %",
+   "2024": "38,46 %",
+   "2025": "41,67 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Nombre d’employés en situation de handicap dans l’entreprise",
+  "norme_gri": "GRI 405-1",
+  "objectif": "%",
+  "methode": "",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Nombre de situations de harcèlement détectées au sein de l’entreprise",
+  "norme_gri": "GRI 403-2",
+  "objectif": "0.0",
+  "methode": "",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Egalité des Genres, Diversité et Inclusion",
+  "enjeu_materiel": "Diversité, inclusion et égalité des chances",
+  "indicateur": "Pourcentage d'employés correspondant à notre politique diversité (Genre, Age, Handicap, Minorité, Origine Ethnique et Culturelle)",
+  "norme_gri": "",
+  "objectif": "Pourcentage supérieur à 25%",
+  "methode": "Pourcentage d'employés répondant à ces critères (Est une femme, ou à moins de 30 ans, ou handicapé, ou a plus de 50 ans, ou est d'une nationalité étrangère)",
+  "valeurs": {
+   "2023": "29 %",
+   "2024": "26 %",
+   "2025": "27 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Élimination du Travail Forcé et du Travail des Enfants",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Age minimum du plus jeune salarié Logiclever",
+  "norme_gri": "GRI 405-1",
+  "objectif": "> 18 ans",
+  "methode": "= min ( age des salaries )",
+  "valeurs": {
+   "2023": "25.5",
+   "2024": "23.0",
+   "2025": "24.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Élimination du Travail Forcé et du Travail des Enfants",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de prestataires suspectés d’avoir recours à du travail forcé ou du travail des enfants",
+  "norme_gri": "GRI 408-1",
+  "objectif": "0.0",
+  "methode": "",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Engagements envers les Relations de Travail",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre d’employés appartenant à un syndicat au sein de l’entreprise ou PV de carence SI PV de carence, alors OK",
+  "norme_gri": "GRI 407-1",
+  "objectif": "Sans objet",
+  "methode": "",
+  "valeurs": {
+   "2023": "OK",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Engagements envers les Relations de Travail",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de groupes de travail en lien avec l’amélioration des conditions de travail par an",
+  "norme_gri": "GRI 403-1 et 403-4",
+  "objectif": ">8",
+  "methode": "",
+  "valeurs": {
+   "2023": "4 / 17",
+   "2024": "5.0",
+   "2025": "6.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Engagements envers les Relations de Travail",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de chantiers d’améliorations continue proposés par les employés sur l’année",
+  "norme_gri": "GRI 403-4",
+  "objectif": "",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "76,92 %",
+   "2025": "76,92 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Engagements envers les Relations de Travail",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre de prises de décisions réalisées sur la base d’un vote à la majorité sur l’année",
+  "norme_gri": "GRI 102-18 (inspiré par)",
+  "objectif": "",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "Non mesuré en 2023",
+   "2024": "3.0",
+   "2025": "2.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Formation et Développement",
+  "enjeu_materiel": "Développement des compétences",
+  "indicateur": "% de consultants formés au socle de formation commun",
+  "norme_gri": "GRI 404-2",
+  "objectif": "Supérieur à 50% sur chaque formation",
+  "methode": "",
+  "valeurs": {
+   "2023": "Taux de formés Formation 83% On-Boarding Logiclever 56% Leading SAFe 67% Conseiller mieux, vendre plus 33% Progresser dans vos présentations 33% SAFe PO/PM 20% Power-BI - Formation Logiclever",
+   "2024": "89% On-Boarding Logiclever 50% Leading SAFe 78% Conseiller mieux, vendre plus 63% Progresser dans vos présentations 48% SAFe PO/PM 50% Power-BI - Formation Logiclever",
+   "2025": "81% On-Boarding Logiclever 46% Leading SAFe 59% Conseiller mieux, vendre plus 36% Progresser dans vos présentations 42% SAFe PO/PM 31% Power-BI - Formation Logiclever 14% LL : Formation BA"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Formation et Développement",
+  "enjeu_materiel": "Développement des compétences",
+  "indicateur": "Consommation du Budget formation sur l’année",
+  "norme_gri": "GRI 404-1",
+  "objectif": "Sans objet",
+  "methode": "APP LL > Suivi des formations Evaluation_Formation_Logiclever filtrer sur 2023. et regarder le montant",
+  "valeurs": {
+   "2023": "75552.0",
+   "2024": "33256.0",
+   "2025": "39687.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Formation et Développement",
+  "enjeu_materiel": "Développement des compétences",
+  "indicateur": "Nombre d’employés ayant reçu les politiques RSE de Logiclever",
+  "norme_gri": "GRI 205-2",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "9.0",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Formation et Développement",
+  "enjeu_materiel": "Développement des compétences",
+  "indicateur": "Nombre d’employés ayant reçu une évaluation annuelle",
+  "norme_gri": "GRI 404-3",
+  "objectif": "Supérieur à 95%",
+  "methode": "",
+  "valeurs": {
+   "2023": "Non mesuré en 2023",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Formation et Développement",
+  "enjeu_materiel": "Développement des compétences",
+  "indicateur": "Nombre d’employés coachés en interne",
+  "norme_gri": "GRI 404-2",
+  "objectif": "Supérieur à 90%",
+  "methode": "APP LL Accompagnement",
+  "valeurs": {
+   "2023": "28.0",
+   "2024": "30.0",
+   "2025": "33.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Formation et Développement",
+  "enjeu_materiel": "Développement des compétences",
+  "indicateur": "Nombre de nouvelles certifications obtenues cette année par employé",
+  "norme_gri": "GRI 404-2",
+  "objectif": "",
+  "methode": "APP LL > Suivi des formations Evaluation_Formation_Logiclever filtrer sur 2023. et filtrer sur Certifiante = En cours ou Obtenue",
+  "valeurs": {
+   "2023": "22.0",
+   "2024": "17.0",
+   "2025": "8.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Formation et Développement",
+  "enjeu_materiel": "Développement des compétences",
+  "indicateur": "Suivi des formations “Numérique Responsable”",
+  "norme_gri": "GRI 404-2",
+  "objectif": "",
+  "methode": "APP LL",
+  "valeurs": {
+   "2023": "35.0",
+   "2024": "35.0",
+   "2025": "35.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Gestion de la Responsabilité RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre d’actions d’améliorations RSE mises en place",
+  "norme_gri": "GRI 102-19",
+  "objectif": "3.0",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "Non mesuré en 2023",
+   "2024": "10.0",
+   "2025": "11.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Gestion de la Responsabilité RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre d’employés dans le groupe de contribution RSE de Logiclever",
+  "norme_gri": "GRI 102-19",
+  "objectif": ">= 4",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "9.0",
+   "2024": "9.0",
+   "2025": "9.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Gestion de la Responsabilité RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre d’évaluations Bilan carbone effectuées par an",
+  "norme_gri": "GRI 305-1 à 305-5",
+  "objectif": "Un tous les deux ans",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "OK dernière en 2022",
+   "2024": "0.0",
+   "2025": "1.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Gestion de la Responsabilité RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre d’évaluations RSE effectuées par an",
+  "norme_gri": "GRI 102-44",
+  "objectif": "Un tous les deux ans",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "OK dernière en 2022",
+   "2024": "0.0",
+   "2025": "1.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Gestion de la Responsabilité RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre de Comité de coordination de la COP",
+  "norme_gri": "GRI 102-18",
+  "objectif": "2 fois par ans",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "6.0",
+   "2024": "13.0",
+   "2025": "6.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Gestion de la Responsabilité RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre de participants à la COP RSE",
+  "norme_gri": "GRI 102-19",
+  "objectif": ">= 4",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "9.0",
+   "2024": "9.0",
+   "2025": "6.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Gestion de la Responsabilité RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre de propositions de contribution RSE récoltées et mises en place",
+  "norme_gri": "GRI 102-44",
+  "objectif": "3.0",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "Non mesuré en 2023",
+   "2024": "",
+   "2025": ""
+  },
+  "statut": "",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Gestion de la Responsabilité RSE",
+  "enjeu_materiel": "Gouvernance",
+  "indicateur": "Nombre de reporting de violation",
+  "norme_gri": "GRI 102-17",
+  "objectif": "0.0",
+  "methode": "Suivi des signalements",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Marque employeur et recrutement",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "% d’augmentation annuel des employés",
+  "norme_gri": "GRI 401-1",
+  "objectif": "Supérieur à",
+  "methode": "Jury des salaires",
+  "valeurs": {
+   "2023": "3,82 %",
+   "2024": "5,6 %",
+   "2025": "3,5 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Marque employeur et recrutement",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "% de proposition de CDI accepté par les employés",
+  "norme_gri": "GRI 401-1",
+  "objectif": "",
+  "methode": "Nb de contrats signés / Nb de CV",
+  "valeurs": {
+   "2023": "21,36 %",
+   "2024": "11,58 %",
+   "2025": "22,34 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Marque employeur et recrutement",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre d’acceptation des augmentations et changements de grades proposés par le jury des salaires",
+  "norme_gri": "GRI 405-2",
+  "objectif": "Supérieur à",
+  "methode": "Jury des salaires",
+  "valeurs": {
+   "2023": "8.0",
+   "2024": "3.0",
+   "2025": "7.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Marque employeur et recrutement",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre d’employés augmentés par le processus de Jury des salaires",
+  "norme_gri": "GRI 405-2",
+  "objectif": "Supérieur à",
+  "methode": "Jury des salaires",
+  "valeurs": {
+   "2023": "34.0",
+   "2024": "40.0",
+   "2025": "33.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Marque employeur et recrutement",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre de changements de grade et promotions réalisés dans l’entreprise sur l’année",
+  "norme_gri": "GRI 404-3",
+  "objectif": "Supérieur à",
+  "methode": "Jury des salaires",
+  "valeurs": {
+   "2023": "12.0",
+   "2024": "6",
+   "2025": "7.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Marque employeur et recrutement",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre de chantiers d'amélioration continue réalisés chaque année",
+  "norme_gri": "GRI 103-3",
+  "objectif": "Supérieur à",
+  "methode": "Nombre d'EPIC et de COP sur l'année",
+  "valeurs": {
+   "2023": "17.0",
+   "2024": "6.0",
+   "2025": "10.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Marque employeur et recrutement",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre de nationalités présentes dans les effectifs",
+  "norme_gri": "GRI 405-1",
+  "objectif": "Supérieur à",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "7.0",
+   "2024": "6.0",
+   "2025": "7.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Marque employeur et recrutement",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre de recrutements issus du bouche à oreille",
+  "norme_gri": "GRI 401-1",
+  "objectif": "Supérieur à",
+  "methode": "APP LL suivi des recrutements",
+  "valeurs": {
+   "2023": "12.0",
+   "2024": "7.0",
+   "2025": "2.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Reconnaissance des Employés",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Montant des primes versés par employé",
+  "norme_gri": "GRI 401-2",
+  "objectif": "",
+  "methode": "",
+  "valeurs": {
+   "2023": "3319.0",
+   "2024": "3607.803182",
+   "2025": "3124"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Reconnaissance des Employés",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre d’AGA distribués",
+  "norme_gri": "GRI 201-3",
+  "objectif": "",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "707.0",
+   "2024": "675.0",
+   "2025": "548.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Reconnaissance des Employés",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre d'employés bénéficiants de la prime PEE",
+  "norme_gri": "GRI 201-3",
+  "objectif": "Supérieur à 90%",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "60.0",
+   "2024": "42.0",
+   "2025": "58.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Santé et Sécurité",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre d’activités sportives organisées pour les employés de Logiclever par année",
+  "norme_gri": "GRI 403-6",
+  "objectif": "Supérieur à 6",
+  "methode": "Nombre d'activités publiées",
+  "valeurs": {
+   "2023": "15.0",
+   "2024": "12.0",
+   "2025": "13"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Santé et Sécurité",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre d’employés bénéficiant de la mise en place d’une offre de crèche",
+  "norme_gri": "GRI 401-2",
+  "objectif": "3.0",
+  "methode": "Nombre de personnes ayant bénéficier de la mise en place de berceaux sur l'année",
+  "valeurs": {
+   "2023": "2.0",
+   "2024": "2.0",
+   "2025": "2.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Santé et Sécurité",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre d’évènements collectifs organisés pour les employés de Logiclever par année",
+  "norme_gri": "GRI 401-2",
+  "objectif": "Supérieur à 6",
+  "methode": "Nombre de pots + Nombre de séminaires",
+  "valeurs": {
+   "2023": "19.0",
+   "2024": "19",
+   "2025": "12"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Santé et Sécurité",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Suivi du bien-être avec l'évaluation GPTW",
+  "norme_gri": "GRI 403-3",
+  "objectif": "Supérieur à 95%",
+  "methode": "Utilisé la perception global comme indicateur de synthèse",
+  "valeurs": {
+   "2023": "98 %",
+   "2024": "Non mesuré",
+   "2025": "93 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Santé et Sécurité",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Pourcentage d’employés pouvant bénéficier à la mutuelle de l’entreprise",
+  "norme_gri": "GRI 401-2",
+  "objectif": "100% des effectifs doivent pouvoir bénéficier de la mutuelle",
+  "methode": "Nombre de personnes à qui la mutuelle est proposé au moment de la signature du contrat",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Santé et Sécurité",
+  "enjeu_materiel": "Fidélisation et satisfaction des salariés",
+  "indicateur": "Nombre de problèmes de santé liés au travail",
+  "norme_gri": "GRI 403-9",
+  "objectif": "0.0",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Santé et Sécurité",
+  "enjeu_materiel": "Valeurs et conformité",
+  "indicateur": "Nombre d'heures travaillées",
+  "norme_gri": "GRI 403-9",
+  "objectif": "",
+  "methode": "",
+  "valeurs": {
+   "2023": "81600.0",
+   "2024": "84923.0664",
+   "2025": "76132.2732"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Santé et Sécurité",
+  "enjeu_materiel": "Développement des compétences",
+  "indicateur": "Nombre moyen d'heures de formation par employés",
+  "norme_gri": "GRI 404-1",
+  "objectif": "",
+  "methode": "",
+  "valeurs": {
+   "2023": "Non mesuré",
+   "2024": "749",
+   "2025": "432"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Achats durables",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Quantité de matériel de fourniture de bureau acheté",
+  "norme_gri": "GRI 301-1",
+  "objectif": "0.0",
+  "methode": "Suivi des achats",
+  "valeurs": {
+   "2023": "Non réalisé en 2023",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Achats durables",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Quantité de matériels en bois ou incluant du bois acheté",
+  "norme_gri": "GRI 301-1",
+  "objectif": "0.0",
+  "methode": "Suivi des achats",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Achats durables",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Quantité de vêtements acheté",
+  "norme_gri": "GRI 301-1",
+  "objectif": "0.0",
+  "methode": "Suivi des achats",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Achats durables",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de remontés de problématiques d’achat responsables faites aux groupe de travail RSE",
+  "norme_gri": "GRI 308-1",
+  "objectif": "",
+  "methode": "Fichier de suivi des remontés",
+  "valeurs": {
+   "2023": "1.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Achats durables",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage d’employés évalués sur leur sensibilité aux achats responsables",
+  "norme_gri": "GRI 414-1",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "Non réalisé en 2023",
+   "2024": "0 %",
+   "2025": "0 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Achats durables",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de destinations accessibles en moyen de transport bas carbone proposées pour le séminaire annuel",
+  "norme_gri": "GRI 305-5",
+  "objectif": "2024-04-02 00:00:00",
+  "methode": "Support de présentation du séminaire",
+  "valeurs": {
+   "2023": "1.0",
+   "2024": "1.0",
+   "2025": "1.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de freelance femme en sous traitance pour Logiclever",
+  "norme_gri": "GRI 405-1",
+  "objectif": "5.0",
+  "methode": "",
+  "valeurs": {
+   "2023": "26,23 %",
+   "2024": "30 %",
+   "2025": "32 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de freelance en situation de handicap",
+  "norme_gri": "",
+  "objectif": "1.0",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de nationalités présentes parmis les freelances",
+  "norme_gri": "",
+  "objectif": "",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "",
+   "2024": "",
+   "2025": ""
+  },
+  "statut": "Données non disponibles",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage de freelance correspondant à notre politique diversité (Genre, Age, Handicap, Minorité, Origine Ethnique et Culturelle)",
+  "norme_gri": "",
+  "objectif": "> 25 %",
+  "methode": "Pourcentage d'employés répondant à ces critères (Est une femme, ou à moins de 30 ans, ou handicapé, ou a plus de 50 ans, ou est d'une nationalité étrangère)",
+  "valeurs": {
+   "2023": "",
+   "2024": "",
+   "2025": ""
+  },
+  "statut": "Données non disponibles",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre d’appels d’offre publiés n'intégrant pas de critère de durabilité",
+  "norme_gri": "GRI 308-1",
+  "objectif": "0.0",
+  "methode": "Dossier des appels d'offres",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de fournisseurs audités suite à des actions correctives",
+  "norme_gri": "GRI 308-2",
+  "objectif": "Sans objet",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de météos par sous traitant réalisés en moyenne sur une année",
+  "norme_gri": "",
+  "objectif": "1.25",
+  "methode": "Suivi des météos via l'APP LL",
+  "valeurs": {
+   "2023": "0.4754098361",
+   "2024": "0.5",
+   "2025": "0.5"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de sous traitants ayant signé l’attestation sur l’honneur pour les travailleurs étrangers",
+  "norme_gri": "GRI 414-2",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Nombre de sous traitants identifiés comme à haut risque",
+  "norme_gri": "GRI 414-2",
+  "objectif": "0.0",
+  "methode": "Fichier de suivi des sous traitans",
+  "valeurs": {
+   "2023": "0.0",
+   "2024": "0.0",
+   "2025": "0.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage de sous traitants freelance ayant répondu au questionnaire d’évaluation RSE",
+  "norme_gri": "GRI 414-1",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0 %",
+   "2024": "0 %",
+   "2025": "0 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage de filiale ayant signé le code de conduite",
+  "norme_gri": "GRI 102-16",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "NC",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Encadrement de la sous traitance",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage des fournisseurs avec des clauses RSE dans leurs contrats",
+  "norme_gri": "GRI 308-1 et GRI 414-1",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "3,28 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Formation",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage d’employés acculturés au numérique responsable",
+  "norme_gri": "GRI 404-2",
+  "objectif": "75 %",
+  "methode": "Suivi des formations via l'APP LL",
+  "valeurs": {
+   "2023": "55 %",
+   "2024": "50 %",
+   "2025": "37 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Formation",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage d’employés certifiés au numérique responsable",
+  "norme_gri": "GRI 414-1",
+  "objectif": "33 %",
+  "methode": "Suivi des formations via l'APP LL",
+  "valeurs": {
+   "2023": "16 %",
+   "2024": "8 %",
+   "2025": "8 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Formation",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage d’employés ayant reçu le guide sur les bonnes pratiques d’achats",
+  "norme_gri": "GRI 404-2",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Formation",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage d’employés ayant reçu les bonne pratique en matière de numérique responsable",
+  "norme_gri": "GRI 414-1",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Formation",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage d’employés impliqués dans les achats formés aux achats responsables",
+  "norme_gri": "GRI 404-2",
+  "objectif": "100 %",
+  "methode": "Suivi des formations via l'APP LL",
+  "valeurs": {
+   "2023": "33,33 %",
+   "2024": "33,33 %",
+   "2025": "100 %"
+  },
+  "statut": "à voir (ajouter dans le référentiel formation les consultants en mission chez grdf car ils sont formés par cgi sur des modules RSE)",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Formation",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage de freelance ayant reçu le guide d’achat responsable",
+  "norme_gri": "GRI 414-1",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Formation",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Pourcentage de sous traitants freelance acculturés au numérique responsable",
+  "norme_gri": "GRI 414-1",
+  "objectif": "60 %",
+  "methode": "Suivi des formations via l'APP LL",
+  "valeurs": {
+   "2023": "NC",
+   "2024": "15 %",
+   "2025": "16 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Formation",
+  "enjeu_materiel": "Achats responsables",
+  "indicateur": "Satisfaction des employés concernés pour les formations aux achats responsables",
+  "norme_gri": "GRI 414-1",
+  "objectif": "Moyenne de 4/5",
+  "methode": "Suivi des formations via l'APP LL",
+  "valeurs": {
+   "2023": "Sans objet",
+   "2024": "2026-05-04 00:00:00",
+   "2025": "2026-05-04 00:00:00"
+  },
+  "statut": "Faire mije à jour à partir de l'APP LL",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Numérique responsable",
+  "enjeu_materiel": "Numérique responsable",
+  "indicateur": "Pourcentage d’employés dans une démarche de BYOD pour leur poste informatique",
+  "norme_gri": "",
+  "objectif": "> 95%",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "98 %",
+   "2024": "98 %",
+   "2025": "98 %"
+  },
+  "statut": "OK",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Numérique responsable",
+  "enjeu_materiel": "Numérique responsable",
+  "indicateur": "Quantité de données hébergées par Logiclever en Go",
+  "norme_gri": "GRI 418-1",
+  "objectif": "< 1 To",
+  "methode": "Google Drive",
+  "valeurs": {
+   "2023": "5,08 Go",
+   "2024": "18 Go",
+   "2025": "82,84 Go"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Numérique responsable",
+  "enjeu_materiel": "Numérique responsable",
+  "indicateur": "Quantité de données hébergées par Logiclever en Go dans des datacenters non sûrs, non conformes aux réglementations ou, non alimentés en énergie renouvelable",
+  "norme_gri": "GRI 404-3",
+  "objectif": "0Gb",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "0 Gb",
+   "2024": "0 Gb",
+   "2025": "0 Gb"
+  },
+  "statut": "OK",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Numérique responsable",
+  "enjeu_materiel": "Numérique responsable",
+  "indicateur": "Score du SI LL au l’audit par le référentiel général d’écoconception des services numériques",
+  "norme_gri": "GRI 302-5",
+  "objectif": "> 60/100",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "77 %",
+   "2024": "77 %",
+   "2025": "77 %"
+  },
+  "statut": "OK",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Sustainable procurement",
+  "contribue_a": "Numérique responsable",
+  "enjeu_materiel": "Numérique responsable",
+  "indicateur": "Nombre d’employés dans l’équipe numérique responsable",
+  "norme_gri": "GRI 102-18",
+  "objectif": "> 5% des effectifs",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "4.0",
+   "2024": "5.0",
+   "2025": "4.0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Satisfaction des clients et image de marque",
+  "enjeu_materiel": "Satisfaction des clients et image de marque",
+  "indicateur": "Taux de reconduction des clients",
+  "norme_gri": "GRI 102-43",
+  "objectif": "100 %",
+  "methode": "Manuelle",
+  "valeurs": {
+   "2023": "100 %",
+   "2024": "100 %",
+   "2025": "100 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Satisfaction des clients et image de marque",
+  "enjeu_materiel": "Satisfaction des clients et image de marque",
+  "indicateur": "Taux des météos clients \"Satisfait\" ou \"très satisfait\"",
+  "norme_gri": "GRI 102-43",
+  "objectif": "100 %",
+  "methode": "l'APP LL",
+  "valeurs": {
+   "2023": "91,67 %",
+   "2024": "94.59%",
+   "2025": "92,08 %"
+  },
+  "statut": "ok",
+  "source_document": "KPI-RSE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Sante et Securite",
+  "enjeu_materiel": "Fidelisation et satisfaction des salaries",
+  "indicateur": "Nombre de jours d'arret maladie d'origine non professionnelle",
+  "norme_gri": "GRI 403-9",
+  "objectif": "",
+  "methode": "Suivi RH",
+  "valeurs": {
+   "2023": "105",
+   "2024": "179",
+   "2025": "485"
+  },
+  "statut": "ok",
+  "source_document": "KPI-MALADIE",
+  "date_maj": "2026-02-22"
+ },
+ {
+  "theme": "Labor & Human Rights",
+  "contribue_a": "Sante et Securite",
+  "enjeu_materiel": "Fidelisation et satisfaction des salaries",
+  "indicateur": "Nombre de jours d'arret maladie d'origine professionnelle",
+  "norme_gri": "GRI 403-9",
+  "objectif": "",
+  "methode": "Suivi RH",
+  "valeurs": {
+   "2023": "0",
+   "2024": "0",
+   "2025": "0"
+  },
+  "statut": "ok",
+  "source_document": "KPI-MALADIE",
+  "date_maj": "2026-02-22"
+ }
+]
