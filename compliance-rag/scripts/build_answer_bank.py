@@ -311,7 +311,15 @@ def parse_cybervadis():
             pf = fr(point_fort)
             if pf not in d["points_forts"]:
                 d["points_forts"].append(pf)
-        for m in re.findall(r"[\w\-\_\. À-ſ]+\.pdf", preuve or ""):
+        # "_x000D_" est l'artefact qu'openpyxl laisse pour un retour chariot
+        # dans une cellule Excel ; sans le neutraliser, et avec "." autorise
+        # dans le corps du nom de fichier, le "+" glouton de la regex avale
+        # tout jusqu'au DERNIER ".pdf" de la cellule et colle plusieurs noms de
+        # fichiers ensemble (ex. preuve fournie deux fois de suite). "." est
+        # volontairement exclu du corps : un nom de fichier ne peut alors plus
+        # jamais "sauter" par-dessus un ".pdf" deja rencontre.
+        preuve_nette = (preuve or "").replace("_x000D_", " ")
+        for m in re.findall(r"[\[\]\w\-\_ À-ſ]+\.pdf", preuve_nette):
             d["preuves"].add(m.strip())
 
     for code, d in detail.items():
@@ -546,12 +554,119 @@ def parse_faits():
     } for ref, theme, sous, q, rep, srcs in FAITS]
 
 
+# ------------------------------------------------------- 6. resolution des documents
+def normaliser_pour_correspondance(s):
+    s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", " ", s).strip()
+
+
+def construire_resolveur_documents():
+    """Associe chaque reference brute de document (telle que tapee dans une
+    cellule EcoVadis/CyberVadis) au code_doc reel du registre documents.json.
+
+    Sans cette etape, sources[].document est copie tel quel depuis la feuille
+    source : parfois deja un code_doc par coincidence, souvent un titre
+    approximatif ou un nom de fichier brut/mal encode qui ne correspond a
+    rien de connu (voir compliance-rag/GUIDE-DEPLOIEMENT.md pour l'historique
+    des remappages faits a la main directement dans answer_bank.json, qu'une
+    regeneration sans cette fonction ecraserait silencieusement). Trois
+    passes, de la plus sure a la plus permissive : code exact, titre exact
+    (normalise), puis inclusion partielle du titre dans le texte brut ou
+    l'inverse."""
+    with open(os.path.join(OUT, "documents.json"), encoding="utf8") as f:
+        registre = json.load(f)["documents"]
+    par_code = {d["code_doc"].lower(): d["code_doc"] for d in registre}
+
+    # Certaines references brutes citent le nom du fichier source (souvent
+    # l'acronyme du document : "Politique_SSI_Logiclever_E...") plutot que son
+    # titre lisible (qui l'ecrit en toutes lettres : "...Systemes
+    # d'Information"). Sans lexique commun entre les deux formes, ni
+    # l'inclusion ni le recouvrement de mots ne peuvent les rapprocher : on
+    # ajoute donc aussi le nom de fichier comme deuxieme libelle de
+    # correspondance par document, en ignorant les fichiers du dossier "b/"
+    # anonymises en UUID (b/<uuid>.pdf) qui n'apportent aucun signal.
+    uuid_re = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
+    libelles = []
+    for d in registre:
+        libelles.append((d["titre"], d["code_doc"]))
+        nom = os.path.splitext(os.path.basename(d["fichier_source"]))[0]
+        if not uuid_re.match(nom):
+            libelles.append((nom, d["code_doc"]))
+
+    par_titre = {}
+    for texte, code in libelles:
+        par_titre.setdefault(normaliser_pour_correspondance(texte), code)
+    # Chaque cote (texte brut, libelle reel) porte souvent sa propre decoration
+    # (prefixe "Politique RSE A /", suffixe "Logiclever 2026", version,
+    # horodatage...) que l'inclusion stricte ne tolere pas si elle apparait
+    # des DEUX cotes a la fois. Un recouvrement de mots significatifs (4+
+    # lettres) est plus tolerant a cette decoration tout en restant sur : les
+    # 4 politiques RSE (social/environnement/achats/ethique) partagent
+    # "politique" mais se distinguent chacune par un mot-cle propre.
+    titres_mots = [(normaliser_pour_correspondance(texte),
+                     frozenset(w for w in normaliser_pour_correspondance(texte).split() if len(w) >= 4),
+                     code) for texte, code in libelles]
+
+    def resoudre(brut):
+        """Renvoie (valeur, methode). methode vaut "code"/"titre"/"inclusion"
+        pour une correspondance sure, "mots" pour un recouvrement partiel a
+        double-verifier, ou "aucune" (valeur alors laissee telle quelle)."""
+        b = (brut or "").strip()
+        if not b:
+            return b, "code"
+        if b.lower() in par_code:
+            return par_code[b.lower()], "code"
+        bn = normaliser_pour_correspondance(b)
+        if bn in par_titre:
+            return par_titre[bn], "titre"
+        for titre_norm, code in par_titre.items():
+            if len(titre_norm) > 6 and (titre_norm in bn or bn in titre_norm):
+                return code, "inclusion"
+        mots_b = frozenset(w for w in bn.split() if len(w) >= 4)
+        if mots_b:
+            meilleur = None
+            for _, mots_t, code in titres_mots:
+                if not mots_t:
+                    continue
+                inter = mots_b & mots_t
+                ratio = len(inter) / min(len(mots_b), len(mots_t))
+                if len(inter) >= 3 and ratio >= 0.6 and (meilleur is None or ratio > meilleur[0]):
+                    meilleur = (ratio, code)
+            if meilleur:
+                return meilleur[1], "mots"
+        return b, "aucune"
+
+    return resoudre
+
+
+def resoudre_sources_bank(bank):
+    """Reecrit sources[].document avec le code_doc reel quand on le trouve.
+    Rapporte separement (sans rien faire echouer) : les references restees
+    introuvables, et celles resolues par simple recouvrement de mots (la
+    passe la plus permissive) pour verification humaine plutot que de les
+    faire passer aussi silencieusement qu'une correspondance exacte."""
+    resoudre = construire_resolveur_documents()
+    non_resolues = {}
+    a_verifier = {}
+    for e in bank:
+        for s in e.get("sources", []):
+            brut = s.get("document")
+            valeur, methode = resoudre(brut)
+            s["document"] = valeur
+            if methode == "aucune":
+                non_resolues.setdefault(valeur, []).append(e["source_ref"])
+            elif methode == "mots":
+                a_verifier.setdefault((brut, valeur), []).append(e["source_ref"])
+    return non_resolues, a_verifier
+
+
 def main():
     ev, nc, sb, cv, ft = (parse_ecovadis(), parse_new_camilla(), parse_sbti(),
                           parse_cybervadis(), parse_faits())
     bank = ft + ev + nc + sb + cv
     for i, e in enumerate(bank, 1):
         e["id"] = i
+    non_resolues, a_verifier = resoudre_sources_bank(bank)
     kpi = parse_kpi()
     os.makedirs(OUT, exist_ok=True)
     json.dump(bank, open(os.path.join(OUT, "answer_bank.json"), "w", encoding="utf8"),
@@ -563,6 +678,23 @@ def main():
                    ("New Camilla", len(nc)), ("CGI/SBTi", len(sb)), ("CyberVadis", len(cv))]:
         print("   %-14s %d" % (lib, n))
     print("kpi        : %d indicateurs" % len(kpi))
+    if non_resolues:
+        total = sum(len(v) for v in non_resolues.values())
+        print("\nATTENTION : %d reference(s) documentaire(s) sur les %d au total n'ont pas ete "
+              "resolues vers un code_doc reel (%d valeur(s) brute(s) distincte(s)) - elles "
+              "resteront affichees telles quelles au client et sans lien telechargeable :"
+              % (total, sum(len(e.get("sources", [])) for e in bank), len(non_resolues)))
+        for valeur, refs in sorted(non_resolues.items(), key=lambda kv: -len(kv[1]))[:30]:
+            print("   [%dx] %s  (ex. %s)" % (len(refs), valeur[:100], refs[0]))
+        if len(non_resolues) > 30:
+            print("   ... et %d autre(s) valeur(s) distincte(s)." % (len(non_resolues) - 30))
+    else:
+        print("\nToutes les references documentaires ont ete resolues vers un code_doc reel.")
+    if a_verifier:
+        print("\nA VERIFIER : %d correspondance(s) trouvee(s) par recouvrement de mots "
+              "(moins sures qu'un code ou un titre exact) :" % len(a_verifier))
+        for (brut, code), refs in sorted(a_verifier.items(), key=lambda kv: -len(kv[1])):
+            print("   %s  ->  %s  (ex. %s)" % (brut[:80], code, refs[0]))
 
 
 main()

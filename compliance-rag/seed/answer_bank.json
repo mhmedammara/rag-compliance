@@ -62,13 +62,8 @@
   "sous_theme": "Certifications",
   "question": "De quelles certifications et labels disposez-vous ? Avez-vous l'ISO 9001 / ISO 14001 / ISO 27001 ?",
   "intitule": "Certifications",
-  "reponse": "Évaluations et labels détenus par Logiclever :\n- EcoVadis : score global 84/100, médaille Gold, 97e percentile (top 5 % des entreprises évaluées). Évaluation publiée le 27/05/2026, valide jusqu'au 27/05/2027.\n- CyberVadis : 860/1000, niveau Mature (benchmark moyen 654), rapport du 21/10/2025.\n- Great Place To Work : entreprise certifiée (3 certifications), Trust Index 96 %, perception globale 98 %, 2e au classement France 2023 des entreprises de 50 à 250 salariés, 1er au classement France 2021 des entreprises de moins de 50 salariés.\n- Signataire de la Charte Numérique Responsable de l'INR, de la Charte engagement citoyen des entreprises et de la Charte régionale des valeurs de la République et de la laïcité.\n- Respect des 10 principes du Pacte Mondial des Nations Unies.\n- Convention collective Syntec (IDCC 1486).\nIMPORTANT : Logiclever n'est PAS certifiée ISO 9001, ISO 14001 ni ISO 27001. La Politique SSI est construite sur le référentiel ISO 27001 et un objectif de certification y est inscrit, mais la certification n'est pas obtenue à ce jour. Ne jamais répondre « oui » à une question de certification ISO.",
+  "reponse": "Évaluations et labels détenus par Logiclever :\n- EcoVadis : score global 79/100, 98e percentile (top 2 % des entreprises évaluées).\n- CyberVadis : 860/1000, niveau Mature (benchmark moyen 654), rapport du 21/10/2025.\n- Great Place To Work : entreprise certifiée (3 certifications), Trust Index 96 %, perception globale 98 %, 2e au classement France 2023 des entreprises de 50 à 250 salariés, 1er au classement France 2021 des entreprises de moins de 50 salariés.\n- Signataire de la Charte Numérique Responsable de l'INR, de la Charte engagement citoyen des entreprises et de la Charte régionale des valeurs de la République et de la laïcité.\n- Respect des 10 principes du Pacte Mondial des Nations Unies.\n- Convention collective Syntec (IDCC 1486).\nIMPORTANT : Logiclever n'est PAS certifiée ISO 9001, ISO 14001 ni ISO 27001. La Politique SSI est construite sur le référentiel ISO 27001 et un objectif de certification y est inscrit, mais la certification n'est pas obtenue à ce jour. Ne jamais répondre « oui » à une question de certification ISO.",
   "sources": [
-   {
-    "document": "EV-FICHE-2026",
-    "pages": "1",
-    "option": ""
-   },
    {
     "document": "CV-EXEC-2025",
     "pages": "1",
@@ -374,7 +369,7 @@
   "reponse": "Elements retenus : Le Pacte Mondial des Nations Unies ; Autres initiatives RSE externes ou ensemble de principes.\nLOGICLEVER respecte les droits fondamentaux de chaque individu, y compris la non-discrimination, la liberté d'association et l'élimination du travail forcé. L’entreprise respecte de plus la charte des Nations-Unis (Global Compact) ainsi que les droits français et européen. Annexes 1. Charte des Nations unies : Les 10 principes du Global Compact Annexes 2. Charte des Nations unies : Les 17 objectifs de développement durable\nGreat Place to Work Convention Syntec Charte numérique responsable de l'INR Charte engagement citoyen des entreprises CHARTE RÉGIONALE DES VALEURS DE LA RÉPUBLIQUE ET DE LA LAÏCITÉ Cybervadis",
   "sources": [
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "5,23,24",
     "option": "Le Pacte Mondial des Nations Unies"
    },
@@ -422,7 +417,7 @@
   "reponse": "Elements retenus : Le reporting RSE fait l’objet d’une assurance ou d’une vérification par un tiers indépendant ; Le reporting est formellement aligné sur une norme de reporting RSE ; Une analyse de matérialité a été réalisée.\nUtilisation des normes GRI pour les indicateurs Utilisation de la charte des nations unies comme référentiel Utilisation des normes Iso comme référentiel Mes commentaires sur le document : La présente politique s’appuie sur des normes et cadres réglementaires reconnus afin de garantir un niveau de sécurité de l'information conforme aux exigences légales, contractuelles et industrielles. Elle prend principalement pour référence la norme ISO/IEC 27001:2022, qui définit les exigences pour la mise en œuvre d’un système de management de la sécurité de l'information (SMSI). Elle est également alignée sur les principes du Règlement Général sur la Protection des Données (RGPD) pour la protection des données à caractère personnel, applicables à toutes les activités de Logiclever. En complément, les guides de bonnes pratiques publiés par l’Agence nationale de la sécurité des systèmes d’information (ANSSI), notamment ceux relatifs à la gestion de crise cyber, à l’hygiène numérique, et à la protection des données personnelles, servent de base opérationnelle à la définition des mesures de sécurité. Enfin, les exigences spécifiques de certains référentiels sectoriels ou contractuels (clauses client SSI, etc.) peuvent s’ajouter à ces fondations, et sont intégrées selon les besoins des projets concernés.",
   "sources": [
    {
-    "document": "Analyse Great place to work Logiclever",
+    "document": "GPTW-CERT",
     "pages": "1-20",
     "option": "Le reporting RSE fait l’objet d’une assurance ou d’une vérification par un tiers indépendant"
    },
@@ -432,7 +427,7 @@
     "option": "Le reporting est formellement aligné sur une norme de reporting RSE"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "5,23-24",
     "option": ""
    },
@@ -460,12 +455,12 @@
   "reponse": "Elements retenus : Autres certifications en matière de RSE.\nCertification Great Place to Work : avec 3 certifications à son compteur, Logiclever se place comme l'une des société avec la meilleur qualité de vie en France Rapport d'audit Cybervadis",
   "sources": [
    {
-    "document": "Entreprise certifiée Great Place To Work",
+    "document": "GPTW-CERT",
     "pages": "1",
     "option": "Autres certifications en matière de RSE"
    },
    {
-    "document": "Analyse Great place to work Logiclever",
+    "document": "GPTW-CERT",
     "pages": "1-142",
     "option": ""
    },
@@ -498,12 +493,12 @@
     "option": "Santé et sécurité des employés"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "5",
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "7-10",
     "option": "Conditions de travail"
    },
@@ -518,12 +513,12 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "3,9",
     "option": ""
    },
    {
-    "document": "Processus augmenter les salaires - jury des salaires",
+    "document": "SALAIRES",
     "pages": "3-32",
     "option": "Gestion de carrière et formation"
    },
@@ -533,7 +528,7 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "11",
     "option": ""
    },
@@ -543,12 +538,12 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "8-9",
     "option": "Travail des enfants, travail forcé et trafic d’êtres humains"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "6-7",
     "option": "Discrimination et harcèlement"
    },
@@ -563,7 +558,7 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "3-5,23-24",
     "option": "Droits humains fondamentaux de parties prenantes externes"
    }
@@ -596,7 +591,7 @@
     "option": ""
    },
    {
-    "document": "Santé, Sécurité et Bonnes Pratiques formation 2026",
+    "document": "FORM-SANTE",
     "pages": "1-21",
     "option": ""
    },
@@ -606,7 +601,7 @@
     "option": "Plan d’action d’urgence en matière de santé et de sécurité"
    },
    {
-    "document": "Santé, Sécurité et Bonnes Pratiques formation 2026",
+    "document": "FORM-SANTE",
     "pages": "16-19",
     "option": ""
    },
@@ -616,7 +611,7 @@
     "option": "Formation des salariés sur les risques pour la santé et la sécurité ainsi que les bonnes pratiques de travail"
    },
    {
-    "document": "Santé, Sécurité et Bonnes Pratiques formation 2026",
+    "document": "FORM-SANTE",
     "pages": "1-21",
     "option": ""
    },
@@ -626,7 +621,7 @@
     "option": "Actions visant à lutter contre le stress et favoriser le bien-être psychologique au travail"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "4-5",
     "option": ""
    },
@@ -641,7 +636,7 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "4-5",
     "option": ""
    }
@@ -664,12 +659,12 @@
     "option": "Actions visant à garantir des salaires adéquats"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "10",
     "option": "Actions visant à gérer le temps de travail et les heures supplémentaires"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "8-10",
     "option": "Rémunération des heures de travail supplémentaires ou atypiques"
    },
@@ -684,12 +679,12 @@
     "option": "Programmes adaptés aux familles"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "5",
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "5",
     "option": "Organisation flexible du travail à la disposition des salariés"
    },
@@ -699,17 +694,17 @@
     "option": "Couverture des salariés en soins de santé"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "4-5",
     "option": ""
    },
    {
-    "document": "Rapport audit great place to work",
+    "document": "GPTW-CERT",
     "pages": "7-21",
     "option": "Enquête de satisfaction des salariés"
    },
    {
-    "document": "Analyse Great place to work Logiclever",
+    "document": "GPTW-CERT",
     "pages": "1-36",
     "option": ""
    },
@@ -734,12 +729,12 @@
     "option": ""
    },
    {
-    "document": "DECISION UNILATERALE DE L’EMPLOYEUR RELATIVE A LA PRIME TRANSPORT",
+    "document": "PRIME-TRANSPORT",
     "pages": "1-3",
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "3-5",
     "option": ""
    },
@@ -772,7 +767,7 @@
     "option": "Formation de développement des compétences"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "11-12",
     "option": ""
    },
@@ -807,7 +802,7 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "9-11",
     "option": ""
    },
@@ -852,7 +847,7 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "12-14",
     "option": "Autres actions pour encourager la gestion des carrières et la formation qui ne sont incluses nulle part ailleurs dans cette question"
    }
@@ -890,7 +885,7 @@
     "option": ""
    },
    {
-    "document": "Diversité et Inclusion chez LL",
+    "document": "DIVERSITE",
     "pages": "1-6",
     "option": ""
    },
@@ -900,7 +895,7 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "7-9",
     "option": ""
    },
@@ -910,17 +905,17 @@
     "option": "Actions visant à prévenir la discrimination dans le cadre des processus de promotion et de développement professionnel (veuillez préciser)"
    },
    {
-    "document": "Support de communication diversité et inclusion chez LL",
+    "document": "DIVERSITE",
     "pages": "1-5",
     "option": "Formation des employés à la lutte contre la discrimination et le harcèlement"
    },
    {
-    "document": "Diversité et Inclusion chez LL",
+    "document": "DIVERSITE",
     "pages": "1-6",
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "8-9",
     "option": ""
    },
@@ -940,22 +935,22 @@
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "5-6",
     "option": ""
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "7-8",
     "option": "Actions visant à promouvoir l’inclusion des employés en situation de handicap"
    },
    {
-    "document": "Processus augmenter les salaires - jury des salaires",
+    "document": "SALAIRES",
     "pages": "3,5,21-32",
     "option": "Actions visant à garantir un salaire égal pour un travail égal"
    },
    {
-    "document": "Support de communication diversité et inclusion chez LL",
+    "document": "DIVERSITE",
     "pages": "1-5",
     "option": "Actions visant à promouvoir l’égalité des chances pour tous sur le lieu de travail"
    },
@@ -990,7 +985,7 @@
     "option": "Autres actions visant à prévenir la discrimination et le harcèlement sur le lieu de travail qui ne sont incluses nulle part ailleurs dans cette question"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "10",
     "option": ""
    }
@@ -1013,12 +1008,12 @@
     "option": "Nombre de problèmes de santé liés au travail"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "1",
     "option": "Nombre moyen d’heures de formation par employé"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "2",
     "option": "Pourcentage de femmes employées dans l'ensemble de l'organisation"
    },
@@ -1041,7 +1036,7 @@
   "reponse": "Elements retenus : Santé et sécurité des employés ; Conditions de travail ; Dialogue social ; Gestion de carrière et formation ; Travail des enfants, travail forcé et trafic d’êtres humains ; Discrimination et harcèlement ; Droits humains des parties prenantes externes.\nNb d’activités sportives organisées pour les employés 13 Nb d’employés bénéficiant de la mise en place d’une offre de crèche 2 Nb d'événements collectifs organisés pour les employés 12 Suivi du bien-être avec l'évaluation GPTW 93% Pourcentage d’employés pouvant bénéficier à la mutuelle 100%\nPourcentage d’employés pouvant bénéficier à la mutuelle de l’entreprise : 100% Suivi du bien-être avec l'évaluation GPTW 93% Nombre d’activités sportives organisées pour les employés de Logiclever par année : 13 Nombre d’évènements collectifs organisés pour les employés de Logiclever par année :12\nÉlimination du Travail Forcé et du Travail des Enfants Nombre de prestataires suspectés d’avoir recours à du travail forcé ou du travail des enfants 0 Age minimum du plus jeune salarié Logiclever 24 Engagements envers les Relations de Travail Nombre d’employés appartenant à un syndicat au sein de l’entreprise ou PV de carence. PV de carence Nombre de groupes de travail en lien avec l’amélioration des conditions de travail par an 6\nEngagements envers les Relations de Travail Nombre d’employés appartenant à un syndicat au sein de l’entreprise ou PV de carence. PV de carence Nombre de groupes de travail en lien avec l’amélioration des conditions de travail par an 6\n% de consultants formés au socle de formation commun (>75% au bout de 2 ans) -On-Boarding Logiclever 81% -Leading SAFe -SAFe PO/PM 46% 42% -Conseiller mieux, Vendre plus 59% -Progresser dans vos présentations 36% -Power BI 31% Consommation du Budget formation sur l’année 39 687€ Nombre d’employés ayant reçu les politiques RSE de Logiclever 100% Nombre d’employés coachés en interne 33 Nombre de nouvelles certifications obtenues cette année par employé 8 Suivi des formations “Numérique Responsable” 35\nlimination du Travail Forcé et du Travail des Enfants Nombre de prestataires suspectés d’avoir recours à du travail forcé ou du travail des enfants 0 Age minimum du plus jeune salarié Logiclever 24\nEcart de salaire moyen homme femme par grade (objectif 3%max) -junior Non applicable -confirmé -3,83% -senior 5,84% -expert 0,56% Pourcentage de femme dans l’entreprise 37% -junior 0% -confirmé 38,46% -senior 28,57% -expert 41,67% Nombre d’employés en situation de handicap dans l’entreprise 2% Nombre de situations de harcèlement détectées au sein de l’entreprise 0\nPourcentage d'employés correspondant à notre politique diversité (Genre, Age, Handicap, Minorité, Origine Ethnique et Culturelle) : 27% Nombre de situations de harcèlement détectées au sein de l’entreprise 0 Nombre d’employés en situation de handicap dans l’entreprise :1 Voir également ensemble des indicateurs de la catégorie :Diversité, inclusion et égalité des chances\nNombre de prestataires suspectés d’avoir recours à du travail forcé ou du travail des enfants GRI 408-1\n2. Engagements envers les Droits de l'Homme LOGICLEVER respecte les droits fondamentaux de chaque individu, y compris la non-discrimination, la liberté d'association et l'élimination du travail forcé. L’entreprise respecte de plus la charte des Nations-Unis (Global Compact) ainsi que les droits français et européen.",
   "sources": [
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "5",
     "option": "Santé et sécurité des employés"
    },
@@ -1051,27 +1046,27 @@
     "option": ""
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "2-3",
     "option": "Conditions de travail"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "2-3",
     "option": "Dialogue social"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "4",
     "option": "Gestion de carrière et formation"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "2",
     "option": "Travail des enfants, travail forcé et trafic d’êtres humains"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "2",
     "option": "Discrimination et harcèlement"
    },
@@ -1086,7 +1081,7 @@
     "option": "Droits humains des parties prenantes externes"
    },
    {
-    "document": "Politique Social et Droits Humains Logiclever 2026",
+    "document": "POL-SOCIAL",
     "pages": "5",
     "option": ""
    }
@@ -1104,27 +1099,27 @@
   "reponse": "Elements retenus : Consommation d'énergie et émissions de gaz à effet de serre ; Déchets ; Promotion et services environnementaux.\nL'objectif principal de LOGICLEVER dans cette sous-partie est de réduire la consommation énergétique de ses opérations et de minimiser les émissions de gaz à effet de serre (GES) associées. Nous avons la capacité d'influencer de manière significative nos propres pratiques et celles de nos clients, en adoptant des technologies et des comportements plus durables. Surtout que nous sommes une partie non négligeable de notre temps à domicile, en télétravail. Les enjeux comprennent non seulement la réduction des coûts énergétiques, mais également la diminution de notre empreinte carbone, contribuant ainsi à la lutte contre le changement climatique. Actions associées : Mise en place d’un guide de bonnes pratiques Limitation du nombre de déplacements professionnels Incitation à l’utilisation des transports en commun (remboursement à 100% du pass Navigo) Indicateurs associés : Réalisation d’un bilan carbone tous les 2 ans. Participation au Télétravail / pourcentage d'employés utilisant régulièrement le télétravail. Objectif quantitatif : 100% de participation au Télétravail Objectif quantitatif : Quantité d’énergie produite ou achetée = 0 KWh. La réalisation régulière de notre bilan carbone tous les deux ans nous permet de mesurer et d’analyser nos émissions, d'identifier les opportunités d'amélioration et d’assurer une transparence totale dans nos pratiques environnementales. Les enjeux sont de maintenir notre faible empreinte carbone tout en cherchant constamment des moyens de la réduire davantage, démontrant ainsi notre leadership dans le secteur IT et notre engagement envers la responsabilité environnementale. ● Objectif quantitatif : Réduction des Émissions de GES/collaborateur TCO2e de 2% par ans ● Objectif quantitatif : Réduction absolue des émissions du scope 1 de 2% par ans. ● Objectif quantitatif : Réduction absolue des émissions du scope 2 de 2% par ans. ● Objectif quantitatif : Réduction absolue des émissions du scope 3 de 2% par ans. ● Objectif quantitatif : 30% de participation des employés au Quiz de formation climat *bilan carbone 2025 en cours de calcul. Comme nous pouvons le voir sur le graphique ci contre, depuis 2021, année de notre premier bilan carbone, nous tenons nos objectif de réduction des émissions de GES Actions associées : Réalisation du Bilan Carbone Bi-annuel avec Greenly Publication de notre bilan carbone sur notre site internet Mise en place du Quiz de formation climat thématique, interactif et mensuel en parallèle du bilan carbone Publication du Bilan GES de Logiclever auprès de l’Agence de la Transition Écologique Française (ADEME). Proposition de destination accessible en train pour les séminaires ➔ la COP continuez à fêter a l’obligation de proposer au moins 1 destination accessible en train pour le séminaire : afin de réduire une des principaux postes d’émission, à savoir les vols du séminaires (les vols représente ⅔ des pollutions liés aux déplacements, soit environ 20% de nos émissions totales), cette démarche à permis en 2025 de réaliser un séminaire dans un site à moins de 100 Km de Paris, accessible en bus.\nGestion des déchets et du recyclage Logiclever est une entreprise de services, nous ne produisons donc aucun déchet de production. Néanmoins, nous pouvons émettre un certain nombre de déchets de bureau ou électronique que nous tâchons de limiter ou recycler. Déchets de Bureau Nous nous efforçons de réduire quotidiennement la quantité de déchets dans les bureaux de Logiclever. Contexte : Nous sommes une entreprise de services où nos consultants travaillent directement en mission chez le client. Seuls 2 à 5% de nos effectifs occupent nos bureaux. En tant que spécialiste de la transformation digitale, nous avons également digitalisé 100% de nos processus internes supprimant la nécessité d’imprimer quelconque document. Voici notre processus concernant la gestion des déchets. Actions associées : Prise en compte de la gestion des déchets dans le choix des locaux de l’entreprise afin que des solutions de recyclage soient à disposition et qu'une sensibilisation au recyclage y soit disponible Tri sélectif : Mise en place de poubelles pour le tri sélectif (papier, plastique…). Suppression du papier : Logiclever, en tant que spécialiste de la transformation digitale, se doit d’encourager l'utilisation de documents numériques et a pour cela digitalisé 100% de ses processus.Suivi rigoureux de tous les déchets dangereux liés à notre activité. Chaque employé doit déclarer dans ce tableau si est amené à produire des déchets dangereux. Logiclever est une entreprise 0 papier. Indicateurs associés : Pourcentage de déchets recyclés Quantité de papier acheté = 0; Poids total des déchets Dangereux = 0Adopter une politique BYOD offre des avantages significatifs pour la gestion environnementale en réduisant l'empreinte carbone, les déchets électroniques, et en augmentant l'efficacité énergétique. En encourageant le télétravail et la mobilité, une telle politique contribue également à diminuer les émissions de CO2 liées aux déplacements quotidiens des employés. Ainsi, la politique BYOD est une approche durable qui s'aligne avec les objectifs de responsabilité environnementale de LOGICLEVER. Objectif Quantitatif : 95% des employés dans une démarche de BYOD pour leur poste informatique\nChez Logiclever, nous reconnaissons que le numérique responsable est essentiel pour minimiser l'impact environnemental de nos activités et celles de nos clients. En tant que cabinet de conseil en IT, nous avons une responsabilité particulière dans la promotion et l'adoption de pratiques numériques durables. L'objectif du numérique responsable est de réduire l'empreinte écologique de nos infrastructures et services IT tout en optimisant l'efficacité énergétique. En intégrant des solutions technologiques éco-responsables, nous contribuons non seulement à la préservation de l'environnement, mais aussi à la durabilité à long terme de nos opérations et celles de nos clients, renforçant ainsi notre engagement envers une croissance verte et responsable. Objectif quantitatif : 65 % de salariés ayant suivi la sensibilisation Objectif quantitatif : 33% de salariés ayant suivi le MOOC Objectif quantitatif : 33 % % de salariés ayant obtenu la certification\nChez Logiclever, nous sommes conscients de notre rôle dans la lutte contre le changement climatique. Bien que notre bilan carbone soit déjà très faible (222 tCO2e en 2023) notre objectif est de continuer à réduire nos émissions de gaz à effet de serre (GES) et de renforcer notre engagement en faveur de la durabilité. La réalisation régulière de notre bilan carbone tous les deux ans nous permet de mesurer et d’analyser nos émissions, d'identifier les opportunités d'amélioration et d’assurer une transparence totale dans nos pratiques environnementales. Les enjeux sont de maintenir notre faible empreinte carbone tout en cherchant constamment des moyens de la réduire davantage, démontrant ainsi notre leadership dans le secteur IT et notre engagement envers la responsabilité environnementale. Objectif quantitatif : Réduction des Émissions de GES de 2% par ans Objectif quantitatif : 30% de participation des employés au Quiz de formation climat\nRéduction de l'Empreinte Carbone Diminution de la Production d'Équipements : En utilisant leurs appareils personnels, les employés réduisent la demande d'ordinateurs et autres équipements fournis par l'entreprise. Cela se traduit par une diminution de la production d'appareils électroniques, réduisant ainsi l'empreinte carbone associée à la fabrication et au transport de ces équipements. Optimisation de l'Utilisation des Ressources : Les appareils personnels sont souvent mieux utilisés et moins souvent remplacés par les individus, ce qui prolonge leur durée de vie et réduit le besoin de production de nouveaux appareils. Réduction des Déchets Électroniques Moins d'Appareils en Fin de Vie : Avec une politique BYOD, il y a moins d'équipements de bureau à remplacer régulièrement. Cela contribue à réduire le volume de déchets électroniques (DEEE), qui posent de nombreux problèmes environnementaux lorsqu'ils ne sont pas correctement recyclés. Encouragement au Recyclage Personnel : Les employés étant responsables de leurs propres appareils, ils sont plus susceptibles de recycler correctement leurs équipements en fin de vie, connaissant souvent mieux les programmes de recyclage locaux et les options disponibles. Efficacité Énergétique Utilisation d'Appareils Récents et Efficaces : Les employés tendent à mettre à jour leurs appareils personnels plus fréquemment que les entreprises, ce qui signifie qu'ils utilisent souvent des technologies plus récentes, plus performantes et plus économes en énergie. Réduction de la Consommation Électrique : Avec moins d'appareils à fournir et à maintenir par l'entreprise, la consommation d'énergie des bureaux peut être réduite, contribuant à une baisse des coûts énergétiques et des émissions de gaz à effet de serre. Encouragement de la Mobilité et du Télétravail Réduction des Déplacements : Une politique BYOD soutient la flexibilité et le télétravail, permettant aux employés de travailler de n'importe où. Cela réduit les déplacements domicile-travail, contribuant à une réduction significative des émissions de CO2 liées aux trajets quotidiens. Optimisation de l'Espace de Bureau : Moins d'employés travaillant en permanence au bureau peut permettre de réduire la taille des locaux nécessaires, ce qui diminue la consommation d'énergie liée à l'éclairage, au chauffage et à la climatisation des bâtiments. Adopter une politique BYOD offre des avantages significatifs pour la gestion environnementale en réduisant l'empreinte carbone, les déchets électroniques, et en augmentant l'efficacité énergétique. En encourageant le télétravail et la mobilité, une telle politique contribue également à diminuer les émissions de CO2 liées aux déplacements quotidiens des employés. Ainsi, la politique BYOD est une approche durable qui s'aligne avec les objectifs de responsabilité environnementale de LOGICLEVER. Objectif Quantitatif : 95% des employés dans une démarche de BYOD pour leur poste informatique",
   "sources": [
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "7-11",
     "option": "Consommation d'énergie et émissions de gaz à effet de serre"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "5-7",
     "option": "Déchets"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "6-10",
     "option": "Promotion et services environnementaux"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "8-10",
     "option": ""
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "2-10",
     "option": ""
    }
@@ -1152,7 +1147,7 @@
     "option": ""
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "6-9",
     "option": ""
    },
@@ -1167,17 +1162,17 @@
     "option": "Achat ou production d’énergie renouvelable"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "8",
     "option": ""
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "1-12",
     "option": ""
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "25-42",
     "option": "Audit énergétique ou carbone"
    },
@@ -1187,7 +1182,7 @@
     "option": "Réduction de la consommation d’énergie des systèmes d’éclairage"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "8,9",
     "option": ""
    },
@@ -1197,7 +1192,7 @@
     "option": "Réduction de la consommation d’énergie des systèmes CVC (chauffage, ventilation et climatisation)"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "8-9",
     "option": ""
    },
@@ -1207,12 +1202,12 @@
     "option": "Réduction de la consommation d’énergie de l’infrastructure informatique"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "8-9",
     "option": ""
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "11-12",
     "option": ""
    },
@@ -1227,7 +1222,7 @@
     "option": "Autres actions pour réduire la consommation énergétique et les émissions de GES qui ne sont incluses nulle part ailleurs dans cette question"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "10-11",
     "option": ""
    },
@@ -1255,17 +1250,17 @@
     "option": "Réduction des déchets internes au moyen de la réutilisation, de la récupération ou du recyclage des matériaux"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "12-16",
     "option": ""
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "6-7",
     "option": ""
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "6-7",
     "option": "Formation des employés à la réduction et au tri des déchets"
    },
@@ -1290,7 +1285,7 @@
     "option": "Tri interne et élimination des déchets en fonction des flux de déchets"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "6-7",
     "option": ""
    },
@@ -1300,7 +1295,7 @@
     "option": ""
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "4-5",
     "option": "Réduction de la consommation de matériaux via l'optimisation des processus"
    },
@@ -1310,7 +1305,7 @@
     "option": ""
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "12-16",
     "option": "Utilisation de matériaux de traitement écologiques ou biosourcés"
    },
@@ -1325,7 +1320,7 @@
     "option": "Remise à neuf et réutilisation interne du matériel informatique"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "5",
     "option": "Autres actions pour gérer les déchets qui ne sont incluses nulle part ailleurs dans cette question"
    },
@@ -1335,7 +1330,7 @@
     "option": ""
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "5",
     "option": ""
    }
@@ -1353,27 +1348,27 @@
   "reponse": "Elements retenus : Total des émissions brutes de GES du scope 1 Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs. ; Total des émissions brutes de GES du scope 2 (selon le marché ou les localisations) Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs. ; Total des émissions brutes de GES du scope 3 Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs. ; Total des émissions brutes de GES du Scope 3 en aval Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs. ; Total des émissions brutes de GES du Scope 3 en amont Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs..\n< 0.1tCO2e\n222tCO2e\nUniquement des émissions amont dans le scope 3",
   "sources": [
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "12",
     "option": "Total des émissions brutes de GES du scope 1 Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs."
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "12",
     "option": "Total des émissions brutes de GES du scope 2 (selon le marché ou les localisations) Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs."
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "12",
     "option": "Total des émissions brutes de GES du scope 3 Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs."
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "12",
     "option": "Total des émissions brutes de GES du Scope 3 en aval Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs."
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "12",
     "option": "Total des émissions brutes de GES du Scope 3 en amont Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs."
    }
@@ -1391,12 +1386,12 @@
   "reponse": "Elements retenus : Consommation totale d’énergie ; Consommation totale d’énergie renouvelable ; Poids total des déchets dangereux ; Poids total des déchets non dangereux ; Poids total de déchets valorisés.\nQuantité d’énergie produite ou achetée. 0 0 KW/h\nPas de déchet dangereux emis depuis la création de Logiclever\nPourcentage de déchets recyclés GRI 306-4",
   "sources": [
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "5",
     "option": "Consommation totale d’énergie"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "5",
     "option": "Consommation totale d’énergie renouvelable"
    },
@@ -1406,7 +1401,7 @@
     "option": "Poids total des déchets dangereux"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "5",
     "option": "Poids total des déchets non dangereux"
    },
@@ -1434,32 +1429,32 @@
     "option": "Nous annonçons publiquement nos objectifs"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "5",
     "option": ""
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "10",
     "option": "Nous avons un objectif de réduction en valeur absolue des émissions de scope 1 Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs."
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "12",
     "option": "Nous avons un objectif de réduction en valeur absolue des émissions de scope 2 Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs."
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "10",
     "option": "Nous avons un objectif de réduction en valeur absolue des émissions de scope 3 Veuillez répondre à cette question sur la plateforme. Indiquez l’année, la valeur et l’unité (p. ex. gigajoule), en fournissant des documents justificatifs."
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "7-11",
     "option": "Nous avons un objectif de réduction d’intensité"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "10",
     "option": ""
    },
@@ -1474,12 +1469,12 @@
     "option": ""
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "1-52",
     "option": "Pratiques de suivi et de reporting des émissions de carbone"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "8-11",
     "option": ""
    }
@@ -1507,7 +1502,7 @@
     "option": ""
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "10",
     "option": ""
    }
@@ -1525,12 +1520,12 @@
   "reponse": "Elements retenus : Notre bilan carbone est conforme au protocole des GES (GHG Protocol) ou à d'autres normes de comptabilisation des GES ; Le rapport sur nos émissions de GES est accessible au public ; Nous analysons les catégories de scope 3 afin d’identifier les plus pertinentes pour notre activité ; Nous faisons vérifier nos émissions de GES par un tiers.\nBilan Carbone réalisé par Greenly\nVoici notre bilan carbone disponible en ligne publiquement\nPublication de notre bilan carbone sur le site de l'ademe\nPublication de notre rapport RSE et de notre bilan carbone sur notre site, onglet \"nos engagements\"\nMéthode d'analyse greenly avec le détail du scope 3\nMéthode d'analyse établie par Greenly.\nRéalisation du Bilan Carbone Bi-annuel avec Greenly",
   "sources": [
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "1-12",
     "option": "Notre bilan carbone est conforme au protocole des GES (GHG Protocol) ou à d'autres normes de comptabilisation des GES"
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "7",
     "option": "Le rapport sur nos émissions de GES est accessible au public"
    },
@@ -1545,17 +1540,17 @@
     "option": ""
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "1-45",
     "option": "Nous analysons les catégories de scope 3 afin d’identifier les plus pertinentes pour notre activité"
    },
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "1-12",
     "option": "Nous faisons vérifier nos émissions de GES par un tiers"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "10",
     "option": ""
    }
@@ -1573,7 +1568,7 @@
   "reponse": "Elements retenus : Nous surveillons les émissions de GES pertinentes pour notre périmètre entier.",
   "sources": [
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "12-25",
     "option": "Nous surveillons les émissions de GES pertinentes pour notre périmètre entier"
    }
@@ -1591,12 +1586,12 @@
   "reponse": "Elements retenus : Oui.\nChez Logiclever, nous sommes conscients de notre rôle dans la lutte contre le changement climatique. Bien que notre bilan carbone soit déjà très faible (222 tCO2e en 2023) notre objectif est de continuer à réduire nos émissions de gaz à effet de serre (GES) et de renforcer notre engagement en faveur de la durabilité. La réalisation régulière de notre bilan carbone tous les deux ans nous permet de mesurer et d’analyser nos émissions, d'identifier les opportunités d'amélioration et d’assurer une transparence totale dans nos pratiques environnementales. Les enjeux sont de maintenir notre faible empreinte carbone tout en cherchant constamment des moyens de la réduire davantage, démontrant ainsi notre leadership dans le secteur IT et notre engagement envers la responsabilité environnementale. Voir graphique *bilan carbone 2025 en cours de calcul. Comme nous pouvons le voir sur le graphique ci contre, depuis 2021, année de notre premier bilan carbone, nous tenons nos objectif de réduction des émissions de GES",
   "sources": [
    {
-    "document": "Bilan d'émissions de gaz à effet de serre",
+    "document": "GES-2023",
     "pages": "12",
     "option": "Oui"
    },
    {
-    "document": "Politique Environnement LL 2026",
+    "document": "POL-ENV",
     "pages": "9-11",
     "option": ""
    }
@@ -1619,7 +1614,7 @@
     "option": "Consommation d'énergie et émissions de gaz à effet de serre"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "5",
     "option": ""
    },
@@ -1629,7 +1624,7 @@
     "option": "Déchets"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "5",
     "option": ""
    },
@@ -1657,7 +1652,7 @@
     "option": "Anti-corruption et extorsion"
    },
    {
-    "document": "Politique Ethique LL 2026",
+    "document": "POL-ETHIQUE",
     "pages": "4-5",
     "option": ""
    },
@@ -1672,7 +1667,7 @@
     "option": "Conflits d'intérêts"
    },
    {
-    "document": "Politique Ethique LL 2026",
+    "document": "POL-ETHIQUE",
     "pages": "6-7",
     "option": ""
    },
@@ -1687,7 +1682,7 @@
     "option": "Fraude"
    },
    {
-    "document": "Politique Ethique LL 2026",
+    "document": "POL-ETHIQUE",
     "pages": "7-8",
     "option": ""
    },
@@ -1702,7 +1697,7 @@
     "option": "Blanchiment d'argent"
    },
    {
-    "document": "Politique Ethique LL 2026",
+    "document": "POL-ETHIQUE",
     "pages": "9-10",
     "option": ""
    },
@@ -1712,7 +1707,7 @@
     "option": "gestion responsable de l'information"
    },
    {
-    "document": "Politique Ethique LL 2026",
+    "document": "POL-ETHIQUE",
     "pages": "13-15",
     "option": ""
    }
@@ -1730,7 +1725,7 @@
   "reponse": "Elements retenus : Formation des employés à la lutte contre la corruption et les pots-de-vin ; Procédure d'alerte à disposition des parties prenantes afin de signaler toute forme de corruption ; Cartographie des risques de corruption effectuée ; Procédure d'approbation spécifique pour les transactions sensibles ; Autres actions pour empêcher la corruption qui ne sont incluses nulle part ailleurs dans cette question.\nVoir 3.1 Prévention des fraudes Formation des employés à la détection des cas de fraude et à la lutte anti fraude. Mooc BPI Suivi des formations et évaluations : Pour la formation, nos consultants réalise le Mooc de la BPI qui reprends tous les points importants. Les formations sont réalisées en autonomie par les consultants et suivi par la COP RSE\nPartage en interne d'une cartographie des risques de corruption pour sensibilisé les collaborateurs\nCe formulaire permet de signaler anonymement toute situation de corruption.\nTous les deux ans la coop RSE évaluera les risques de corruption de Logiclever et restitue son analyse à travers cette matrice des risques. L’objectif du document est que vous puissiez connaître les risques de corruptions de Logiclever, en sachant les identifiés. En étant conscient de ces risques vous serez plus vigilant et pourrez mieux réagir en cas de situation de corruption. Dans notre entreprise, les signalements seront pris en charge à travers notre formulaire anonyme. Vous êtes également invités à vous rapprocher de la COP RSE pour tout complément d’information.\nCe formulaire s'applique dans le cas ou des transactions, sensible , suspectes sont à reporter\nVoir section sur le blanchiment d'argent : Logiclever s'engage à éviter toute implication dans des activités de blanchiment d'argent et à respecter les réglementations en vigueur à ce sujet. Dans une petite entreprise de services numériques (ESN) comme Logiclever, les risques de blanchiment d'argent peuvent se manifester par l'utilisation de l'entreprise pour dissimuler l'origine illicite de fonds, notamment à travers des transactions financières complexes, des paiements injustifiés ou des contrats avec des entités opaques ou non vérifiées. Le blanchiment peut également survenir via l'intégration de fonds douteux dans les revenus de l'entreprise, ou l'implication dans des projets financés par des sources inconnues ou suspectes. Pour mitiger ces risques, nous mettons en place des procédures de vérification des partenaires et clients, suivons de près les transactions financières inhabituelles et formons nos employés à identifier les signes de blanchiment. Formation des employés concernés par les achats sur la reconnaissance des pratiques de blanchiment sur My-mooc : https://www.my-mooc.com/fr/video/ame-liorer-la-gestion-des-risques-et-lutter-contre-le-blanchiment-d-argent Mettre en place un canal de signalement confidentiel et anonyme pour que les employés puissent signaler des blanchiment d’argent\nComme détaillé ci dessous dans le code de conduite : 5. 1 Cadeaux Acceptables Les cadeaux d'une valeur modeste (inférieure à 50 €) peuvent être acceptés, à condition qu'ils soient : Offerts de manière ouverte et transparente Ne visent pas à influencer une décision Conformes aux pratiques commerciales normales Occasionnels et non répétitifs 5. 2 Cadeaux Inacceptables Sont strictement interdits : Les cadeaux d'une valeur supérieure à 50 € Les cadeaux en espèces ou équivalents (chèques-cadeaux, cartes prépayées) Les cadeaux répétitifs ou d'une nature inappropriée Les cadeaux offerts ou reçus pendant des périodes de négociation, d'appels d'offres ou de renouvellement de contrats 5. 3 Hospitalités Les hospitalités (repas d'affaires, événements professionnels) doivent rester dans des limites raisonnables Elles doivent être proportionnées au contexte professionnel Elles doivent être conformes aux pratiques professionnelles normales Les invitations à des événements luxueux, voyages ou divertissements excessifs sont interdites 5. 4 Obligation de Déclaration Tous les cadeaux reçus ou offerts doivent être déclarés dans un délai de 7 jours via le formulaire de déclaration des cadeaux disponible sur l'intranet de Logiclever La déclaration doit inclure : la nature du cadeau, sa valeur estimée, l'identité du donneur/bénéficiaire, et le contexte Le non-respect de cette obligation constitue une violation du Code de Conduite 5. 5 Approbation Préalable Pour tout cadeau ou hospitalité d'une valeur supérieure à 50 €, une approbation préalable du manager direct et du département Conformité est obligatoire En cas de doute, il est recommandé de consulter le département Conformité avant d'accepter ou d'offrir un cadeau\nInclusion de close contre la corruption dans les contrats avec nos fournisseurs : Mes commentaires sur le document : Voir section 14 : 14.4. Ethique des Affaires Le Prestataire s'engage à mener ses affaires avec intégrité et transparence, en évitant toute forme de corruption, de pot-de-vin, blanchiment d’argent ou de conflit d'intérêt. Il doit mettre en place des politiques de conformité pour assurer que ses opérations respectent les lois anti-corruption en vigueur.",
   "sources": [
    {
-    "document": "Politique Ethique LL 2026",
+    "document": "POL-ETHIQUE",
     "pages": "8-9",
     "option": "Formation des employés à la lutte contre la corruption et les pots-de-vin"
    },
@@ -1755,7 +1750,7 @@
     "option": "Procédure d'approbation spécifique pour les transactions sensibles"
    },
    {
-    "document": "Politique Ethique LL 2026",
+    "document": "POL-ETHIQUE",
     "pages": "10-11",
     "option": ""
    },
@@ -1793,7 +1788,7 @@
     "option": ""
    },
    {
-    "document": "Politique Ethique LL 2026",
+    "document": "POL-ETHIQUE",
     "pages": "14,15",
     "option": ""
    },
@@ -1873,7 +1868,7 @@
     "option": ""
    },
    {
-    "document": "Détail rapport d'audit Cybervadis 2025 LL",
+    "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
    },
@@ -1898,7 +1893,7 @@
     "option": ""
    },
    {
-    "document": "Détail rapport d'audit Cybervadis 2025 LL",
+    "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
    },
@@ -1958,7 +1953,7 @@
     "option": "Mesures pour obtenir le consentement des parties prenantes sur le traitement, le partage et la conservation des informations confidentielles"
    },
    {
-    "document": "Détail rapport d'audit Cybervadis 2025 LL",
+    "document": "CV-PERF-2025",
     "pages": "",
     "option": "Autres actions pour garantir la gestion responsable de l'information qui ne sont incluses nulle part ailleurs dans cette question"
    },
@@ -1986,22 +1981,22 @@
     "option": "Pourcentage d’employés formés à l’éthique des affaires"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "7",
     "option": "Nombre d'incidents signalés au travers de la procédure d’alerte"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "7",
     "option": "Nombre d’incidents de corruption confirmés"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "7",
     "option": "Nombre d’incidents liés à la sécurité de l’information confirmés"
    },
    {
-    "document": "Rapport indicateurs 2025",
+    "document": "RSE-RAPPORT-2025",
     "pages": "5",
     "option": "Autres indicateurs liés à l’éthique des affaires"
    },
@@ -2024,12 +2019,12 @@
   "reponse": "Elements retenus : Pratiques environnementales des fournisseurs ; Pratiques sociales des fournisseurs.\nCette politique dédiée aux achats responsables est un document utilisé dans le cadre de nos affaires avec nos fournisseurs et sous traitants afin de communiquer nos exigences et notre vision d'entreprise. Elle présente également nos objectifs quantitatifs en matière d'achat responsables, de numérique responsable.Objectif Quantitatif : 100% employés impliqués dans les achats formés aux achats responsables.Objectif quantitatif : 100% des employés évalués sur leur sensibilité aux achats responsables. Objectif quantitatif : 100% des employés ayant reçu le guide sur les bonnes pratiques d’achats. Objectif quantitatif : 0€ de matériel de bureau acheté sur une année. Objectif quantitatif : 0€ de matériels en bois ou incluant du bois acheté sur une année. Objectif quantitatif : 0€ de vêtement acheté sur une année\nCommentaire: Fermement engagés pour que nos engagements soient partagés avec l’ensemble de nos sous traitants, nous privilégions les fournisseurs qui partagent notre vision de l'achat responsable et qui adoptent des pratiques durables. Nous cherchons activement à collaborer avec des fournisseurs qui respectent les droits de l'homme, les normes de travail équitables et qui minimisent leur impact sur l'environnement. Objectif Quantitatif : 100% de filiale ayant signé le code de conduite Objectif Quantitatif : 100% des sous traitants ayant signé l’attestation sur l’honneur pour les travailleurs étrangers Objectif Quantitatif : 100% des des fournisseurs avec des clauses RSE dans leurs contrats",
   "sources": [
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "1-20",
     "option": "Pratiques environnementales des fournisseurs"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "1-20",
     "option": "Pratiques sociales des fournisseurs"
    }
@@ -2067,7 +2062,7 @@
     "option": "Évaluation des risques d’impacts négatifs au niveau RSE dans la chaîne d’approvisionnement"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "8-9",
     "option": ""
    },
@@ -2077,27 +2072,27 @@
     "option": "Évaluation des fournisseurs concernant leurs pratiques environnementales et sociales"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "8-9",
     "option": ""
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "4-5",
     "option": "Formation des acheteurs sur les questions environnementales et sociales au sein de la chaîne d’approvisionnement"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "8-11",
     "option": "Audits sur site des fournisseurs sur les enjeux environnementaux et sociaux"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "5,12-13",
     "option": "Objectifs d’achats responsables intégrés dans les évaluations de performance des acheteurs"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "12-16",
     "option": "Processus d’achat internes pour des produits ou services spécifiques (p. ex., articles en papier et de papeterie, services d’hébergement de données, mobilier ou équipement de bureau) intégrant des critères RSE"
    },
@@ -2127,7 +2122,7 @@
     "option": ""
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "2-20",
     "option": ""
    }
@@ -2145,12 +2140,12 @@
   "reponse": "Elements retenus : Actions visant à garantir un approvisionnement inclusif dans la chaîne d’approvisionnement ; Actions visant à prévenir la discrimination et le harcèlement au sein du personnel des fournisseurs ; Autres actions visant à prévenir la discrimination dans la chaîne d’approvisionnement qui ne sont incluses nulle part ailleurs dans cette question.\nCommunication et sensibilisation en internet et auprès des fournisseurs pour la prise en compte de notre programme de diversité fournisseurs et de notre politique en la matière.\nSection diversité des fournisseurs : Actions associées : ● Suivi du nombre de freelance catégorisés par nos critères de diversité ● Mise en place d’un programme de diversité fournisseur Indicateurs associés : ● Nombre de freelance catégorisés par critère de diversité (genre, âge, situation de handicap, géographie) . ○ Objectif quantitatif : pourcentage de freelance femme > 20% ○ Objectif quantitatif : pourcentage de freelance correspondant à notre programme de diversité >25%\nObjectifs du Programme 1. Diversification du Réseau de Fournisseurs : Encourager et soutenir la collaboration avec des sous traitants issus de milieux diversifiés, tout en assurant l'excellence opérationnelle. 2. Promotion de l'Égalité des Chances : Garantir que tous les fournisseurs, quelle que soit leur diversité, aient des chances égales de travailler avec Logiclever. 3. Contribuer à l'Impact Sociétal : Participer activement à l'amélioration de l'inclusion et à la réduction des inégalités dans le domaine de l'IT en France. Critères de Diversité Logiclever reconnaît et soutient la diversité parmi ses fournisseurs en intégrant les critères suivants : 1. Genre : Encourager l’inclusion des femmes dans le secteur IT, en collaborant avec des freelances de genre féminin ou non binaire.\nCritères de Diversité Logiclever reconnaît et soutient la diversité en intégrant les critères suivants : Genre : Encourager l’inclusion des femmes dans le secteur IT, en collaborant avec des personnes de genre féminin ou non binaire. Âge : Travailler avec des professionnels de tous âges, y compris les jeunes talents c'est-à-dire de moins de 30 ans et les seniors, plus de 50 ans. Handicap : Collaborer avec des professionnels en situation de handicap, en veillant à ce que leur environnement de travail soit adapté à leurs besoins. Origine Ethnique et Culturelle : Favoriser la diversité culturelle et ethnique en travaillant avec des collaborateurs et des fournisseurs de différentes origines. Voir également la liste des mesures et indicateurs inclus\n1. Évaluation Initiale et Cartographie des Fournisseurs 2. Développement Progressif de la Diversité 3. Suivi et Reporting 4. Formation à la diversité et l'inclusion Ces actions sont mises en place afin que le programme de diversité fournisseurs permettent à logiclever d'intégrer davantage de diversité. Logiclever s’engage à intégrer la diversité de manière bienveillante et progressive, en respectant les réalités économiques et sociales de nos fournisseurs. Comme c'est le cas depuis la création de Logiclever, nous croyons fermement que la diversité est une source de richesse et de performance, et nous mettrons tout en œuvre pour la promouvoir activement. Mes commentaires sur le document : 1. Évaluation Initiale et Cartographie des Fournisseurs Action : Réaliser un état des lieux pour comprendre la diversité actuelle présente dans nos effectifs et fournisseurs, en identifiant les profils selon les critères de diversité définis. Indicateur : Pourcentage de fournisseurs et de collaborateurs actuels catégorisés par critères de diversité. 2. Développement Progressif de la Diversité Action : Encourager la diversité en fixant des objectifs progressifs pour l'inclusion de fournisseurs diversifiés dans notre portefeuille Indicateur : Tendre vers 25% de diversité dans l’entreprise et parmi les fournisseurs 3. Suivi et Reporting Action : Partage d’indicateurs liés à la diversité dans notre rapport Extra financier annuel 4. Formation Action : Logiclever référence et encourage la formation de ses employés et de ses freelance au MOOC Diversité et inclusion sur le lieu de travail de l’ESSEC : https://www.coursera.org/learn/diversite-inclusion-travail/",
   "sources": [
    {
-    "document": "Diversité et Inclusion chez LL",
+    "document": "DIVERSITE",
     "pages": "1-6",
     "option": "Actions visant à garantir un approvisionnement inclusif dans la chaîne d’approvisionnement"
    },
    {
-    "document": "Politique achat responsable 2026",
+    "document": "POL-ACHATS",
     "pages": "10-11",
     "option": ""
    },
@@ -2231,7 +2226,6 @@
   "reponse": "Ecovadis | Score global : 79/100. 98eme percentile soit top 2% des entreprises évaluées",
   "sources": [],
   "fiabilite": "reponse_envoyee_client",
-  "statut": "historique",
   "id": 42
  },
  {
@@ -3575,6 +3569,11 @@
     "option": ""
    },
    {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
     "document": "RSSI annexe - Evaluation fournisseurs cloud.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
@@ -3602,6 +3601,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "RSSI annexe - Cartographie des risques SSI.pdf",
@@ -3638,7 +3642,12 @@
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ Template_Contrat_CDI_Logiclever.pdf_x000D_ Template_Contrat_CDI_Logiclever.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "Template_Contrat_CDI_Logiclever.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -3660,6 +3669,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "RSSI annexe - Rôle et responsabilités SSI.pdf",
@@ -3686,27 +3700,22 @@
     "option": ""
    },
    {
-    "document": ".pdf_x000D_ Guide de Bonnes Pratiques SSI.pdf_x000D_ Guide de Bonnes Pratiques SSI.pdf",
-    "pages": "",
-    "option": "preuve fournie a CyberVadis"
-   },
-   {
-    "document": ".pdf_x000D_ Guide de Bonnes Pratiques SSI.pdf_x000D_ Guide de Bonnes Pratiques SSI.pdf_x000D_ Guide de Bonnes Pratiques SSI.pdf_x000D_ Guide de Bonnes Pratiques SSI.pdf",
-    "pages": "",
-    "option": "preuve fournie a CyberVadis"
-   },
-   {
     "document": "CHARTE INFORMATIQUE.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "RSSI annexe - Suivi des formations SSI.pdf",
+    "document": "Guide de Bonnes Pratiques SSI.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ RSSI annexe - Suivi des formations SSI.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "RSSI annexe - Suivi des formations SSI.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -3730,17 +3739,17 @@
     "option": ""
    },
    {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
     "document": "RSSI annexe - Registre RGPD.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "RSSI annexe - Rôle et responsabilités SSI.pdf",
-    "pages": "",
-    "option": "preuve fournie a CyberVadis"
-   },
-   {
-    "document": "_x000D_ RSSI annexe - Registre RGPD.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
@@ -3769,7 +3778,12 @@
     "option": ""
    },
    {
-    "document": ".pdf_x000D_ Modèle de communication exercice des droits RGPD.pdf",
+    "document": "Modèle de communication exercice des droits RGPD.pdf",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
@@ -3801,6 +3815,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -3820,6 +3839,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "POL-SSI",
@@ -3875,7 +3899,17 @@
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ Template_Contrat_CDI_Logiclever.pdf_x000D_ Template_Contrat_Externe_Logiclever.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "Template_Contrat_CDI_Logiclever.pdf",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "Template_Contrat_Externe_Logiclever.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -3899,7 +3933,7 @@
     "option": ""
    },
    {
-    "document": "Template_Contrat_Externe_Logiclever.pdf_x000D_ Template_Contrat_Externe_Logiclever.pdf_x000D_ Template_Contrat_Externe_Logiclever.pdf_x000D_ Template_Contrat_Externe_Logiclever.pdf",
+    "document": "Template_Contrat_Externe_Logiclever.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -3945,6 +3979,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -3964,6 +4003,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -3985,12 +4029,17 @@
     "option": ""
    },
    {
-    "document": "RSSI annexe - Evaluation fournisseurs cloud.pdf",
+    "document": "BIA_BCP annexe Politique SSI.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ BIA_BCP annexe Politique SSI.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "RSSI annexe - Evaluation fournisseurs cloud.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4012,6 +4061,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4033,7 +4087,12 @@
     "option": ""
    },
    {
-    "document": "Template_Contrat_CDI_Logiclever.pdf_x000D_ Template_Contrat_CDI_Logiclever.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "Template_Contrat_CDI_Logiclever.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4055,6 +4114,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4076,7 +4140,12 @@
     "option": ""
    },
    {
-    "document": "_x000D_ RSSI annexe - Registre des revues.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "RSSI annexe - Registre des revues.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4098,6 +4167,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "RSSI annexe - Evaluation fournisseurs cloud.pdf",
@@ -4122,6 +4196,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4143,12 +4222,12 @@
     "option": ""
    },
    {
-    "document": "RSSI annexe - Evaluation fournisseurs cloud.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ RSSI annexe - Evaluation fournisseurs cloud.pdf",
+    "document": "RSSI annexe - Evaluation fournisseurs cloud.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4185,11 +4264,6 @@
     "document": "RSSI annexe - Rôle et responsabilités SSI.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
-   },
-   {
-    "document": "POL-SSI",
-    "pages": "",
-    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4211,7 +4285,12 @@
     "option": ""
    },
    {
-    "document": "_x000D_ RSSI annexe - Registre des revues.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "RSSI annexe - Registre des revues.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4240,17 +4319,17 @@
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ BIA_BCP annexe Politique SSI.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ RSSI annexe - Registre des revues.pdf",
+    "document": "Protocole de test de pénétration.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ RSSI annexe - Registre des revues.pdf_x000D_ Protocole de test de pénétration.pdf_x000D_ BIA_BCP annexe Politique SSI.pdf",
+    "document": "RSSI annexe - Registre des revues.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4303,17 +4382,17 @@
     "option": ""
    },
    {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
     "document": "RSSI annexe - Registre des changement.pdf",
-    "pages": "",
-    "option": "preuve fournie a CyberVadis"
-   },
-   {
-    "document": "POL-SSI",
-    "pages": "",
-    "option": "preuve fournie a CyberVadis"
-   },
-   {
-    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4366,6 +4445,11 @@
     "option": "preuve fournie a CyberVadis"
    },
    {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
     "document": "RSSI annexe - Evaluation fournisseurs cloud.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
@@ -4388,11 +4472,6 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
-   },
-   {
-    "document": "POL-SSI",
-    "pages": "",
-    "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "POL-SSI",
@@ -4460,6 +4539,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4498,6 +4582,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4519,7 +4608,17 @@
     "option": ""
    },
    {
-    "document": "_x000D_ Protect-6011_Cle_Acces_Locaux.jpg_x000D_ RSSI annexe - Matrice des accès.pdf_x000D_ RSSI annexe - Registre des revues.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "RSSI annexe - Registre des revues.pdf",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "jpg  RSSI annexe - Matrice des accès.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4543,12 +4642,17 @@
     "option": ""
    },
    {
-    "document": "Template_Contrat_Externe_Logiclever.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ RSSI annexe - Registre des revues.pdf",
+    "document": "RSSI annexe - Registre des revues.pdf",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "Template_Contrat_Externe_Logiclever.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4575,11 +4679,6 @@
     "document": "Template_Contrat_Externe_Logiclever.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
-   },
-   {
-    "document": "_x000D_ Template_Contrat_Externe_Logiclever.pdf",
-    "pages": "",
-    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4599,6 +4698,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "Template_Contrat_Externe_Logiclever.pdf",
@@ -4625,17 +4729,22 @@
     "option": ""
    },
    {
-    "document": ".pdf_x000D_ 1693813772-is-706245-001.pdf",
+    "document": "1693813772-is-706245-001.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "Compliance center Google Workspace.png_x000D_ Compliance center Google Workspace.png_x000D_ Compliance center Google Workspace.png_x000D_ 1693813772-is-706245-001.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "RSSI annexe - Evaluation fournisseurs cloud.pdf",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "png  1693813772-is-706245-001.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4691,6 +4800,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4712,12 +4826,12 @@
     "option": ""
    },
    {
-    "document": "RSSI annexe - Registre des revues.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ RSSI annexe - Registre des revues.pdf",
+    "document": "RSSI annexe - Registre des revues.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4741,7 +4855,17 @@
     "option": ""
    },
    {
-    "document": "RSSI annexe - Registre des revues.pdf_x000D_ RSSI annexe - Registre des revues.pdf_x000D_ RSSI annexe - Registre des revues.pdf_x000D_ Protocole de test de pénétration.pdf",
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "Protocole de test de pénétration.pdf",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
+   },
+   {
+    "document": "RSSI annexe - Registre des revues.pdf",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
@@ -4768,6 +4892,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    },
    {
     "document": "RSSI annexe - Rôle et responsabilités SSI.pdf",
@@ -4797,6 +4926,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
@@ -4816,6 +4950,11 @@
     "document": "CV-PERF-2025",
     "pages": "",
     "option": ""
+   },
+   {
+    "document": "POL-SSI",
+    "pages": "",
+    "option": "preuve fournie a CyberVadis"
    }
   ],
   "fiabilite": "validee_cybervadis",
