@@ -6,8 +6,9 @@
 Fait tout en une commande :
   1. applique le schema SQL sur Supabase (tables, index, fonctions RRF)
   2. decoupe les 38 documents de preuve en chunks ancres a la page
-  2 bis. televerse les PDF de preuve vers Supabase Storage et enregistre
-         leur URL publique dans documents.url_partage
+  2 bis. televerse les fichiers de preuve (pdf, docx, xlsx, pptx...) vers
+         Supabase Storage et enregistre leur URL publique dans
+         documents.url_partage
   3. calcule les embeddings (OpenAI text-embedding-3-large, 1536 dims)
   4. charge documents / chunks / reponses validees / indicateurs
   5. lance des tests de bout en bout sur de vraies questions clients
@@ -295,10 +296,19 @@ def creer_bucket_si_absent(nom):
         log("      ATTENTION creation bucket '%s' : %s %s" % (nom, r.status_code, r.text[:200]))
 
 
+TYPES_MIME = {
+    ".pdf": "application/pdf",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+}
+
+
 def televerser_pdfs(cur):
-    """Televerse chaque PDF de preuve vers Supabase Storage et enregistre son
-    URL publique dans documents.url_partage. Idempotent (x-upsert)."""
-    log("\n[2 bis/5] PDF de preuve -> Supabase Storage")
+    """Televerse chaque fichier de preuve (pdf, docx, xlsx, pptx...) vers
+    Supabase Storage et enregistre son URL publique dans
+    documents.url_partage. Idempotent (x-upsert)."""
+    log("\n[2 bis/5] Fichiers de preuve -> Supabase Storage")
     if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
         log("      SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY absente(s) : "
             "televersement ignore, url_partage non renseignee.")
@@ -306,22 +316,26 @@ def televerser_pdfs(cur):
 
     creer_bucket_si_absent(BUCKET_PREUVES)
     docs = charger_json("documents.json")["documents"]
-    pdfs = [d for d in docs if d["fichier_source"].lower().endswith(".pdf")]
 
     n = 0
-    for d in pdfs:
+    for d in docs:
+        _, ext = os.path.splitext(d["fichier_source"].lower())
+        mime = TYPES_MIME.get(ext)
+        if not mime:
+            log("      TYPE NON SUPPORTE (%s) : %s" % (ext or "?", d["fichier_source"]))
+            continue
         chemin = resoudre_fichier(d["fichier_source"])
         if not os.path.exists(chemin):
             log("      MANQUANT : %s" % d["fichier_source"])
             continue
-        nom_objet = "%s.pdf" % d["code_doc"]
+        nom_objet = "%s%s" % (d["code_doc"], ext)
         with open(chemin, "rb") as f:
             octets = f.read()
         r = requests.put(
             "%s/storage/v1/object/%s/%s" % (SUPABASE_URL, BUCKET_PREUVES, nom_objet),
             headers={"Authorization": "Bearer " + SUPABASE_SERVICE_ROLE_KEY,
                      "apikey": SUPABASE_SERVICE_ROLE_KEY,
-                     "Content-Type": "application/pdf", "x-upsert": "true"},
+                     "Content-Type": mime, "x-upsert": "true"},
             data=octets, timeout=120,
         )
         if r.status_code not in (200, 201):
@@ -332,7 +346,7 @@ def televerser_pdfs(cur):
         cur.execute("update public.documents set url_partage = %s where code_doc = %s",
                     (url, d["code_doc"]))
         n += 1
-    log("      %d/%d PDF televerses" % (n, len(pdfs)))
+    log("      %d/%d fichiers televerses" % (n, len(docs)))
 
 
 def appliquer_schema(cur):

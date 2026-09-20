@@ -101,8 +101,9 @@ export SUPABASE_SERVICE_ROLE_KEY="..."
 >
 > Où trouver `SUPABASE_SERVICE_ROLE_KEY` : Supabase → **Project Settings** →
 > **API** → **Project API keys** → `service_role`. Sert uniquement à téléverser
-> les PDF de preuve vers Supabase Storage (bucket public `documents-preuve`) ;
-> sans elle, le déploiement continue mais `documents.url_partage` reste vide.
+> les fichiers de preuve (pdf, docx, xlsx, pptx) vers Supabase Storage (bucket
+> public `documents-preuve`) ; sans elle, le déploiement continue mais
+> `documents.url_partage` reste vide.
 
 ---
 
@@ -124,8 +125,8 @@ Déroulé attendu :
       10 doublons/versions anterieures ecartes
       837 chunks produits
       embeddings chunks : 837/837
-[2 bis/5] PDF de preuve -> Supabase Storage
-      33/33 PDF televerses
+[2 bis/5] Fichiers de preuve -> Supabase Storage
+      38/38 fichiers televerses
 [3/5] Banque de reponses validees
       173 reponses validees chargees
 [4/5] Indicateurs extra-financiers
@@ -221,7 +222,7 @@ porte d'entrée. Son URL est affichée dans le nœud (onglet **Production URL**)
 | Question | la question du client, telle quelle |
 | Réponse | la réponse rédigée, à copier dans le formulaire client |
 | Réponse courte | Oui / Non / la valeur seule, pour les cases à cocher |
-| Sources (document et page) | la citation à fournir au client, avec le lien Supabase Storage du PDF (`{code_doc}.pdf`) quand il est disponible |
+| Sources (document et page) | la citation à fournir au client, avec le lien Supabase Storage du fichier (`{code_doc}.pdf`/`.docx`/`.xlsx`/`.pptx`) quand il est disponible |
 | Confiance | note de 0 à 1 |
 | Niveau | `haute` / `moyenne` / `a_verifier` / `sans_reponse` |
 | **A relire** | `OUI` sur toute ligne qui n'est pas en confiance haute |

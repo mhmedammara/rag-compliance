@@ -487,15 +487,18 @@ const dossier = retenus.map((x, i) => {
   // qu'il faut citer au client, pas la reference interne de la banque
   // (FAIT/GES-SCOPES, ECOVADIS/LAB100...).
   if (c.type === 'reponse_validee' && Array.isArray(c.sources) && c.sources.length) {
-    const refs = [...new Set(c.sources
+    const detail = [...new Map(c.sources
       .filter(s => s && s.document)
-      .map(s => s.document + (s.pages ? ', p. ' + s.pages : '')))].slice(0, 3);
+      .map(s => [s.document, { document: s.document, page: s.pages || '' }]))
+      .values()].slice(0, 3);
+    const refs = detail.map(s => s.document + (s.page ? ', p. ' + s.page : ''));
     return {
       rang: i + 1, type: c.type, note: x.note,
       document: c.sources[0].document,
       titre: c.titre || c.sources[0].document,
       page: c.sources[0].pages || '',
       citation: refs.join(' ; ') || c.reference,
+      sources_detail: detail.length ? detail : [{ document: c.reference, page: '' }],
       texte: String(c.texte).slice(0, 1200),
     };
   }
@@ -508,6 +511,7 @@ const dossier = retenus.map((x, i) => {
     rang: i + 1, type: c.type, note: x.note, document: c.reference,
     titre: c.titre || c.reference, page,
     citation: c.reference + (page ? ', ' + page : ''),
+    sources_detail: [{ document: c.reference, page }],
     texte: String(c.texte).slice(0, 1200),
   };
 });
@@ -767,6 +771,8 @@ Dans le champ `sources`, indique uniquement les références effectivement utili
 
 Ne cite pas systématiquement toutes les preuves disponibles.
 
+Chaque preuve du dossier documentaire liste un ou plusieurs "codes source" (ex. `POL-SSI`, `CV-PERF-2025`). Pour chaque preuve citée, crée une entrée distincte dans `sources` par code source utilisé, avec le champ `document` recopié EXACTEMENT tel quel (même casse, aucune reformulation, jamais le titre ni plusieurs codes fusionnés dans un seul champ) et la page qui lui correspond dans la liste "Codes source".
+
 ## 12. VARIABLES
 
 Question et contexte :
@@ -786,7 +792,7 @@ Type de réponse :
 
 ## 13. DOSSIER DOCUMENTAIRE
 
-{{ $json.dossier.length === 0 ? 'AUCUNE PREUVE PERTINENTE TROUVEE.' : $json.dossier.map(d => '### Preuve ' + d.rang + ' - ' + d.citation + ' (' + d.titre + ')\n' + d.texte).join('\n\n') }}
+{{ $json.dossier.length === 0 ? 'AUCUNE PREUVE PERTINENTE TROUVEE.' : $json.dossier.map(d => '### Preuve ' + d.rang + ' (' + d.titre + ')\nCodes source (a recopier tels quels dans sources[].document) : ' + d.sources_detail.map(s => s.document + (s.page ? ' [page ' + s.page + ']' : '')).join(' ; ') + '\n' + d.texte).join('\n\n') }}
 
 {{ $json.repli ? '\nATTENTION : aucune preuve n a passe le seuil de pertinence. Les elements ci-dessus sont approximatifs : reponds prudemment et mets confiance a 0.35 au maximum.' : '' }}
 
@@ -849,6 +855,9 @@ d'empecher qu'une affirmation non etayee parte chez le client.
 ## PROJET DE REPONSE
 {{ $json.output.reponse }}
 
+## REPONSE COURTE PROPOSEE (case a cocher / valeur seule)
+{{ $json.output.reponse_courte || '(vide)' }}
+
 ## SOURCES CITEES
 {{ JSON.stringify($json.output.sources) }}
 
@@ -876,6 +885,10 @@ d'empecher qu'une affirmation non etayee parte chez le client.
 ## SORTIE
 - valide : true si le projet part tel quel.
 - reponse_finale : la version a envoyer (identique au projet si valide).
+- reponse_courte_finale : la reponse courte corrigee (Oui/Non/valeur), a
+  fournir SYSTEMATIQUEMENT des que reponse_finale change de sens ou de valeur
+  par rapport au projet (ex. le projet inverse "Oui"/"Non" par rapport aux faits
+  du dossier). Sinon, identique a la reponse courte proposee.
 - anomalies : ce que tu as corrige, en francais, une ligne par point.
 - confiance_finale : ton evaluation apres corrections.
 - niveau : haute (>= 0.75 et aucune anomalie bloquante) | moyenne (>= 0.5) |
@@ -890,6 +903,7 @@ chaine("Controler la veracite", CONTROLE, {
     "properties": {
         "valide": {"type": "boolean"},
         "reponse_finale": {"type": "string"},
+        "reponse_courte_finale": {"type": "string"},
         "anomalies": {"type": "array", "items": {"type": "string"}},
         "confiance_finale": {"type": "number", "minimum": 0, "maximum": 1},
         "niveau": {"type": "string",
@@ -916,11 +930,30 @@ const niveau = controle.niveau
   || (confiance >= p.seuil_haute_confiance ? 'haute'
       : confiance >= p.seuil_a_verifier ? 'moyenne' : 'a_verifier');
 
-const sources = (redaction.sources || []).map(s => {
-  const fiche = (d.registre || []).find(r => r.code === s.document);
+// Le modele doit recopier le code exact (POL-SSI...), mais recite parfois le
+// titre lisible a la place malgre la consigne : on retente alors sur le
+// titre (exact puis inclusion) avant d'abandonner la resolution.
+const normaliser = (v) => (v || '').toString().trim().toLowerCase();
+const trouverFiche = (valeur) => {
+  const reg = d.registre || [];
+  const val = normaliser(valeur);
+  return reg.find(r => r.code === valeur)
+      || reg.find(r => normaliser(r.titre) === val)
+      || reg.find(r => r.titre && val.includes(normaliser(r.titre)));
+};
+
+// Certaines references de la banque de reponses sont des noms de fichiers
+// perimes/mal encodes (export Excel), qui ne correspondent a aucun document
+// reel : on ne les affiche jamais telles quelles au client (illisibles, non
+// verifiables), on se contente de compter combien ont ete ecartees.
+const toutesSources = (redaction.sources || []).map(s => {
+  const fiche = trouverFiche(s.document);
+  const page = String(s.page || '').replace(/^\s*p\.?\s*/i, '');
   return { document: s.document, titre: fiche ? fiche.titre : s.document,
-           page: s.page || '', url: fiche ? fiche.url_partage : null };
+           page, url: fiche ? fiche.url_partage : null, resolue: !!fiche };
 });
+const sources = toutesSources.filter(s => s.resolue);
+const nbNonResolues = toutesSources.length - sources.length;
 
 const alertes = [];
 if (controle.alerte) alertes.push(controle.alerte);
@@ -932,12 +965,16 @@ if (d.repli) alertes.push('Aucune preuve au-dessus du seuil : recherche elargie.
 if ((redaction.elements_manquants || []).length) {
   alertes.push('Elements manquants : ' + redaction.elements_manquants.join(' / '));
 }
+if (nbNonResolues) {
+  alertes.push(nbNonResolues + ' reference(s) documentaire(s) non identifiee(s) '
+    + '(banque de reponses perimee) : a corriger dans answer_bank.json.');
+}
 
 return [{ json: {
   client: q.client, questionnaire: q.intitule,
   ligne: d.ligne, section: d.section, question: d.question_client,
   reponse: controle.reponse_finale || redaction.reponse,
-  reponse_courte: redaction.reponse_courte || '',
+  reponse_courte: controle.reponse_courte_finale || redaction.reponse_courte || '',
   sources,
   citation: sources.map(s => s.titre + (s.page ? ' (p. ' + s.page + ')' : '')
                             + (s.url ? ' - ' + s.url : '')).join(' ; '),
