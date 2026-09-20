@@ -233,17 +233,38 @@ n("Normaliser les questions", "n8n-nodes-base.code",
   {"mode": "runOnceForAllItems", "jsCode": NORMALISER}, -9536, 80, 2)
 lien("Lire le fichier", "Normaliser les questions")
 
+# Source unique de ces 6 valeurs. Le noeud "Parametres" (Set) ne s'execute
+# jamais sur le chemin chat (voir plus bas) : "Preparer la question" doit donc
+# en garder sa propre copie plutot que de referencer $('Parametres'), qui
+# leverait une erreur n8n ("le noeud n'a pas ete execute") sur ce chemin.
+# Les deux etant generes depuis ce meme dict Python, ils ne peuvent plus
+# diverger l'un de l'autre au prochain `build_workflow.py`.
+PARAMETRES_PARTAGES = {
+    "modele_embedding": "text-embedding-3-large",
+    "dimensions": 1536,
+    "nb_candidats": 40,
+    "seuil_haute_confiance": 0.75,
+    "seuil_a_verifier": 0.5,
+    "supabase_url": "https://VOTRE-PROJET.supabase.co",
+}
+_TYPE_N8N = {str: "string", int: "number", float: "number", bool: "boolean"}
+PARAMETRES_ASSIGNMENTS = [
+    {"id": "p%d" % i, "name": k, "value": v, "type": _TYPE_N8N[type(v)]}
+    for i, (k, v) in enumerate(PARAMETRES_PARTAGES.items(), 1)
+]
+PARAMETRES_JS_LITERAL = ",\n  ".join(
+    "%s: %s" % (k, json.dumps(v)) for k, v in PARAMETRES_PARTAGES.items())
+
+_NOTE_PARAMETRES_DUPLIQUES = (
+    "Duplique dans \"Preparer la question\" (branche chat), qui ne peut pas "
+    "referencer ce noeud (jamais execute sur ce chemin). Recompiler avec "
+    "build_workflow.py apres toute modification pour garder les deux "
+    "synchronises.")
+
 n("Parametres", "n8n-nodes-base.set", {
-    "assignments": {"assignments": [
-        {"id": "p1", "name": "modele_embedding", "value": "text-embedding-3-large", "type": "string"},
-        {"id": "p2", "name": "dimensions", "value": 1536, "type": "number"},
-        {"id": "p3", "name": "nb_candidats", "value": 40, "type": "number"},
-        {"id": "p4", "name": "seuil_haute_confiance", "value": 0.75, "type": "number"},
-        {"id": "p5", "name": "seuil_a_verifier", "value": 0.5, "type": "number"},
-        {"id": "p6", "name": "supabase_url", "value": "https://VOTRE-PROJET.supabase.co", "type": "string"},
-    ]},
+    "assignments": {"assignments": PARAMETRES_ASSIGNMENTS},
     "includeOtherFields": True, "options": {},
-}, -9296, 80, 3.4)
+}, -9296, 80, 3.4, extra={"notes": _NOTE_PARAMETRES_DUPLIQUES, "notesInFlow": True})
 lien("Normaliser les questions", "Parametres")
 
 n("Chaque question", "n8n-nodes-base.splitInBatches",
@@ -283,20 +304,17 @@ return [{ json: {
   client: 'Chat',
   intitule: 'Question isolee (chat)',
   consignes: '',
-  // Parametres de la branche formulaire, rejoues ici pour que la chaine
-  // d'analyse (Vectoriser / Recherche / Consolider) puisse les lire sans
-  // toucher au nœud "Parametres".
-  modele_embedding: 'text-embedding-3-large',
-  dimensions: 1536,
-  nb_candidats: 40,
-  seuil_haute_confiance: 0.75,
-  seuil_a_verifier: 0.5,
-  supabase_url: 'https://VOTRE-PROJET.supabase.co',
+  // Parametres de la branche formulaire (PARAMETRES_PARTAGES dans
+  // build_workflow.py), rejoues ici car ce noeud ne peut pas lire
+  // $('Parametres') : ce noeud ne s'execute jamais sur le chemin chat.
+  %s
 }}];
-"""
+""" % PARAMETRES_JS_LITERAL
 
 n("Preparer la question", "n8n-nodes-base.code",
-  {"mode": "runOnceForAllItems", "jsCode": PREPARER_QUESTION}, -9536, 320, 2)
+  {"mode": "runOnceForAllItems", "jsCode": PREPARER_QUESTION}, -9536, 320, 2,
+  extra={"notes": "Duplique \"Parametres\" (branche formulaire) - voir la note sur ce noeud.",
+         "notesInFlow": True})
 lien("Question du chat", "Preparer la question")
 
 
@@ -314,9 +332,11 @@ note("2 - Analyse de la question",
 ANALYSE = r"""=Tu prepares la recherche documentaire qui permettra de repondre a une question
 d'un service achats sur la conformite RSE / securite de LOGICLEVER.
 
-LOGICLEVER : ESN francaise de conseil en systemes d'information, 50 salaries
-(48 Paris, 2 Lyon), entreprise liberee, SASU sans groupe. Evaluee EcoVadis
-(79/100, top 2%) et CyberVadis (860/1000, niveau Mature).
+LOGICLEVER : ESN francaise de conseil en systemes d'information, entreprise
+liberee, SASU sans groupe. Effectifs, secteur d'activite et evaluations
+tierces (EcoVadis, CyberVadis...) sont dans le dossier documentaire : ne
+suppose aucune valeur ici, elle peut avoir change depuis la redaction de ce
+prompt.
 
 QUESTION DU CLIENT
 Section : {{ $json.section || 'non precisee' }}
@@ -635,10 +655,9 @@ Si plusieurs preuves donnent des valeurs différentes :
 
 Exemple :
 
-Si une preuve pertinente indique :
-« EcoVadis : 79/100, 98e percentile »
-
-et qu'une autre preuve moins directement pertinente indique une autre valeur, réponds simplement avec la valeur retenue si elle est suffisamment étayée.
+Si une preuve pertinente indique une valeur précise (score, date, périmètre…)
+et qu'une autre preuve moins directement pertinente indique une autre valeur,
+réponds simplement avec la valeur retenue si elle est suffisamment étayée.
 
 Ne réponds pas automatiquement :
 « Le dossier présente des informations contradictoires… »
@@ -676,27 +695,19 @@ Mauvaise réponse :
 
 ## 5. CONTEXTE ENTREPRISE
 
-Logiclever est une SASU française de conseil informatique.
+Logiclever est une SASU française de conseil informatique, sans groupe ni
+maison mère.
 
-Éléments de contexte disponibles :
+Ce contexte sert uniquement à fixer le ton de la réponse (voix Logiclever,
+registre professionnel). Il ne fournit aucun chiffre : effectifs, secteur
+d’activité, évaluations externes (EcoVadis, CyberVadis, Great Place to
+Work…), certifications, engagements ou résultats — pour tous ces sujets,
+**les preuves du dossier priment systématiquement**, y compris quand une
+valeur te semble déjà connue.
 
-* 50 collaborateurs ;
-* 48 à Paris et 2 à Lyon ;
-* aucun groupe ou maison mère ;
-* fonctionnement en « entreprise libérée » depuis 2018 ;
-* environ 90 % du chiffre d’affaires dans le secteur de l’énergie.
-
-Ces informations servent uniquement à contextualiser la réponse.
-
-Pour les sujets de conformité, RSE, sécurité, RH, certifications, engagements, résultats ou politiques, **les preuves du dossier priment**.
-
-Évaluations externes connues :
-
-* EcoVadis : 79/100, 98e percentile / top 2 % ;
-* CyberVadis : 860/1000, niveau Mature, benchmark 654 ;
-* Great Place To Work Trust Index : 96 %.
-
-Ne présente jamais ces éléments comme des certifications.
+Une évaluation externe (EcoVadis, CyberVadis, Great Place to Work…) n’est
+jamais une certification : ne la présente jamais comme telle, quelle que
+soit la valeur trouvée dans le dossier.
 
 ## 6. CERTIFICATIONS ET ENGAGEMENTS
 
@@ -1078,8 +1089,12 @@ return [{ json: {
   questionnaire: reponses[0].questionnaire,
   nombre: reponses.length,
   reponses,
+  // Texte integral (pas de troncature) : un controle de coherence qui ne
+  // voit qu'un debut de reponse manque exactement les nuances/exceptions
+  // qui font les vraies contradictions (meme risque que la dilution des
+  // faits de cloture corrigee dans decouper_document, deploy_supabase.py).
   resume: reponses.map(r => 'Ligne ' + r.ligne + ' | ' + r.question
-                          + '\nReponse : ' + String(r.reponse).slice(0, 400)).join('\n\n'),
+                          + '\nReponse : ' + String(r.reponse)).join('\n\n'),
 }}];
 """
 
