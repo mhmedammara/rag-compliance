@@ -345,7 +345,7 @@
         "nodeCredentialType": "openAiApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ model: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).modele_embedding, dimensions: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).dimensions, input: [$json.output.question_normalisee].concat($json.output.sous_requetes).slice(0, 5) }) }}",
+        "jsonBody": "={{ JSON.stringify({ model: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).modele_embedding, dimensions: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).dimensions, input: [($('Preparer la question').isExecuted ? $('Preparer la question').item.json.question : $('Chaque question').item.json.question), $json.output.question_normalisee].concat($json.output.sous_requetes).slice(0, 6) }) }}",
         "options": {}
       },
       "id": "8d39f275-6f6e-4b7e-8dc8-e3a49dcf8e13",
@@ -371,7 +371,7 @@
         "nodeCredentialType": "supabaseApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ requetes: [$('Analyser la question').item.json.output.question_normalisee].concat($('Analyser la question').item.json.output.sous_requetes).slice(0, 5), requete_embeddings: $json.data.sort((a, b) => a.index - b.index).map(d => d.embedding), annee_cible: $('Analyser la question').item.json.output.annee_cible ?? null, nb_candidats: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).nb_candidats }) }}",
+        "jsonBody": "={{ JSON.stringify({ requetes: [($('Preparer la question').isExecuted ? $('Preparer la question').item.json.question : $('Chaque question').item.json.question), $('Analyser la question').item.json.output.question_normalisee].concat($('Analyser la question').item.json.output.sous_requetes).slice(0, 6), requete_embeddings: $json.data.sort((a, b) => a.index - b.index).map(d => d.embedding), annee_cible: $('Analyser la question').item.json.output.annee_cible ?? null, nb_candidats: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).nb_candidats }) }}",
         "options": {
           "response": {
             "response": {

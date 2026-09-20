@@ -370,6 +370,10 @@ note("3 - Recherche",
      "`recherche_globale` interroge cote SQL les quatre sources - banque de "
      "reponses validees, extraits documentaires, indicateurs chiffres, registre - "
      "pour chacune des sous-requetes, puis fusionne les rangs (RRF).\n\n"
+     "La liste de requetes envoyee commence TOUJOURS par la question brute du "
+     "client (mot-a-mot), avant la reformulation et les sous-requetes : la "
+     "reformulation peut perdre un sigle litteral (« DPO », « RSSI »...) que "
+     "seule la recherche plein texte sait retrouver mot-a-mot.\n\n"
      "Chat et formulaire lisent leurs parametres (nb_candidats, URL Supabase) "
      "depuis \"Preparer la question\" si elle a ete executee, sinon depuis "
      "\"Parametres\".",
@@ -380,6 +384,22 @@ PARAMS_TERNAIRE = (
     ": $('Parametres').first().json)"
 )
 
+# La reformulation (question_normalisee) et les sous-requetes sont dans le
+# vocabulaire des documents, mais rien ne garantit qu'elles conservent un
+# sigle litteral de la question du client (ex. "DPO", "RSSI") : la recherche
+# plein texte de recherche_hybride ne peut alors jamais matcher ce mot-cle.
+# On ajoute donc systematiquement la question BRUTE du client comme requete
+# supplementaire (garantie mot-a-mot), en plus de la reformulation et des
+# sous-requetes deja bonnes.
+QUESTION_BRUTE = (
+    "($('Preparer la question').isExecuted ? $('Preparer la question').item.json.question "
+    ": $('Chaque question').item.json.question)"
+)
+REQUETES_JS = (
+    "[%s, $json.output.question_normalisee].concat($json.output.sous_requetes).slice(0, 6)"
+    % QUESTION_BRUTE
+)
+
 n("Vectoriser les requetes", "n8n-nodes-base.httpRequest", {
     "method": "POST", "url": "https://api.openai.com/v1/embeddings",
     "authentication": "predefinedCredentialType", "nodeCredentialType": "openAiApi",
@@ -387,9 +407,8 @@ n("Vectoriser les requetes", "n8n-nodes-base.httpRequest", {
     "jsonBody": "={{ JSON.stringify({ "
                 "model: %s.modele_embedding, "
                 "dimensions: %s.dimensions, "
-                "input: [$json.output.question_normalisee]"
-                ".concat($json.output.sous_requetes).slice(0, 5) }) }}"
-                % (PARAMS_TERNAIRE, PARAMS_TERNAIRE),
+                "input: %s }) }}"
+                % (PARAMS_TERNAIRE, PARAMS_TERNAIRE, REQUETES_JS),
     "options": {},
 }, -8336, 80, 4.2)
 lien("Analyser la question", "Vectoriser les requetes")
@@ -400,12 +419,13 @@ n("Recherche", "n8n-nodes-base.httpRequest", {
     "authentication": "predefinedCredentialType", "nodeCredentialType": "supabaseApi",
     "sendBody": True, "specifyBody": "json",
     "jsonBody": "={{ JSON.stringify({ "
-                "requetes: [$('Analyser la question').item.json.output.question_normalisee]"
-                ".concat($('Analyser la question').item.json.output.sous_requetes).slice(0, 5), "
+                "requetes: %s, "
                 "requete_embeddings: $json.data.sort((a, b) => a.index - b.index)"
                 ".map(d => d.embedding), "
                 "annee_cible: $('Analyser la question').item.json.output.annee_cible ?? null, "
-                "nb_candidats: %s.nb_candidats }) }}" % PARAMS_TERNAIRE,
+                "nb_candidats: %s.nb_candidats }) }}"
+                % (REQUETES_JS.replace("$json.output", "$('Analyser la question').item.json.output"),
+                   PARAMS_TERNAIRE),
     "options": {"response": {"response": {"neverError": True}}},
 }, -8096, 80, 4.2)
 lien("Vectoriser les requetes", "Recherche")

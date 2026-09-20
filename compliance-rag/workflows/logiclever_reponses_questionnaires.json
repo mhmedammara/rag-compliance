@@ -279,7 +279,7 @@
     },
     {
       "parameters": {
-        "content": "## 3 - Recherche\n**Un seul appel HTTP par question.**\n\n`recherche_globale` interroge cote SQL les quatre sources - banque de reponses validees, extraits documentaires, indicateurs chiffres, registre - pour chacune des sous-requetes, puis fusionne les rangs (RRF).\n\nChat et formulaire lisent leurs parametres (nb_candidats, URL Supabase) depuis \"Preparer la question\" si elle a ete executee, sinon depuis \"Parametres\".",
+        "content": "## 3 - Recherche\n**Un seul appel HTTP par question.**\n\n`recherche_globale` interroge cote SQL les quatre sources - banque de reponses validees, extraits documentaires, indicateurs chiffres, registre - pour chacune des sous-requetes, puis fusionne les rangs (RRF).\n\nLa liste de requetes envoyee commence TOUJOURS par la question brute du client (mot-a-mot), avant la reformulation et les sous-requetes : la reformulation peut perdre un sigle litteral (« DPO », « RSSI »...) que seule la recherche plein texte sait retrouver mot-a-mot.\n\nChat et formulaire lisent leurs parametres (nb_candidats, URL Supabase) depuis \"Preparer la question\" si elle a ete executee, sinon depuis \"Parametres\".",
         "height": 340,
         "width": 460,
         "color": 7
@@ -301,7 +301,7 @@
         "nodeCredentialType": "openAiApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ model: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).modele_embedding, dimensions: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).dimensions, input: [$json.output.question_normalisee].concat($json.output.sous_requetes).slice(0, 5) }) }}",
+        "jsonBody": "={{ JSON.stringify({ model: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).modele_embedding, dimensions: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).dimensions, input: [($('Preparer la question').isExecuted ? $('Preparer la question').item.json.question : $('Chaque question').item.json.question), $json.output.question_normalisee].concat($json.output.sous_requetes).slice(0, 6) }) }}",
         "options": {}
       },
       "id": "Vectoriser les requetes",
@@ -321,7 +321,7 @@
         "nodeCredentialType": "supabaseApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ requetes: [$('Analyser la question').item.json.output.question_normalisee].concat($('Analyser la question').item.json.output.sous_requetes).slice(0, 5), requete_embeddings: $json.data.sort((a, b) => a.index - b.index).map(d => d.embedding), annee_cible: $('Analyser la question').item.json.output.annee_cible ?? null, nb_candidats: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).nb_candidats }) }}",
+        "jsonBody": "={{ JSON.stringify({ requetes: [($('Preparer la question').isExecuted ? $('Preparer la question').item.json.question : $('Chaque question').item.json.question), $('Analyser la question').item.json.output.question_normalisee].concat($('Analyser la question').item.json.output.sous_requetes).slice(0, 6), requete_embeddings: $json.data.sort((a, b) => a.index - b.index).map(d => d.embedding), annee_cible: $('Analyser la question').item.json.output.annee_cible ?? null, nb_candidats: ($('Preparer la question').isExecuted ? $('Preparer la question').first().json : $('Parametres').first().json).nb_candidats }) }}",
         "options": {
           "response": {
             "response": {

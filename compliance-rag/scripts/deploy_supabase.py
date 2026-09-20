@@ -132,17 +132,59 @@ def phrases(texte):
     return sorties
 
 
+# Un bloc de cloture (date de mise a jour, signataire...) est un fait court et
+# dense (nom, role) qui n'a aucun rapport thematique avec ce qui le precede
+# (souvent un tableau d'indicateurs ou une longue section). Concatene au
+# caractere pres avec ce qui precede, il se retrouve noye dans un chunk dont
+# l'embedding et la densite lexicale sont dominees par un contenu sans rapport,
+# et perd tout signal de recherche (vectoriel comme plein texte) meme quand la
+# question cite le mot-cle exact (ex. "DPO"). On force donc une coupure nette
+# (sans chevauchement, pour ne pas re-diluer le futur chunk) des qu'un tel
+# marqueur commence une phrase, afin qu'il devienne son propre chunk compact.
+MARQUEURS_CLOTURE_PREFIXE = re.compile(
+    r"^(date de derni[eè]re mise [aà] jour|valid[ée][e]? le|fait [aà] |"
+    r"sign[ée][e]? (par|le) |approuv[ée][e]? (par|le) )",
+    re.I,
+)
+ARTICLE_INITIAL = re.compile(r"^(le|la|les|l['’])\s+", re.I)
+
+
+def est_marqueur_cloture(phrase):
+    """« Signé le / Validé le / Approuvé par » apparaissent aussi dans des
+    phrases ordinaires ("...ayant signé le code de conduite") : le prefixe
+    seul ne suffit pas a distinguer un vrai bloc de signature. On exige donc,
+    selon le marqueur, ce qui accompagne un vrai bloc de cloture et jamais une
+    phrase de corps de texte : une date pour "validé le", et pour
+    "signé/approuvé par|le" un nom propre ou un role (mot suivant capitalise,
+    apres un article eventuel) plutot qu'un nom commun."""
+    m = MARQUEURS_CLOTURE_PREFIXE.match(phrase)
+    if not m:
+        return False
+    tete = m.group(1).lower()
+    reste = phrase[m.end():].lstrip()
+    if tete.startswith("date de"):
+        return True
+    if tete.startswith("valid"):
+        return reste[:1].isdigit()
+    reste = ARTICLE_INITIAL.sub("", reste)
+    return reste[:1].isupper()
+
+
 def decouper_document(doc):
     """Un chunk ne traverse jamais une frontiere de page sans le dire :
     page_debut / page_fin sont conserves pour produire la citation exacte."""
     chunks = []
     entete = "[%s | %s | %s]" % (doc["titre"], doc["categorie"], doc["code_doc"])
     tampon, page_debut, page_courante = "", None, None
+    # Vrai des qu'un bloc de cloture ouvre le tampon courant : ce tampon doit
+    # rester exempte du seuil minimal quel que soit ce qui le videra ensuite
+    # (autre rupture, depassement de taille, ou fin de document).
+    tampon_est_cloture = False
 
-    def vider():
-        nonlocal tampon, page_debut
+    def vider(seuil_min=80):
+        nonlocal tampon, page_debut, tampon_est_cloture
         contenu = tampon.strip()
-        if len(contenu) >= 80:
+        if len(contenu) >= (1 if tampon_est_cloture else seuil_min):
             chunks.append({
                 "content": "%s (page %s)\n%s" % (
                     entete,
@@ -153,6 +195,7 @@ def decouper_document(doc):
                 "page_fin": page_courante,
             })
         tampon = ""
+        tampon_est_cloture = False
 
     for num_page, brut in enumerate(doc["pages"], start=1):
         texte = normaliser(brut)
@@ -162,11 +205,24 @@ def decouper_document(doc):
             page_debut = num_page
         page_courante = num_page
         for ph in phrases(texte):
-            if len(tampon) + len(ph) + 1 > TAILLE_CHUNK and tampon:
-                queue = tampon[-RECOUVREMENT:]
-                vider()
-                tampon = queue + " "
+            est_marqueur = est_marqueur_cloture(ph.strip())
+            depasse_taille = len(tampon) + len(ph) + 1 > TAILLE_CHUNK and tampon
+            rupture_cloture = tampon and est_marqueur
+            if depasse_taille or rupture_cloture:
+                if rupture_cloture:
+                    vider()
+                else:
+                    queue = tampon[-RECOUVREMENT:]
+                    vider()
+                    tampon = queue + " "
                 page_debut = num_page
+            if est_marqueur:
+                # Un bloc de cloture est court par nature (nom, date, role) :
+                # le garder tel quel plutot que de l'ecarter comme un fragment
+                # negligeable, sinon on perd le fait au lieu de simplement le
+                # rendre moins dense. Marque avant l'ajout, meme si le tampon
+                # etait deja vide (rien a vider), pour couvrir ce cas aussi.
+                tampon_est_cloture = True
             tampon += ph + " "
     vider()
     return chunks
