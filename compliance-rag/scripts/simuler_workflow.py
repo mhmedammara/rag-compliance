@@ -42,9 +42,17 @@ def executer(code, entree, contexte):
     var $json = __in[0] ? __in[0].json : {};
     var $ = function (nom) {
       var items = __ctx[nom];
-      if (!items) throw new Error("Noeud absent du contexte simule : " + nom);
+      if (!items) {
+        // Noeud non execute dans cette branche (ex. "Preparer la question"
+        // hors du chat) : reproduit isExecuted=false comme le ferait n8n
+        // pour un noeud jamais atteint, plutot que de planter.
+        return { isExecuted: false, item: undefined,
+                 first: function () { return undefined; },
+                 all: function () { return []; } };
+      }
       return {
         isExecuted: true,
+        item: items[0],
         first: function () { return items[0]; },
         all: function () { return items; }
       };
