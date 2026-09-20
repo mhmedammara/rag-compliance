@@ -65,14 +65,15 @@ CAS = [
 
 
 def lignes_n8n(chemin, feuille):
-    """Reproduit la sortie du noeud « Lire le fichier » (headerRow: false)."""
+    """Reproduit la sortie reelle du noeud « Lire le fichier » (headerRow: false,
+    includeEmptyCells: true) : chaque ligne est un tableau brut sous la cle
+    "row", exactement la forme que "Normaliser les questions" deroule."""
     wb = openpyxl.load_workbook(resoudre(chemin), data_only=True)
     out = []
     for row in wb[feuille].iter_rows(values_only=True):
-        o = {str(i): " ".join(str(c).split())
-             for i, c in enumerate(row) if c is not None and str(c).strip()}
-        if o:
-            out.append({"json": o})
+        valeurs = ["" if c is None else " ".join(str(c).split()) for c in row]
+        if any(v.strip() for v in valeurs):
+            out.append({"json": {"row": valeurs}})
     wb.close()
     return out
 

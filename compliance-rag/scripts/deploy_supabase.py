@@ -6,6 +6,8 @@
 Fait tout en une commande :
   1. applique le schema SQL sur Supabase (tables, index, fonctions RRF)
   2. decoupe les 38 documents de preuve en chunks ancres a la page
+  2 bis. televerse les PDF de preuve vers Supabase Storage et enregistre
+         leur URL publique dans documents.url_partage
   3. calcule les embeddings (OpenAI text-embedding-3-large, 1536 dims)
   4. charge documents / chunks / reponses validees / indicateurs
   5. lance des tests de bout en bout sur de vraies questions clients
@@ -14,6 +16,7 @@ Prerequis :
     pip install "psycopg[binary]" requests
     set SUPABASE_DB_URL=postgresql://postgres.xxxx:MOTDEPASSE@aws-0-eu-west-3.pooler.supabase.com:5432/postgres
     set OPENAI_API_KEY=sk-...
+    set SUPABASE_SERVICE_ROLE_KEY=...   (Project Settings > API > service_role)
 
 Usage :
     python deploy_supabase.py                  # tout
@@ -28,6 +31,7 @@ import json
 import re
 import time
 import argparse
+import unicodedata
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -43,6 +47,7 @@ except ImportError:
 
 ICI = os.path.dirname(os.path.abspath(__file__))
 RACINE = os.path.dirname(ICI)
+BASE = os.path.dirname(RACINE)
 SEED = os.path.join(RACINE, "seed")
 SQL = os.path.join(RACINE, "sql")
 
@@ -53,6 +58,16 @@ DIMENSIONS = 1536          # doit rester aligne avec vector(1536) dans 01_schema
 TAILLE_CHUNK = 1400        # caracteres
 RECOUVREMENT = 220
 LOT_EMBEDDING = 64
+
+# Stockage des PDF de preuve (Supabase Storage, backend S3) : chaque document
+# est televerse sous "{code_doc}.pdf", et son URL publique alimente
+# documents.url_partage - c'est ce lien qui est ensuite restitue au client
+# (classeur Excel et chat) pour recuperer le PDF cite en preuve.
+_ref = re.search(r"postgres\.([a-z0-9]+):", DB_URL or "")
+SUPABASE_URL = os.environ.get(
+    "SUPABASE_URL", ("https://%s.supabase.co" % _ref.group(1)) if _ref else "")
+SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+BUCKET_PREUVES = "documents-preuve"
 
 
 def log(msg):
@@ -250,6 +265,76 @@ def charger_json(nom):
         return json.load(f)
 
 
+def resoudre_fichier(rel):
+    """Meme tolerance NFC/NFD que build_registry.py : certains fichiers
+    OneDrive stockent les accents en forme decomposee."""
+    rel = rel.replace("\\", "/")
+    direct = os.path.join(BASE, rel)
+    if os.path.exists(direct):
+        return direct
+    dossier, nom = os.path.split(rel)
+    d = os.path.join(BASE, dossier)
+    if not os.path.isdir(d):
+        return direct
+    cible = unicodedata.normalize("NFC", nom)
+    for f in os.listdir(d):
+        if unicodedata.normalize("NFC", f) == cible:
+            return os.path.join(d, f)
+    return direct
+
+
+def creer_bucket_si_absent(nom):
+    r = requests.post(
+        SUPABASE_URL + "/storage/v1/bucket",
+        headers={"Authorization": "Bearer " + SUPABASE_SERVICE_ROLE_KEY,
+                 "apikey": SUPABASE_SERVICE_ROLE_KEY},
+        json={"id": nom, "name": nom, "public": True},
+        timeout=30,
+    )
+    if r.status_code not in (200, 201) and "exists" not in r.text.lower():
+        log("      ATTENTION creation bucket '%s' : %s %s" % (nom, r.status_code, r.text[:200]))
+
+
+def televerser_pdfs(cur):
+    """Televerse chaque PDF de preuve vers Supabase Storage et enregistre son
+    URL publique dans documents.url_partage. Idempotent (x-upsert)."""
+    log("\n[2 bis/5] PDF de preuve -> Supabase Storage")
+    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        log("      SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY absente(s) : "
+            "televersement ignore, url_partage non renseignee.")
+        return
+
+    creer_bucket_si_absent(BUCKET_PREUVES)
+    docs = charger_json("documents.json")["documents"]
+    pdfs = [d for d in docs if d["fichier_source"].lower().endswith(".pdf")]
+
+    n = 0
+    for d in pdfs:
+        chemin = resoudre_fichier(d["fichier_source"])
+        if not os.path.exists(chemin):
+            log("      MANQUANT : %s" % d["fichier_source"])
+            continue
+        nom_objet = "%s.pdf" % d["code_doc"]
+        with open(chemin, "rb") as f:
+            octets = f.read()
+        r = requests.put(
+            "%s/storage/v1/object/%s/%s" % (SUPABASE_URL, BUCKET_PREUVES, nom_objet),
+            headers={"Authorization": "Bearer " + SUPABASE_SERVICE_ROLE_KEY,
+                     "apikey": SUPABASE_SERVICE_ROLE_KEY,
+                     "Content-Type": "application/pdf", "x-upsert": "true"},
+            data=octets, timeout=120,
+        )
+        if r.status_code not in (200, 201):
+            log("      ECHEC televersement %s : %s %s"
+                % (nom_objet, r.status_code, r.text[:200]))
+            continue
+        url = "%s/storage/v1/object/public/%s/%s" % (SUPABASE_URL, BUCKET_PREUVES, nom_objet)
+        cur.execute("update public.documents set url_partage = %s where code_doc = %s",
+                    (url, d["code_doc"]))
+        n += 1
+    log("      %d/%d PDF televerses" % (n, len(pdfs)))
+
+
 def appliquer_schema(cur):
     log("\n[1/5] Application du schema SQL")
     with open(os.path.join(SQL, "01_schema.sql"), encoding="utf8") as f:
@@ -340,12 +425,13 @@ def charger_reponses(cur, avec_embeddings=True):
         cur.execute("""
             insert into public.reponses_validees
               (source_ref, origine, theme, sous_theme, intitule, question,
-               question_source, reponse, sources, fiabilite, embedding)
-            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+               question_source, reponse, sources, fiabilite, statut, embedding)
+            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             on conflict do nothing
         """, (e["source_ref"], e["origine"], e.get("theme"), e.get("sous_theme"),
               e.get("intitule"), e["question"], e.get("question_source"), e["reponse"],
-              Jsonb(e.get("sources", [])), e.get("fiabilite"), vecteur_sql(v)))
+              Jsonb(e.get("sources", [])), e.get("fiabilite"),
+              e.get("statut", "actif"), vecteur_sql(v)))
     cur.execute("select count(*) from public.reponses_validees")
     log("      %d reponses validees chargees" % cur.fetchone()[0])
 
@@ -455,6 +541,8 @@ def main():
                 return
             avec = not args.no_embed
             charger_documents(cur, avec)
+            conn.commit()
+            televerser_pdfs(cur)
             conn.commit()
             charger_reponses(cur, avec)
             conn.commit()

@@ -124,7 +124,7 @@ n("Depot d'un questionnaire", "n8n-nodes-base.formTrigger", {
 
 n("Lire le fichier", "n8n-nodes-base.extractFromFile", {
     "operation": "xlsx", "binaryPropertyName": "Fichier",
-    "options": {"headerRow": False, "includeEmptyCells": True},
+    "options": {"headerRow": True, "includeEmptyCells": False},
 }, -9776, 80, 1)
 lien("Depot d'un questionnaire", "Lire le fichier")
 
@@ -152,7 +152,13 @@ const lignes = $input.all().map(i => {
 });
 if (!lignes.length) throw new Error("Aucune ligne exploitable dans le fichier.");
 
-const colonnes = [];
+// L'ordre de "colonnes" doit refleter l'ordre reel des colonnes de la feuille
+// pour que la detection de la section reste correcte. "Include Empty Cells"
+// desactive fait qu'une ligne partielle donnerait un Object.keys() dans le
+// mauvais ordre : on part donc de la ligne la plus complete.
+const ligneReference = lignes.reduce((a, b) =>
+  Object.keys(b).length > Object.keys(a).length ? b : a, lignes[0]);
+const colonnes = Object.keys(ligneReference);
 for (const l of lignes) {
   for (const k of Object.keys(l)) if (!colonnes.includes(k)) colonnes.push(k);
 }
@@ -913,7 +919,7 @@ const niveau = controle.niveau
 const sources = (redaction.sources || []).map(s => {
   const fiche = (d.registre || []).find(r => r.code === s.document);
   return { document: s.document, titre: fiche ? fiche.titre : s.document,
-           page: s.page || '' };
+           page: s.page || '', url: fiche ? fiche.url_partage : null };
 });
 
 const alertes = [];
@@ -933,7 +939,8 @@ return [{ json: {
   reponse: controle.reponse_finale || redaction.reponse,
   reponse_courte: redaction.reponse_courte || '',
   sources,
-  citation: sources.map(s => s.titre + (s.page ? ' (p. ' + s.page + ')' : '')).join(' ; '),
+  citation: sources.map(s => s.titre + (s.page ? ' (p. ' + s.page + ')' : '')
+                            + (s.url ? ' - ' + s.url : '')).join(' ; '),
   confiance: Number(confiance.toFixed(3)),
   niveau,
   alerte: alertes.join(' | '),

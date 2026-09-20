@@ -40,12 +40,17 @@ def executer(code, entree, contexte):
       first: function () { return __in[0]; }
     };
     var $json = __in[0] ? __in[0].json : {};
+    var __optionnels = ["Preparer la question"];
     var $ = function (nom) {
       var items = __ctx[nom];
       if (!items) {
-        // Noeud non execute dans cette branche (ex. "Preparer la question"
-        // hors du chat) : reproduit isExecuted=false comme le ferait n8n
-        // pour un noeud jamais atteint, plutot que de planter.
+        if (__optionnels.indexOf(nom) === -1) {
+          throw new Error("Noeud absent du contexte simule : " + nom);
+        }
+        // Noeud legitimement non execute dans cette branche (le chat, hors
+        // formulaire) : reproduit isExecuted=false comme le ferait n8n pour
+        // un noeud jamais atteint. Tout autre nom absent est une vraie
+        // erreur (typo, noeud renomme) et doit planter, pas s'effacer.
         return { isExecuted: false, item: undefined,
                  first: function () { return undefined; },
                  all: function () { return []; } };
@@ -99,10 +104,11 @@ RECHERCHE = {"json": {
     ],
     "registre": [
         {"code": "GES-2023", "titre": "Bilan d'emissions de GES 2023 (Greenly)",
-         "categorie": "bilan_carbone", "pages": 54},
+         "categorie": "bilan_carbone", "pages": 54,
+         "url_partage": "https://x.supabase.co/storage/v1/object/public/documents-preuve/GES-2023.pdf"},
         {"code": "KPI-RSE", "titre": "Liste des indicateurs de performance "
                                      "extra-financiere (GRI)",
-         "categorie": "indicateurs", "pages": 5},
+         "categorie": "indicateurs", "pages": 5, "url_partage": None},
     ]}}
 
 RECLASSEMENT = {"json": {"output": {"selection": [
@@ -169,6 +175,10 @@ def main():
     verifier("Bilan d'emissions de GES 2023" in consolide["citation"],
              "titre lisible resolu depuis le registre")
     verifier(consolide["client"] == "TotalEnergies", "client propage")
+    verifier(consolide["sources"][0]["url"] and consolide["sources"][0]["url"].endswith("GES-2023.pdf"),
+             "url_partage propagee dans sources[]")
+    verifier(" - https://x.supabase.co" in consolide["citation"],
+             "url_partage ajoutee a la citation")
 
     # ---------------------------------------------------- rassemblement
     print("\n4. Rassembler les reponses")

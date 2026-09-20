@@ -85,17 +85,24 @@ Renseignez les variables d'environnement (copiez `.env.example` puis complétez)
 # Windows / PowerShell
 $env:SUPABASE_DB_URL = "postgresql://postgres.abcdefgh:MOTDEPASSE@aws-0-eu-west-3.pooler.supabase.com:5432/postgres"
 $env:OPENAI_API_KEY  = "sk-..."
+$env:SUPABASE_SERVICE_ROLE_KEY = "..."
 ```
 
 ```bash
 # macOS / Linux
 export SUPABASE_DB_URL="postgresql://postgres.abcdefgh:MOTDEPASSE@aws-0-eu-west-3.pooler.supabase.com:5432/postgres"
 export OPENAI_API_KEY="sk-..."
+export SUPABASE_SERVICE_ROLE_KEY="..."
 ```
 
 > Où trouver `SUPABASE_DB_URL` : Supabase → **Project Settings** → **Database** →
 > **Connection string** → onglet **URI**. Remplacez `[YOUR-PASSWORD]` par le mot
 > de passe de la base. Prenez la chaîne **Session pooler** (port 5432).
+>
+> Où trouver `SUPABASE_SERVICE_ROLE_KEY` : Supabase → **Project Settings** →
+> **API** → **Project API keys** → `service_role`. Sert uniquement à téléverser
+> les PDF de preuve vers Supabase Storage (bucket public `documents-preuve`) ;
+> sans elle, le déploiement continue mais `documents.url_partage` reste vide.
 
 ---
 
@@ -117,6 +124,8 @@ Déroulé attendu :
       10 doublons/versions anterieures ecartes
       837 chunks produits
       embeddings chunks : 837/837
+[2 bis/5] PDF de preuve -> Supabase Storage
+      33/33 PDF televerses
 [3/5] Banque de reponses validees
       173 reponses validees chargees
 [4/5] Indicateurs extra-financiers
@@ -212,7 +221,7 @@ porte d'entrée. Son URL est affichée dans le nœud (onglet **Production URL**)
 | Question | la question du client, telle quelle |
 | Réponse | la réponse rédigée, à copier dans le formulaire client |
 | Réponse courte | Oui / Non / la valeur seule, pour les cases à cocher |
-| Sources (document et page) | la citation à fournir au client |
+| Sources (document et page) | la citation à fournir au client, avec le lien Supabase Storage du PDF (`{code_doc}.pdf`) quand il est disponible |
 | Confiance | note de 0 à 1 |
 | Niveau | `haute` / `moyenne` / `a_verifier` / `sans_reponse` |
 | **A relire** | `OUI` sur toute ligne qui n'est pas en confiance haute |

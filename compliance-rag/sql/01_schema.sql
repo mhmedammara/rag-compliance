@@ -124,6 +124,7 @@ create table if not exists public.reponses_validees (
   reponse       text not null,
   sources       jsonb not null default '[]'::jsonb,   -- [{document, pages, option}]
   fiabilite     text not null default 'a_verifier',
+  statut        text not null default 'actif',       -- actif | historique (fait remplace par une valeur plus recente)
   -- poids de confiance utilise pour departager deux reponses concurrentes
   poids         real generated always as (
                   case origine
@@ -141,6 +142,11 @@ create table if not exists public.reponses_validees (
                      coalesce(reponse, ''))) stored,
   maj_le        timestamptz not null default now()
 );
+
+-- Migration : "create table if not exists" ne touche pas une table deja
+-- existante, donc les colonnes ajoutees apres coup doivent etre migrees
+-- explicitement pour rester idempotent sur un projet deja deploye.
+alter table public.reponses_validees add column if not exists statut text not null default 'actif';
 
 create index if not exists reponses_embedding_idx
   on public.reponses_validees using hnsw (embedding vector_cosine_ops);
@@ -233,7 +239,8 @@ create or replace function public.recherche_hybride (
   inclure_historique boolean default false,
   k                  int     default 50,
   poids_vectoriel    float   default 1.0,
-  poids_texte        float   default 1.0
+  poids_texte        float   default 1.0,
+  annee_cible        int     default null
 ) returns table (
   id              bigint,
   content         text,
@@ -293,13 +300,25 @@ select d.id,
        doc.titre                                      as titre,
        nullif(d.metadata->>'page_debut', '')::int     as page_debut,
        nullif(d.metadata->>'page_fin', '')::int       as page_fin,
-       f.score_rrf::float,
+       -- annee demandee : privilegie (+30%) le document de cette annee-la,
+       -- penalise (-20%) les autres (utile surtout quand inclure_historique
+       -- a ete active pour cette meme raison par l'appelant, sinon ce seul
+       -- filtre actif/historique suffirait deja a ecarter les autres annees).
+       -- L'annee vient du code_doc (ex. GES-2023, EV-FICHE-2026), pas de
+       -- date_reference : celle-ci est la date de PUBLICATION du document,
+       -- pas l'exercice qu'il couvre (GES-2023 a ete publie le 2025-01-13).
+       (f.score_rrf * case
+           when annee_cible is not null then
+             case when substring(doc.code_doc from '\d{4}')::int = annee_cible
+                  then 1.3 else 0.8 end
+           else 1.0
+         end)::float as score_rrf,
        f.rang_v::int,
        f.rang_t::int
 from fusion f
 join public.documents_rag d on d.id = f.id
 left join public.documents doc on doc.code_doc = d.metadata->>'code_doc'
-order by f.score_rrf desc
+order by score_rrf desc
 limit nb_resultats;
 $$;
 
@@ -313,7 +332,9 @@ create or replace function public.recherche_reponses (
   requete_embedding vector(1536),
   nb_resultats      int    default 6,
   filtre_origines   text[] default null,
-  k                 int    default 50
+  k                 int    default 50,
+  inclure_historique boolean default false,
+  annee_cible       int default null
 ) returns table (
   id         bigint,
   source_ref text,
@@ -336,7 +357,26 @@ requete_ts as (
 ),
 candidats as (
   select r.* from public.reponses_validees r
-  where filtre_origines is null or r.origine = any(filtre_origines)
+  where (filtre_origines is null or r.origine = any(filtre_origines))
+    and (inclure_historique or r.statut = 'actif')
+),
+-- Une reponse n'est veritablement etayee que si au moins une de ses sources
+-- pointe vers un document actif du registre ; parmi celles qui resolvent, la
+-- plus recente donne la fraicheur du fait. Jointure faite ici (pas de colonne
+-- stockee) pour rester a jour automatiquement si le registre change.
+piece_doc as (
+  select c.id,
+         bool_or(d.code_doc is not null) as document_valide,
+         max(d.date_reference) as date_ref,
+         -- annee tiree du code_doc (ex. GES-2023), pas de date_reference qui
+         -- est la date de PUBLICATION du document, pas l'exercice couvert.
+         bool_or(annee_cible is not null
+                 and substring(d.code_doc from '\d{4}')::int = annee_cible) as annee_correspond
+  from candidats c
+  left join lateral jsonb_array_elements(c.sources) s on true
+  left join public.documents d
+    on d.code_doc = s->>'document' and d.statut = 'actif'
+  group by c.id
 ),
 vectoriel as (
   select c.id, row_number() over (order by c.embedding <=> requete_embedding) as rang
@@ -359,11 +399,31 @@ fusion as (
   from vectoriel v
   full outer join plein_texte t on t.id = v.id
 )
+-- Score final : RRF x poids (fiabilite de la source) x preference document
+-- (penalise -30% une reponse sans document actif resolu, sans l'exclure) x
+-- correspondance temporelle :
+--   - annee_cible precisee (la question vise une annee) : privilegie (+30%)
+--     une reponse dont le document resolu porte cette annee-la, penalise
+--     (-20%) sinon. La fraicheur generale ne s'applique pas ici : demander
+--     "2023" ne doit jamais faire gagner la valeur la plus recente.
+--   - annee_cible absente (la question ne precise pas d'annee) : bonus de
+--     fraicheur jusqu'a +30 %, decroissance exponentielle sur 3 ans - une
+--     reponse sans document resolu n'a pas de date et ne recoit aucun bonus.
 select r.id, r.source_ref, r.origine, r.theme, r.sous_theme,
        r.question, r.reponse, r.sources, r.fiabilite,
-       (f.brut * r.poids)::float as score
+       (f.brut * r.poids
+         * case when coalesce(pd.document_valide, false) then 1.0 else 0.7 end
+         * case
+             when annee_cible is not null then
+               case when coalesce(pd.annee_correspond, false) then 1.3 else 0.8 end
+             else
+               (1 + 0.3 * coalesce(
+                   exp(-(current_date - pd.date_ref)::float / (365.0 * 3)), 0))
+           end
+       )::float as score
 from fusion f
 join public.reponses_validees r on r.id = f.id
+left join piece_doc pd on pd.id = f.id
 order by score desc
 limit nb_resultats;
 $$;
@@ -450,7 +510,7 @@ with req as (
 rep as (
   select x.id, x.source_ref, x.sous_theme, x.question, x.reponse, x.sources,
          row_number() over (partition by q.rang order by x.score desc) as rg
-  from req q, lateral public.recherche_reponses(q.texte, q.emb, 6) x
+  from req q, lateral public.recherche_reponses(q.texte, q.emb, 6, annee_cible => annee_cible) x
 ),
 rep_f as (
   select id, min(source_ref) as reference, min(sous_theme) as titre,
@@ -466,7 +526,8 @@ rep_f as (
 doc as (
   select x.id, x.code_doc, x.titre, x.page_debut, x.page_fin, x.content,
          row_number() over (partition by q.rang order by x.score_rrf desc) as rg
-  from req q, lateral public.recherche_hybride(q.texte, q.emb, 10) x
+  from req q, lateral public.recherche_hybride(q.texte, q.emb, 10,
+         inclure_historique => (annee_cible is not null), annee_cible => annee_cible) x
 ),
 doc_f as (
   select id, min(code_doc) as reference, min(titre) as titre,
@@ -516,7 +577,8 @@ select jsonb_build_object(
       from classes), '[]'::jsonb),
   'registre', coalesce((
       select jsonb_agg(jsonb_build_object('code', code_doc, 'titre', titre,
-                                          'categorie', categorie, 'pages', nb_pages)
+                                          'categorie', categorie, 'pages', nb_pages,
+                                          'url_partage', url_partage)
              order by code_doc)
       from public.documents where statut = 'actif'), '[]'::jsonb)
 );

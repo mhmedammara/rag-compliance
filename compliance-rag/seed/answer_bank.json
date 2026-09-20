@@ -62,8 +62,13 @@
   "sous_theme": "Certifications",
   "question": "De quelles certifications et labels disposez-vous ? Avez-vous l'ISO 9001 / ISO 14001 / ISO 27001 ?",
   "intitule": "Certifications",
-  "reponse": "Évaluations et labels détenus par Logiclever :\n- EcoVadis : score global 79/100, 98e percentile (top 2 % des entreprises évaluées).\n- CyberVadis : 860/1000, niveau Mature (benchmark moyen 654), rapport du 21/10/2025.\n- Great Place To Work : entreprise certifiée (3 certifications), Trust Index 96 %, perception globale 98 %, 2e au classement France 2023 des entreprises de 50 à 250 salariés, 1er au classement France 2021 des entreprises de moins de 50 salariés.\n- Signataire de la Charte Numérique Responsable de l'INR, de la Charte engagement citoyen des entreprises et de la Charte régionale des valeurs de la République et de la laïcité.\n- Respect des 10 principes du Pacte Mondial des Nations Unies.\n- Convention collective Syntec (IDCC 1486).\nIMPORTANT : Logiclever n'est PAS certifiée ISO 9001, ISO 14001 ni ISO 27001. La Politique SSI est construite sur le référentiel ISO 27001 et un objectif de certification y est inscrit, mais la certification n'est pas obtenue à ce jour. Ne jamais répondre « oui » à une question de certification ISO.",
+  "reponse": "Évaluations et labels détenus par Logiclever :\n- EcoVadis : score global 84/100, médaille Gold, 97e percentile (top 5 % des entreprises évaluées). Évaluation publiée le 27/05/2026, valide jusqu'au 27/05/2027.\n- CyberVadis : 860/1000, niveau Mature (benchmark moyen 654), rapport du 21/10/2025.\n- Great Place To Work : entreprise certifiée (3 certifications), Trust Index 96 %, perception globale 98 %, 2e au classement France 2023 des entreprises de 50 à 250 salariés, 1er au classement France 2021 des entreprises de moins de 50 salariés.\n- Signataire de la Charte Numérique Responsable de l'INR, de la Charte engagement citoyen des entreprises et de la Charte régionale des valeurs de la République et de la laïcité.\n- Respect des 10 principes du Pacte Mondial des Nations Unies.\n- Convention collective Syntec (IDCC 1486).\nIMPORTANT : Logiclever n'est PAS certifiée ISO 9001, ISO 14001 ni ISO 27001. La Politique SSI est construite sur le référentiel ISO 27001 et un objectif de certification y est inscrit, mais la certification n'est pas obtenue à ce jour. Ne jamais répondre « oui » à une question de certification ISO.",
   "sources": [
+   {
+    "document": "EV-FICHE-2026",
+    "pages": "1",
+    "option": ""
+   },
    {
     "document": "CV-EXEC-2025",
     "pages": "1",
@@ -437,7 +442,7 @@
     "option": ""
    },
    {
-    "document": "Analyse de Matérialité",
+    "document": "MATERIALITE",
     "pages": "1-5",
     "option": "Une analyse de matérialité a été réalisée"
    }
@@ -576,12 +581,12 @@
   "reponse": "Elements retenus : Évaluation des risques en matière de santé et de sécurité des employés ; Plan d’action d’urgence en matière de santé et de sécurité ; Formation des salariés sur les risques pour la santé et la sécurité ainsi que les bonnes pratiques de travail ; Actions visant à lutter contre le stress et favoriser le bien-être psychologique au travail ; Autres actions pour protéger la santé et la sécurité des employés qui ne sont incluses nulle part ailleurs dans cette question.\nSensibilisation au stress afin de prévenir les risques pour les employés.\nEvaluation des risques pour les employés selon le site où ils exercent et formation aux bonne pratiques de santé pour prévenir les situation à risques.\nCommentaire: Le document rapport des observations de la médecine du travail pour les salariés de logiclever. On y retrouve les bonnes pratiques à mettre en oeuvre.\nFormation dispensés au prestataires freelance et en interne pour tous les sujets de santé et les bonnes pratiques à adaptés dans le cadre du travail réalisés par les consultants logiclever.\nFormation des employés aux actions à réaliser en cas d'urgence.\nSensibilisation pour prévenir le stress des employés et notamment éviter les burnout\nFormation complète, sur la santé au travail à destination des employés et des freelances.\nSensibiliser les employés aux bonnes pratiques de santé et sécurité au travail .Sensibilisation des employés au stress dans le travail Favoriser la mise en place du télétravail lorsque c’est permis par le poste de l’employé (information renseignée sur chaque Appel d’offre). Formation de tous les employés sur les risques pour la santé et la sécurité ainsi que les bonnes pratiques de travail Partage de bonne pratique pour la gestion du stress à destination des collaborateurs\nFavoriser la mise en place du télétravail lorsque c’est permis par le poste de l’employé (information renseignée sur chaque Appel d’offre) Choix en commun d’une mutuelle d’entreprise Mettre en place une offre de crèche pour les employés de Logiclever Evaluation du bien être et des niveaux de stress des employés via le l’évaluation Great Place To Work Organisation régulière d’activités sportives ou d'événements collectifs pour les employés Organisation semestrielle d’un séminaire pour les employés de Logiclever Suivi des incidents du travail, et des risques sur les postes occupés par les employés Respect de la loi pour la réalisation des évaluations de santé des employés Respect de la charte des nations unis",
   "sources": [
    {
-    "document": "Procédure de sensibilisation au stress",
+    "document": "STRESS",
     "pages": "1-11",
     "option": "Évaluation des risques en matière de santé et de sécurité des employés"
    },
    {
-    "document": "Formation Santé, Sécurité et Bonnes Pratiques de Travail",
+    "document": "FORM-SANTE",
     "pages": "3,4,5,6,7,20",
     "option": ""
    },
@@ -596,7 +601,7 @@
     "option": ""
    },
    {
-    "document": "Formation Santé, Sécurité et Bonnes Pratiques de Travail",
+    "document": "FORM-SANTE",
     "pages": "16-19",
     "option": "Plan d’action d’urgence en matière de santé et de sécurité"
    },
@@ -606,7 +611,7 @@
     "option": ""
    },
    {
-    "document": "Procédure de sensibilisation au stress",
+    "document": "STRESS",
     "pages": "2-11",
     "option": "Formation des salariés sur les risques pour la santé et la sécurité ainsi que les bonnes pratiques de travail"
    },
@@ -616,7 +621,7 @@
     "option": ""
    },
    {
-    "document": "Procédure de sensibilisation au stress",
+    "document": "STRESS",
     "pages": "1-11",
     "option": "Actions visant à lutter contre le stress et favoriser le bien-être psychologique au travail"
    },
@@ -654,7 +659,7 @@
   "reponse": "Elements retenus : Actions visant à garantir des salaires adéquats ; Actions visant à gérer le temps de travail et les heures supplémentaires ; Rémunération des heures de travail supplémentaires ou atypiques ; Programmes adaptés aux familles ; Organisation flexible du travail à la disposition des salariés ; Couverture des salariés en soins de santé ; Enquête de satisfaction des salariés ; Autres actions pour garantir de bonnes conditions de travail qui ne sont incluses nulle part ailleurs dans cette question.\nChez Logiclever, les salaires sont fixés sur des critères transparents et équitables pour tous les salariés. Nous fixons la rémunération à partir du TJ vendu des salariés et du TJ cibles élaboré à partir d'évaluation du salariés par ses encadrants/ coach/ collègues. Nous valorisons également le temps passés sur des chantiers internes (amélioration continue, COP, EPIC, formations) Le changement de grade permet également d'obtenir des augmentations car le calcul du salaire (basé sur une formule unique, prenant en compte la rentabilité du salarié) est bonifié en fonction du grade du consultant, permettant ainsi de récompenser les consultants ayant le plus travaillé leur compétences et expertises.\nRespect de la loi pour le paiement des heures supplémentaires, pour la mise en place de congés payés, pour les temps de repos\nConformément à la convention collective Syntec, les jours travaillés le week-end ainsi que les astreintes sont rémunérés selon les dispositions prévues, avec des majorations applicables en fonction des heures effectuées, comme prévu par la convention. La gestion des temps est suivie via l’ERP Boondmanager, utilisé au sein de Logiclever. Cet outil permet une traçabilité auditable : chaque mois, le consultant remplit et valide son Compte Rendu d’Activité (CRA), qui est ensuite approuvé par l’office manager. Le CRA sert également de base de facturation pour nos clients, garantissant ainsi une transparence totale.\nAccord sur le PEE de l'entreprise permettant au salariés d'obtenir un supplément de salaire.\nLogiclever s’engage auprès de ses salariés dans une politique de parentalité et réserve des places en crèche à destination de ses collaborateurs ! Pour déployer ce service, nous nous associons au réseau Choisir Ma Crèche qui vous donne accès à des places en crèche proches de votre domicile ou de votre lieu de travail en fonction de votre organisation familiale. Les structures accueillent les enfants à partir de 2 mois et demi, jusqu’à leur entrée en maternelle. Nous ne contractualisons pas en direct. Nous contractualisons berceau par berceau et nous n’avons pas d’obligation d’un nombre minimum ou maximum.\nMettre en place une offre de crèche pour les employés de Logiclever\nFavoriser la mise en place du télétravail lorsque c’est permis par le poste de l’employé (information renseignée sur chaque Appel d’offre)\nChoix d'une mutuelle d'entreprise en collectif avec un vote à la majorité.\nChoix en commun d’une mutuelle d’entreprise\nRapport d'audit utilisé pour mesurer la satisfaction des salariés. L'entreprise GPTW est réputée pour ses évaluations et Logiclever a été classé N°1 en France en 2021 pour la catégorie des petites entreprises.\nAnalyse GPTW de Logiclever avec les indicateurs de satisfaction des collaborateurs\nRapport d'enquête GPTW édition 2025 pour Logiclever, qui reste dans le palmarès GPTW avec la 7eme place dans la catégorie 50-250 employées\nAvantages pour tous les employés. Organisation semestrielle d’un séminaire pour les employés de Logiclever. Organisation libéré Travail avec le framework Safe Suivi de la satisfaction des employés vis à vis des formations qu'ils réalisent Mise en place d'un PEE répartie équitablement dans l'entreprise Mes commentaires sur le document : Enveloppe de 1 000 € ht/an pour couvrir les frais informatiques/bureautiques (Reliquat versé en juin) Carte Navigo remboursé à 100% (1008€ / an) 216 titres restaurant d'une valeur de 9,25€/jours → 1200 €/an (dont 5,55€ est à la charge de Logiclever) Prime vacance (1% de ton brut annuel)",
   "sources": [
    {
-    "document": "Augmenter les salaires",
+    "document": "SALAIRES",
     "pages": "1-33",
     "option": "Actions visant à garantir des salaires adéquats"
    },
@@ -797,7 +802,7 @@
     "option": ""
    },
    {
-    "document": "Augmenter les salaires",
+    "document": "SALAIRES",
     "pages": "1-36",
     "option": ""
    },
@@ -822,7 +827,7 @@
     "option": ""
    },
    {
-    "document": "Augmenter les salaires",
+    "document": "SALAIRES",
     "pages": "1-37",
     "option": ""
    },
@@ -837,7 +842,7 @@
     "option": "Actions pour promouvoir la mobilité interne"
    },
    {
-    "document": "Augmenter les salaires",
+    "document": "SALAIRES",
     "pages": "3",
     "option": ""
    },
@@ -900,7 +905,7 @@
     "option": ""
    },
    {
-    "document": "Augmenter les salaires",
+    "document": "SALAIRES",
     "pages": "21-29",
     "option": "Actions visant à prévenir la discrimination dans le cadre des processus de promotion et de développement professionnel (veuillez préciser)"
    },
@@ -1270,7 +1275,7 @@
     "option": ""
    },
    {
-    "document": "Logiclever, Entreprise Zéro déchet 2026",
+    "document": "ZERO-DECHET",
     "pages": "1-6",
     "option": ""
    },
@@ -1280,7 +1285,7 @@
     "option": ""
    },
    {
-    "document": "Suivi des déchets dangereux",
+    "document": "DECHETS-DANG",
     "pages": "1",
     "option": "Tri interne et élimination des déchets en fonction des flux de déchets"
    },
@@ -1290,7 +1295,7 @@
     "option": ""
    },
    {
-    "document": "Logiclever, Entreprise Zéro déchet 2026",
+    "document": "ZERO-DECHET",
     "pages": "5-6",
     "option": ""
    },
@@ -1325,7 +1330,7 @@
     "option": "Autres actions pour gérer les déchets qui ne sont incluses nulle part ailleurs dans cette question"
    },
    {
-    "document": "Logiclever, Entreprise Zéro déchet 2026",
+    "document": "ZERO-DECHET",
     "pages": "1-4",
     "option": ""
    },
@@ -1396,7 +1401,7 @@
     "option": "Consommation totale d’énergie renouvelable"
    },
    {
-    "document": "Suivi des déchets dangereux",
+    "document": "DECHETS-DANG",
     "pages": "1",
     "option": "Poids total des déchets dangereux"
    },
@@ -2226,6 +2231,7 @@
   "reponse": "Ecovadis | Score global : 79/100. 98eme percentile soit top 2% des entreprises évaluées",
   "sources": [],
   "fiabilite": "reponse_envoyee_client",
+  "statut": "historique",
   "id": 42
  },
  {
@@ -3816,7 +3822,7 @@
     "option": ""
    },
    {
-    "document": "_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -3840,7 +3846,7 @@
     "option": ""
    },
    {
-    "document": "20250902 Politique_SSI_Logiclever_E.pdf_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4166,12 +4172,12 @@
     "option": ""
    },
    {
-    "document": ".pdf_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
@@ -4181,7 +4187,7 @@
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4268,12 +4274,12 @@
     "option": ""
    },
    {
-    "document": "20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4302,12 +4308,12 @@
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ RSSI annexe - Registre des changement.pdf_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4331,7 +4337,7 @@
     "option": ""
    },
    {
-    "document": "20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4355,7 +4361,7 @@
     "option": ""
    },
    {
-    "document": "20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
@@ -4384,12 +4390,12 @@
     "option": ""
    },
    {
-    "document": "20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    },
    {
-    "document": "_x000D_ 20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
@@ -4413,7 +4419,7 @@
     "option": ""
    },
    {
-    "document": "20250902 Politique_SSI_Logiclever_E.pdf",
+    "document": "POL-SSI",
     "pages": "",
     "option": "preuve fournie a CyberVadis"
    }
