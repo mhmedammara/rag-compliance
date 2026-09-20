@@ -818,6 +818,48 @@
         -5776,
         -480
       ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $('Parametres').first().json.supabase_url }}/storage/v1/object/documents-preuve/generes/{{ $('Rassembler les reponses').first().json.client.replace(/[^A-Za-z0-9._-]+/g, '-') }}-{{ $now.toFormat('yyyyLLdd-HHmmss') }}.xlsx",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "07fb1c28-40ff-4a25-a584-d0e07a63a5da",
+      "name": "Televerser le classeur",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -5200,
+        -16
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUFjwTelCDib2Zv",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "redirect",
+        "redirectUrl": "={{ $('Parametres').first().json.supabase_url }}/storage/v1/object/public/{{ $json.Key }}",
+        "options": {}
+      },
+      "id": "d3a42d6c-f63a-4397-8ab1-39202dd5a8ce",
+      "name": "Terminer",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        -4960,
+        -16
+      ]
     }
   ],
   "pinData": {},
@@ -1154,6 +1196,28 @@
         [
           {
             "node": "Analyser la question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classeur de reponses": {
+      "main": [
+        [
+          {
+            "node": "Televerser le classeur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Televerser le classeur": {
+      "main": [
+        [
+          {
+            "node": "Terminer",
             "type": "main",
             "index": 0
           }

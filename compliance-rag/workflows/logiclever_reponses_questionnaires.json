@@ -784,6 +784,42 @@
     },
     {
       "parameters": {
+        "method": "PUT",
+        "url": "={{ $('Parametres').first().json.supabase_url }}/storage/v1/object/documents-preuve/generes/{{ $('Rassembler les reponses').first().json.client.replace(/[^A-Za-z0-9._-]+/g, '-') }}-{{ $now.toFormat('yyyyLLdd-HHmmss') }}.xlsx",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "Televerser le classeur",
+      "name": "Televerser le classeur",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -5200,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "redirect",
+        "redirectUrl": "={{ $('Parametres').first().json.supabase_url }}/storage/v1/object/public/{{ $json.Key }}",
+        "options": {}
+      },
+      "id": "Terminer",
+      "name": "Terminer",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        -4960,
+        -16
+      ]
+    },
+    {
+      "parameters": {
         "method": "POST",
         "url": "={{ $('Parametres').first().json.supabase_url }}/rest/v1/reponses_generees",
         "authentication": "predefinedCredentialType",
@@ -1142,6 +1178,28 @@
           },
           {
             "node": "Journaliser la campagne",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classeur de reponses": {
+      "main": [
+        [
+          {
+            "node": "Televerser le classeur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Televerser le classeur": {
+      "main": [
+        [
+          {
+            "node": "Terminer",
             "type": "main",
             "index": 0
           }

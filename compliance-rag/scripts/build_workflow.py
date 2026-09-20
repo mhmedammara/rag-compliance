@@ -1132,6 +1132,29 @@ n("Classeur de reponses", "n8n-nodes-base.convertToFile", {
 }, -5440, -16, 1.1)
 lien("Preparer la restitution", "Classeur de reponses")
 
+# Le classeur est televerse dans le bucket "documents-preuve" existant (pas
+# de nouveau bucket a creer) sous generes/, et "Terminer" relit le chemin
+# exact depuis la reponse d'upload (cle "Key") plutot que de le recalculer
+# une seconde fois - evite tout risque de decalage entre les deux noeuds.
+n("Televerser le classeur", "n8n-nodes-base.httpRequest", {
+    "method": "PUT",
+    "url": "={{ $('Parametres').first().json.supabase_url }}/storage/v1/object/documents-preuve/generes/"
+           "{{ $('Rassembler les reponses').first().json.client.replace(/[^A-Za-z0-9._-]+/g, '-') }}"
+           "-{{ $now.toFormat('yyyyLLdd-HHmmss') }}.xlsx",
+    "authentication": "predefinedCredentialType", "nodeCredentialType": "supabaseApi",
+    "sendBody": True, "contentType": "binaryData", "inputDataFieldName": "data",
+    "options": {},
+}, -5200, -16, 4.2)
+lien("Classeur de reponses", "Televerser le classeur")
+
+n("Terminer", "n8n-nodes-base.form", {
+    "operation": "completion",
+    "respondWith": "redirect",
+    "redirectUrl": "={{ $('Parametres').first().json.supabase_url }}/storage/v1/object/public/{{ $json.Key }}",
+    "options": {},
+}, -4960, -16, 1)
+lien("Televerser le classeur", "Terminer")
+
 n("Journaliser la campagne", "n8n-nodes-base.httpRequest", {
     "method": "POST",
     "url": "={{ $('Parametres').first().json.supabase_url }}/rest/v1/reponses_generees",
