@@ -416,11 +416,10 @@ FAITS = [
     ("FAIT/CERTIFICATIONS", "General", "Certifications",
      "De quelles certifications et labels disposez-vous ? Avez-vous l'ISO 9001 / ISO 14001 / ISO 27001 ?",
      "Évaluations et labels détenus par Logiclever :\n"
-     "- EcoVadis : score global 79/100, 98e percentile (top 2 % des entreprises évaluées).\n"
-     "- CyberVadis : 860/1000, niveau Mature (benchmark moyen 654), rapport du 21/10/2025.\n"
-     "- Great Place To Work : entreprise certifiée (3 certifications), Trust Index 96 %, "
-     "perception globale 98 %, 2e au classement France 2023 des entreprises de 50 à 250 salariés, "
-     "1er au classement France 2021 des entreprises de moins de 50 salariés.\n"
+     "- Évaluée par EcoVadis (voir le rapport EcoVadis pour la médaille et le score en vigueur).\n"
+     "- Évaluée par CyberVadis, niveau Mature (rapport du 21/10/2025 ; voir le rapport pour le "
+     "score en vigueur).\n"
+     "- Labellisée Great Place To Work (voir le certificat pour le détail des classements).\n"
      "- Signataire de la Charte Numérique Responsable de l'INR, de la Charte engagement citoyen "
      "des entreprises et de la Charte régionale des valeurs de la République et de la laïcité.\n"
      "- Respect des 10 principes du Pacte Mondial des Nations Unies.\n"
@@ -476,8 +475,9 @@ FAITS = [
      "avec suivi nominatif.\n"
      "- Sauvegardes automatiques et permanentes des données critiques (Google Workspace).\n"
      "- Nombre d'incidents de sécurité de l'information confirmés : 0 sur 2023, 2024 et 2025.\n"
-     "- Évaluation externe CyberVadis : 860/1000 (Mature), scores de 1000/1000 sur la conformité "
-     "légale, la protection des données personnelles, la gouvernance, l'analyse de risques et les RH.",
+     "- Évaluation externe favorable par CyberVadis (niveau Mature), notamment sur la conformité "
+     "légale, la protection des données personnelles, la gouvernance, l'analyse de risques et les RH "
+     "(voir le rapport CyberVadis pour les scores en vigueur).",
      [("POL-SSI", "1-39"), ("SSI-RISQUES", "1"), ("SSI-ACCES", "1"), ("SSI-REVUES", "1"),
       ("SSI-PLAN", "1"), ("CV-EXEC-2025", "1"), ("CV-PERF-2025", "1")]),
 
@@ -487,10 +487,10 @@ FAITS = [
      "de traitement, principes de transparence, de minimisation et de durée de conservation "
      "raisonnable, encadrement des transferts à des tiers, et procédure de notification des "
      "violations de données personnelles. Revue annuelle de la politique RGPD par le DPO "
-     "(prochaine échéance 09/02/2027). CyberVadis attribue 1000/1000 à l'ensemble des contrôles "
+     "(prochaine échéance 09/02/2027). CyberVadis évalue favorablement l'ensemble des contrôles "
      "de protection des données personnelles (engagement, rôles, formation, cartographie des "
      "traitements, transparence, durée de conservation, transferts aux tiers, notification des "
-     "violations).",
+     "violations) ; voir le rapport CyberVadis pour les scores en vigueur.",
      [("POL-SSI", "6-8"), ("SSI-PLAN", "1"), ("CV-PERF-2025", "1")]),
 
     ("FAIT/GOUVERNANCE-RSE", "General", "Gouvernance RSE",

@@ -358,9 +358,7 @@ TRAVAIL DEMANDE
 4. Si la question porte sur une annee precise, donne annee_cible (sinon null).
    Sans annee explicite, vise l'exercice le plus recent disponible.
 5. Signale les points de vigilance : toute formulation qui pousserait a
-   sur-declarer. En particulier, LOGICLEVER **n'est certifiee ni ISO 9001,
-   ni ISO 14001, ni ISO 27001**, n'a **pas** d'objectif valide SBTi, et n'a
-   **pas** de CSE (PV de carence)."""
+   sur-declarer."""
 
 chaine("Analyser la question", ANALYSE, {
     "type": "object",
@@ -713,24 +711,6 @@ soit la valeur trouvée dans le dossier.
 
 Ne prétends jamais que Logiclever possède une certification, un label, une adhésion ou un engagement qui n’est pas explicitement étayé.
 
-En particulier, ne présente jamais Logiclever comme certifiée :
-
-* ISO 9001 ;
-* ISO 14001 ;
-* ISO 27001 ;
-* SBTi.
-
-Ne prétends pas non plus à l’existence :
-
-* d’un CSE ou d’une représentation syndicale ;
-* d’un accord collectif ;
-* d’un label ;
-* d’une adhésion ;
-* d’un objectif validé ;
-* d’une certification réglementaire,
-
-sans preuve explicite.
-
 Si une absence doit être mentionnée parce que la question la demande, réponds simplement et professionnellement, sans posture défensive.
 
 ## 7. STYLE DE RÉPONSE
@@ -900,16 +880,12 @@ d'empecher qu'une affirmation non etayee parte chez le client.
 1. **Affirmation non etayee** - chaque fait, chiffre, date ou nom de dispositif
    figure-t-il dans le dossier ? Tout element absent doit etre supprime ou
    requalifie.
-2. **Certification revendiquee a tort** - la reponse laisse-t-elle croire a une
-   certification ISO 9001 / 14001 / 27001, a un objectif valide SBTi, ou a
-   l'existence d'un CSE ? Aucun des trois n'existe chez LOGICLEVER. Une
-   formulation ambigue compte comme une erreur.
-3. **Chiffre deforme** - valeur, unite, annee et perimetre exacts ? Un
+2. **Chiffre deforme** - valeur, unite, annee et perimetre exacts ? Un
    pourcentage donne pour une annee ne doit pas etre attribue a une autre.
-4. **Source mal citee** - le document cite contient-il bien l'element avance ?
-5. **Omission dommageable** - un element favorable et pertinent du dossier a-t-il
+3. **Source mal citee** - le document cite contient-il bien l'element avance ?
+4. **Omission dommageable** - un element favorable et pertinent du dossier a-t-il
    ete laisse de cote ? Si oui, l'integrer.
-6. **Registre** - la reponse est-elle affirmative et complete, ou trop prudente au
+5. **Registre** - la reponse est-elle affirmative et complete, ou trop prudente au
    point de desservir Logiclever a preuve egale ? Renforce la formulation **sans
    jamais ajouter de fait absent du dossier**.
 
