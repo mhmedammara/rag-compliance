@@ -90,6 +90,7 @@ services:
       - "127.0.0.1:8088:80"
     volumes:
       - ./stockage:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
 volumes:
   n8n_data:
