@@ -6,8 +6,9 @@ du glossaire ou du noeud « Normaliser les questions ».
     python scripts/verifier.py
 
 Quatre controles :
-  1. detection de la colonne des questions, rejouee sur les trois classeurs
-     reels (le code JavaScript du workflow est execute tel quel, hors de n8n) ;
+  1. detection de la colonne des questions, rejouee sur sept classeurs reels
+     (le code JavaScript du workflow est execute tel quel, hors de n8n), et
+     concordance de la colonne « Ligne » avec la ligne Excel de la question ;
   2. absence d'anglais residuel dans le corpus francise ;
   3. absence d'entree de glossaire jamais utilisee (faute de frappe
      dans une cle : la traduction ne s'appliquerait jamais) ;
@@ -48,10 +49,14 @@ def resoudre(rel):
 # =====================================================================
 #  1. Detection de la colonne des questions
 # =====================================================================
-# chemin, feuille, libelle, debuts attendus de la 1re question detectee.
+# chemin, feuille (None = 1er onglet, comme le formulaire sans champ
+# "Onglet"), libelle, debuts attendus de la 1re question detectee.
 # La feuille EcoVadis est le cas piege : sa colonne de REPONSES est plus longue
 # que sa colonne de questions. C'est elle qui justifie que estQuestion reste
 # strict — le score de colonne, lui, a pu etre reduit a un simple comptage.
+# Les classeurs de Recette/ sont des questionnaires clients vierges : un
+# multi-onglets (questions hors du 1er onglet, lu via le champ "Onglet") et
+# une liste d'exigences a cocher Oui/Non sans aucune question (mode repli).
 CAS = [
     ("EXemples remplies de formulaires clients/"
      "[Logiclever] [V0] - Questionnaire RSE New Camilla_OK_06062025.xlsx",
@@ -61,21 +66,62 @@ CAS = [
     ("a/LOGICLEVER SASU_EV_Questionnaire_spreadsheet.xlsx",
      "Questionnaire", "EcoVadis (colonne piege)",
      ("Veuillez", "Votre entreprise", "Lequel")),
+    ("Recette/CPL-002_Questionnaire_due_diligence_VIERGE.xlsx",
+     None, "Recette CPL-002", ("Êtes-vous susceptibles",)),
+    ("Recette/MC2i_questionnaire_cybersecurite_VIERGE.xlsx",
+     None, "Recette MC2i", ("Avez-vous un programme de sécurité",)),
+    ("Recette/Questionnaire_fournisseurs_VIERGE (2).xlsx",
+     "(Cybersécurité) Questionnaire", "Recette multi-onglets", ("Votre politique de mot de passe",)),
+    ("Recette/Questionnaire_securite_informatique_VIERGE.xlsx",
+     None, "Recette exigences Oui/Non", ("Mesures visant",)),
 ]
+
+
+def plage_lue():
+    """(nombre de colonnes, nombre de lignes) de la plage fixe lue par le noeud
+    « Lire le fichier » (options.range, ex. A1:AZ3000), relue dans le workflow
+    lui-meme pour que ce controle ne puisse pas diverger du noeud reel."""
+    wf = json.load(open(WF, encoding="utf8"))
+    opts = [x for x in wf["nodes"] if x["name"] == "Lire le fichier"][0]["parameters"]["options"]
+    m = re.fullmatch(r"A1:([A-Z]+)(\d+)", opts.get("range", ""))
+    if not m or opts.get("headerRow") is not False:
+        raise SystemExit("« Lire le fichier » doit lire une plage fixe A1:<col><n> sans "
+                         "ligne d'en-tete : la colonne « Ligne » en depend.")
+    nb_col = 0
+    for ch in m.group(1):
+        nb_col = nb_col * 26 + ord(ch) - 64
+    return nb_col, int(m.group(2))
 
 
 def lignes_n8n(chemin, feuille):
     """Reproduit la sortie reelle du noeud « Lire le fichier » (headerRow: false,
-    includeEmptyCells: true) : chaque ligne est un tableau brut sous la cle
-    "row", exactement la forme que "Normaliser les questions" deroule."""
+    plage fixe, includeEmptyCells: false) : UNE entree par ligne de la plage,
+    lignes vides comprises (tableau vide), chaque ligne etant un tableau brut
+    sous la cle "row", tronque apres sa derniere cellule remplie. L'entree i
+    est donc la ligne Excel i + 1."""
+    nb_col, nb_lignes = plage_lue()
     wb = openpyxl.load_workbook(resoudre(chemin), data_only=True)
+    ws = wb[feuille] if feuille else wb.worksheets[0]
     out = []
-    for row in wb[feuille].iter_rows(values_only=True):
-        valeurs = ["" if c is None else " ".join(str(c).split()) for c in row]
-        if any(v.strip() for v in valeurs):
-            out.append({"json": {"row": valeurs}})
+    for row in ws.iter_rows(min_row=1, max_row=min(ws.max_row, nb_lignes),
+                            max_col=nb_col, values_only=True):
+        valeurs = [c if c is None or isinstance(c, (str, int, float)) else str(c)
+                   for c in row]
+        while valeurs and valeurs[-1] is None:
+            valeurs.pop()
+        out.append({"json": {"row": valeurs}})
+    out.extend({"json": {"row": []}} for _ in range(nb_lignes - len(out)))
     wb.close()
     return out
+
+
+def texte_ligne(chemin, feuille, numero):
+    """Cellules non vides de la ligne Excel `numero`, lues directement."""
+    wb = openpyxl.load_workbook(resoudre(chemin), data_only=True)
+    ws = wb[feuille] if feuille else wb.worksheets[0]
+    cellules = [str(c.value).strip() for c in ws[numero] if c.value is not None]
+    wb.close()
+    return cellules
 
 
 def controle_detection():
@@ -104,9 +150,18 @@ def controle_detection():
         # la bonne colonne se reconnait au debut de sa premiere question :
         # si le scorer se trompe de colonne, on lit une reponse, pas une question
         ok = len(res) >= 5 and res[0]["json"]["question"].startswith(debuts)
+        # « Ligne » doit designer la ligne Excel reelle de la question : c'est
+        # ainsi que le relecteur la retrouve dans le fichier du client.
+        decalees = [x["json"]["ligne"] for x in res
+                    if x["json"]["question"] not in texte_ligne(chemin, feuille,
+                                                                x["json"]["ligne"])]
+        ok = ok and not decalees
+        pleines = sum(1 for x in items if any(v not in (None, "") for v in x["json"]["row"]))
         print("   %s %-28s %d lignes -> %d questions | %s"
-              % ("OK    " if ok else "ANOMALIE", libelle, len(items), len(res),
+              % ("OK    " if ok else "ANOMALIE", libelle, pleines, len(res),
                  res[0]["json"]["question"][:42] if res else "vide"))
+        if decalees:
+            print("          « Ligne » ne correspond pas a la ligne Excel : %s" % decalees[:5])
         if not ok:
             anomalies += 1
         for x in res[:2]:

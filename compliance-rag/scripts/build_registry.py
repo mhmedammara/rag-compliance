@@ -8,7 +8,8 @@ import pymupdf, openpyxl, zipfile, re, os, sys, hashlib, json, unicodedata
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-BASE = r"C:\Users\Moham\OneDrive\Desktop\Docs pour RAG"
+# Dossier "Docs pour RAG" (parent de compliance-rag/), deduit de ce fichier.
+BASE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(BASE, "compliance-rag", "seed")
 
 # --------------------------------------------------------------- traduction
@@ -25,7 +26,7 @@ NON_TRADUITS = ("Question Code", "Evidence reference")
 
 def traduire(valeur):
     """Correspondance exacte. Une chaine absente du glossaire est renvoyee
-    telle quelle : le script verifier_traduction.py signale les oublis."""
+    telle quelle : scripts/verifier.py (controle 2) signale les oublis."""
     if valeur is None:
         return ""
     v = " ".join(str(valeur).replace("_x000D_", " ").split())
@@ -126,7 +127,6 @@ def read_any(path, code_doc=None, langue_source="fr"):
 def resolve(rel):
     """Resolut un chemin relatif en tolerant les formes Unicode NFC / NFD
     (certains fichiers OneDrive stockent les accents en forme decomposee)."""
-    import unicodedata
     rel = rel.replace("\\", "/")
     direct = os.path.join(BASE, rel)
     if os.path.exists(direct):
@@ -242,8 +242,8 @@ DOUBLONS = {
 
 # Fichiers presents dans a/ ou b/ mais volontairement hors du registre : ils
 # servent de SOURCE a la banque de reponses, pas de document a citer. Les
-# declarer ici reconcilie le compte (49 fichiers = 38 canoniques + 10 doublons
-# + 1 source) et evite qu'on croie plus tard a un oubli.
+# declarer ici reconcilie le compte (50 fichiers = 39 canoniques + 10 doublons
+# + 1 source) et evite qu'on croie plus tard a un oubli ; main() le verifie.
 SOURCES_SEULEMENT = {
     "a/LOGICLEVER SASU_EV_Questionnaire_spreadsheet.xlsx":
         "source des 30 reponses EcoVadis (build_answer_bank.py) ; son jumeau PDF "

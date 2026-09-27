@@ -1,0 +1,97 @@
+# =====================================================================
+#  Pile locale : n8n + Postgres/pgvector + serveur de fichiers
+#  Remplace Supabase (base + Storage). Voir GUIDE-DEPLOIEMENT.md.
+#
+#    cd compliance-rag/docker
+#    copy .env.example .env      (puis choisir un mot de passe)
+#    docker compose up -d
+#
+#  n8n            http://localhost:5678
+#  Postgres       127.0.0.1:5433 (scripts Python)  /  postgres:5432 (depuis n8n)
+#                 Pas "localhost" cote scripts : sous Windows, libpq essaie
+#                 d'abord ::1 et bloque ~2 min avant de se rabattre sur IPv4.
+#  Fichiers       http://localhost:8088/documents-preuve/{code_doc}.pdf
+#                 http://localhost:8088/generes/{classeur}.xlsx
+#
+#  Memoire : chaque service est plafonne (mem_limit) avec une marge au-dessus
+#  de sa consommation reelle en charge ; les tailles de tas Node / buffers
+#  Postgres sont reglees en dessous de ces plafonds pour ne jamais etre tues
+#  par le noyau (OOM). Mesure au repos : n8n ~0,5 Go, postgres ~40 Mo,
+#  fichiers ~3 Mo.
+# =====================================================================
+
+name: logiclever-conformite
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      GENERIC_TIMEZONE: Europe/Paris
+      TZ: Europe/Paris
+      # Le noeud "Televerser le classeur" ecrit dans /files/generes.
+      N8N_RESTRICT_FILE_ACCESS_TO: /files
+      # Tas V8 plafonne : processus principal et runner des noeuds Code.
+      NODE_OPTIONS: --max-old-space-size=512
+      N8N_RUNNERS_MAX_OLD_SPACE_SIZE: "192"
+      # Telemetrie et verification de version : taches de fond inutiles ici.
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+    mem_limit: 1200m
+    volumes:
+      # Volume existant du conteneur "docker run" d'origine : workflows,
+      # credentials et cle de chiffrement sont conserves.
+      - n8n_data:/home/node/.n8n
+      - ./stockage:/files
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-logiclever}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Renseignez POSTGRES_PASSWORD dans docker/.env}
+      POSTGRES_DB: ${POSTGRES_DB:-logiclever}
+    # Base de ~15 Mo : 32 Mo de buffers la contiennent entierement.
+    command: >
+      postgres
+      -c shared_buffers=32MB
+      -c max_connections=20
+      -c work_mem=4MB
+      -c maintenance_work_mem=64MB
+      -c max_parallel_workers_per_gather=0
+    mem_limit: 256m
+    ports:
+      # 5433 cote hote pour ne pas entrer en conflit avec un Postgres local.
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+      start_interval: 2s
+
+  fichiers:
+    image: nginx:alpine
+    restart: unless-stopped
+    # Sans plafond CPU, nginx lance un worker par coeur (18 ici) : 1 suffit.
+    environment:
+      NGINX_ENTRYPOINT_WORKER_PROCESSES_AUTOTUNE: "1"
+    cpus: 1
+    mem_limit: 32m
+    ports:
+      - "127.0.0.1:8088:80"
+    volumes:
+      - ./stockage:/usr/share/nginx/html:ro
+
+volumes:
+  n8n_data:
+    external: true
+  pg_data:

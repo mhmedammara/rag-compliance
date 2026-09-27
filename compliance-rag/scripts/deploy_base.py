@@ -4,26 +4,30 @@
  LOGICLEVER - Deploiement de la base de connaissance conformite
 =========================================================================
 Fait tout en une commande :
-  1. applique le schema SQL sur Supabase (tables, index, fonctions RRF)
-  2. decoupe les 38 documents de preuve en chunks ancres a la page
-  2 bis. televerse les fichiers de preuve (pdf, docx, xlsx, pptx...) vers
-         Supabase Storage et enregistre leur URL publique dans
-         documents.url_partage
+  1. applique le schema SQL sur le Postgres local (tables, index, fonctions RRF)
+  2. decoupe les 39 documents de preuve en chunks ancres a la page
+  2 bis. copie les fichiers de preuve (pdf, docx, xlsx, pptx...) dans le
+         dossier servi par le conteneur "fichiers" (docker/stockage) et
+         enregistre leur URL dans documents.url_partage
   3. calcule les embeddings (OpenAI text-embedding-3-large, 1536 dims)
   4. charge documents / chunks / reponses validees / indicateurs
   5. lance des tests de bout en bout sur de vraies questions clients
 
 Prerequis :
+    docker compose up -d          (dans compliance-rag/docker)
     pip install "psycopg[binary]" requests
-    set SUPABASE_DB_URL=postgresql://postgres.xxxx:MOTDEPASSE@aws-0-eu-west-3.pooler.supabase.com:5432/postgres
     set OPENAI_API_KEY=sk-...
-    set SUPABASE_SERVICE_ROLE_KEY=...   (Project Settings > API > service_role)
+    Connexion Postgres : lue dans docker/.env (port 5433 cote hote).
+    (optionnel) set DATABASE_URL=postgresql://USER:MOTDEPASSE@127.0.0.1:5433/BASE
+                pour viser une autre base
+    (optionnel) set STOCKAGE_DIR=...   defaut : compliance-rag/docker/stockage
+    (optionnel) set FICHIERS_URL=...   defaut : http://localhost:8088
 
 Usage :
-    python deploy_supabase.py                  # tout
-    python deploy_supabase.py --schema-only    # seulement le schema
-    python deploy_supabase.py --no-embed       # recharge sans recalculer les vecteurs
-    python deploy_supabase.py --test           # seulement les tests
+    python deploy_base.py                  # tout
+    python deploy_base.py --schema-only    # seulement le schema
+    python deploy_base.py --no-embed       # recharge sans recalculer les vecteurs
+    python deploy_base.py --test           # seulement les tests
 =========================================================================
 """
 import os
@@ -32,12 +36,14 @@ import json
 import re
 import time
 import argparse
+import shutil
 import unicodedata
 
 sys.stdout.reconfigure(encoding="utf-8")
 
 try:
     import psycopg
+    from psycopg.conninfo import make_conninfo
     from psycopg.types.json import Jsonb
 except ImportError:
     sys.exit("Installez la dependance :  pip install \"psycopg[binary]\" requests")
@@ -52,7 +58,13 @@ BASE = os.path.dirname(RACINE)
 SEED = os.path.join(RACINE, "seed")
 SQL = os.path.join(RACINE, "sql")
 
-DB_URL = os.environ.get("SUPABASE_DB_URL", "")
+# Sans DATABASE_URL, la connexion est construite depuis docker/.env (les
+# identifiants du conteneur postgres), sur le port publie cote hote par
+# docker/docker-compose.yml. 127.0.0.1 et non localhost : sous Windows, libpq
+# essaie d'abord IPv6 et bloque ~2 minutes avant de se rabattre sur IPv4.
+DB_URL = os.environ.get("DATABASE_URL", "")
+ENV_DOCKER = os.path.join(RACINE, "docker", ".env")
+PORT_HOTE_POSTGRES = 5433
 OPENAI_KEY = os.environ.get("OPENAI_API_KEY", "")
 MODELE_EMBEDDING = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-large")
 DIMENSIONS = 1536          # doit rester aligne avec vector(1536) dans 01_schema.sql
@@ -60,15 +72,14 @@ TAILLE_CHUNK = 1400        # caracteres
 RECOUVREMENT = 220
 LOT_EMBEDDING = 64
 
-# Stockage des PDF de preuve (Supabase Storage, backend S3) : chaque document
-# est televerse sous "{code_doc}.pdf", et son URL publique alimente
-# documents.url_partage - c'est ce lien qui est ensuite restitue au client
-# (classeur Excel et chat) pour recuperer le PDF cite en preuve.
-_ref = re.search(r"postgres\.([a-z0-9]+):", DB_URL or "")
-SUPABASE_URL = os.environ.get(
-    "SUPABASE_URL", ("https://%s.supabase.co" % _ref.group(1)) if _ref else "")
-SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-BUCKET_PREUVES = "documents-preuve"
+# Stockage des PDF de preuve : dossier local servi par le conteneur nginx
+# "fichiers" (docker/docker-compose.yml). Chaque document y est copie sous
+# "{code_doc}.pdf", et son URL alimente documents.url_partage - c'est ce lien
+# qui est ensuite restitue (classeur Excel et chat) pour ouvrir le PDF cite.
+# Le sous-dossier generes/ recoit les classeurs ecrits par n8n.
+STOCKAGE_DIR = os.environ.get("STOCKAGE_DIR", os.path.join(RACINE, "docker", "stockage"))
+FICHIERS_URL = os.environ.get("FICHIERS_URL", "http://localhost:8088").rstrip("/")
+DOSSIER_PREUVES = "documents-preuve"
 
 
 def log(msg):
@@ -80,8 +91,9 @@ def log(msg):
 # =====================================================================
 def normaliser(texte):
     """Nettoie le texte extrait des PDF : ligatures, espaces insecables,
-    puces, cesures de fin de ligne."""
-    t = texte.replace("­", "").replace("​", "")
+    puces, cesures de fin de ligne, caracteres de remplacement (U+FFFD, laisses
+    par l'extraction a la place des pictogrammes, ex. GES-2021 p. 32-33)."""
+    t = texte.replace("­", "").replace("​", "").replace("�", "")
     t = t.replace("ﬁ", "fi").replace("ﬂ", "fl")
     t = t.replace(" ", " ").replace(" ", " ")
     t = re.sub(r"([a-zA-Zàâäéèêëîïôöùûüç])-\n([a-zàâäéèêëîïôöùûüç])", r"\1\2", t)
@@ -292,26 +304,26 @@ def embed_tout(textes, libelle):
     return vecteurs
 
 
-def embed_par_lot(conn, cur, items, texte_de, inserer_lot, libelle):
-    """Embede et insere lot par lot, avec un commit apres chaque lot.
-
-    Contrairement a un seul gros commit final, un crash en cours de route
-    (rate limit epuise, coupure reseau, Supabase indisponible) laisse alors
-    les lots deja traites definitivement en base au lieu de tout perdre au
-    rollback de la transaction."""
-    total = len(items)
-    for i in range(0, total, LOT_EMBEDDING):
-        lot = items[i:i + LOT_EMBEDDING]
-        textes = [texte_de(x)[:8000] for x in lot]
-        vecteurs = embed(textes) if OPENAI_KEY else [None] * len(lot)
-        inserer_lot(cur, lot, vecteurs)
-        conn.commit()
-        log("   %s : %d/%d (commit)" % (libelle, min(i + LOT_EMBEDDING, total), total))
-
-
 def vecteur_sql(v):
-    """pgvector accepte la forme textuelle '[0.1,0.2,...]'."""
+    """pgvector accepte la forme textuelle '[0.1,0.2,...]'. Un vecteur repris
+    tel quel de la base (--no-embed) est deja sous cette forme."""
+    if isinstance(v, str):
+        return v
     return "[" + ",".join("%.7g" % x for x in v) + "]" if v else None
+
+
+def vecteurs_repris(textes, existants, libelle):
+    """Mode --no-embed : reprend, pour chaque texte, le vecteur deja en base
+    pour ce texte exact (aucun appel API). Un texte nouveau ou modifie reste
+    sans vecteur, et on le dit : la recherche vectorielle ne le verra pas tant
+    que le chargement n'aura pas ete relance sans --no-embed."""
+    vecteurs = [existants.get(t) for t in textes]
+    manquants = sum(1 for v in vecteurs if v is None)
+    log("      %s : %d vecteur(s) repris sans appel API" % (libelle, len(textes) - manquants))
+    if manquants:
+        log("      ATTENTION %d texte(s) nouveau(x) ou modifie(s) sans vecteur : relancez "
+            "deploy_base.py sans --no-embed pour les vectoriser." % manquants)
+    return vecteurs
 
 
 # =====================================================================
@@ -340,18 +352,6 @@ def resoudre_fichier(rel):
     return direct
 
 
-def creer_bucket_si_absent(nom):
-    r = requests.post(
-        SUPABASE_URL + "/storage/v1/bucket",
-        headers={"Authorization": "Bearer " + SUPABASE_SERVICE_ROLE_KEY,
-                 "apikey": SUPABASE_SERVICE_ROLE_KEY},
-        json={"id": nom, "name": nom, "public": True},
-        timeout=30,
-    )
-    if r.status_code not in (200, 201) and "exists" not in r.text.lower():
-        log("      ATTENTION creation bucket '%s' : %s %s" % (nom, r.status_code, r.text[:200]))
-
-
 TYPES_MIME = {
     ".pdf": "application/pdf",
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -360,24 +360,21 @@ TYPES_MIME = {
 }
 
 
-def televerser_pdfs(cur):
-    """Televerse chaque fichier de preuve (pdf, docx, xlsx, pptx...) vers
-    Supabase Storage et enregistre son URL publique dans
-    documents.url_partage. Idempotent (x-upsert)."""
-    log("\n[2 bis/5] Fichiers de preuve -> Supabase Storage")
-    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
-        log("      SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY absente(s) : "
-            "televersement ignore, url_partage non renseignee.")
-        return
-
-    creer_bucket_si_absent(BUCKET_PREUVES)
+def copier_fichiers_preuve(cur):
+    """Copie chaque fichier de preuve (pdf, docx, xlsx, pptx...) dans le
+    dossier servi par le conteneur "fichiers" et enregistre son URL dans
+    documents.url_partage. Idempotent (ecrase la copie precedente)."""
+    log("\n[2 bis/5] Fichiers de preuve -> %s" % STOCKAGE_DIR)
+    dossier = os.path.join(STOCKAGE_DIR, DOSSIER_PREUVES)
+    os.makedirs(dossier, exist_ok=True)
+    # Cible du noeud n8n "Televerser le classeur" (/files/generes).
+    os.makedirs(os.path.join(STOCKAGE_DIR, "generes"), exist_ok=True)
     docs = charger_json("documents.json")["documents"]
 
     n = 0
     for d in docs:
         _, ext = os.path.splitext(d["fichier_source"].lower())
-        mime = TYPES_MIME.get(ext)
-        if not mime:
+        if ext not in TYPES_MIME:
             log("      TYPE NON SUPPORTE (%s) : %s" % (ext or "?", d["fichier_source"]))
             continue
         chemin = resoudre_fichier(d["fichier_source"])
@@ -385,24 +382,12 @@ def televerser_pdfs(cur):
             log("      MANQUANT : %s" % d["fichier_source"])
             continue
         nom_objet = "%s%s" % (d["code_doc"], ext)
-        with open(chemin, "rb") as f:
-            octets = f.read()
-        r = requests.put(
-            "%s/storage/v1/object/%s/%s" % (SUPABASE_URL, BUCKET_PREUVES, nom_objet),
-            headers={"Authorization": "Bearer " + SUPABASE_SERVICE_ROLE_KEY,
-                     "apikey": SUPABASE_SERVICE_ROLE_KEY,
-                     "Content-Type": mime, "x-upsert": "true"},
-            data=octets, timeout=120,
-        )
-        if r.status_code not in (200, 201):
-            log("      ECHEC televersement %s : %s %s"
-                % (nom_objet, r.status_code, r.text[:200]))
-            continue
-        url = "%s/storage/v1/object/public/%s/%s" % (SUPABASE_URL, BUCKET_PREUVES, nom_objet)
+        shutil.copy2(chemin, os.path.join(dossier, nom_objet))
+        url = "%s/%s/%s" % (FICHIERS_URL, DOSSIER_PREUVES, nom_objet)
         cur.execute("update public.documents set url_partage = %s where code_doc = %s",
                     (url, d["code_doc"]))
         n += 1
-    log("      %d/%d fichiers televerses" % (n, len(docs)))
+    log("      %d/%d fichiers copies (servis sur %s)" % (n, len(docs), FICHIERS_URL))
 
 
 def appliquer_schema(cur):
@@ -435,6 +420,11 @@ def charger_documents(cur, avec_embeddings=True):
     reg = charger_json("documents.json")
     docs = reg["documents"]
 
+    existants = {}
+    if not avec_embeddings:
+        cur.execute("select content, embedding::text from public.documents_rag "
+                    "where embedding is not null")
+        existants = dict(cur.fetchall())
     cur.execute("truncate table public.documents_rag")
     for d in docs:
         cur.execute("""
@@ -453,6 +443,17 @@ def charger_documents(cur, avec_embeddings=True):
               d["nb_pages"], d["md5"]))
     log("      %d documents canoniques enregistres" % len(docs))
     log("      %d doublons/versions anterieures ecartes" % len(reg["doublons_ecartes"]))
+    # Un document retire de REGISTRY resterait sinon en base, "actif" et
+    # citable (lien compris), sans plus aucun extrait indexe. On le passe a
+    # "obsolete" plutot que de le supprimer : les indicateurs peuvent encore
+    # le referencer, et le registre de citations l'ignore desormais.
+    cur.execute("update public.documents set statut = 'obsolete' "
+                "where statut <> 'obsolete' and not (code_doc = any(%s)) returning code_doc",
+                ([d["code_doc"] for d in docs],))
+    retires = [r[0] for r in cur.fetchall()]
+    if retires:
+        log("      %d document(s) absent(s) du registre passe(s) a obsolete : %s"
+            % (len(retires), ", ".join(retires)))
 
     tous = []
     for d in docs:
@@ -471,8 +472,9 @@ def charger_documents(cur, avec_embeddings=True):
             })
     log("      %d chunks produits" % len(tous))
 
-    vecteurs = (embed_tout([c["content"] for c in tous], "      embeddings chunks")
-                if avec_embeddings else [None] * len(tous))
+    textes = [c["content"] for c in tous]
+    vecteurs = (embed_tout(textes, "      embeddings chunks") if avec_embeddings
+                else vecteurs_repris(textes, existants, "chunks"))
 
     with cur.copy("copy public.documents_rag (content, metadata, embedding) "
                   "from stdin") as copie:
@@ -481,15 +483,34 @@ def charger_documents(cur, avec_embeddings=True):
     log("      chunks charges dans documents_rag")
 
 
+# Reponses reinjectees depuis reponses_generees apres relecture humaine (voir
+# GUIDE-DEPLOIEMENT.md, « Capitaliser sur les questionnaires traites ») : elles
+# ne viennent pas de answer_bank.json, un rechargement ne doit donc pas les
+# effacer.
+FIABILITE_CAPITALISEE = "capitalisee"
+
+
+def texte_reponse(question, intitule, reponse):
+    """Texte vectorise pour une reponse validee (meme formule partout, pour
+    que --no-embed retrouve le vecteur d'un texte inchange)."""
+    return "%s\n%s\n%s" % (question, intitule or "", (reponse or "")[:3000])
+
+
 def charger_reponses(cur, avec_embeddings=True):
     log("\n[3/5] Banque de reponses validees")
     bank = charger_json("answer_bank.json")
-    cur.execute("truncate table public.reponses_validees restart identity")
 
-    textes = ["%s\n%s\n%s" % (e["question"], e.get("intitule", ""), e["reponse"][:3000])
-              for e in bank]
-    vecteurs = (embed_tout(textes, "      embeddings reponses")
-                if avec_embeddings else [None] * len(bank))
+    existants = {}
+    if not avec_embeddings:
+        cur.execute("select question, intitule, reponse, embedding::text "
+                    "from public.reponses_validees where embedding is not null")
+        existants = {texte_reponse(q, i, r): v for q, i, r, v in cur.fetchall()}
+    cur.execute("delete from public.reponses_validees where fiabilite is distinct from %s",
+                (FIABILITE_CAPITALISEE,))
+
+    textes = [texte_reponse(e["question"], e.get("intitule"), e["reponse"]) for e in bank]
+    vecteurs = (embed_tout(textes, "      embeddings reponses") if avec_embeddings
+                else vecteurs_repris(textes, existants, "reponses"))
 
     for e, v in zip(bank, vecteurs):
         cur.execute("""
@@ -502,8 +523,30 @@ def charger_reponses(cur, avec_embeddings=True):
               e.get("intitule"), e["question"], e.get("question_source"), e["reponse"],
               Jsonb(e.get("sources", [])), e.get("fiabilite"),
               e.get("statut", "actif"), vecteur_sql(v)))
-    cur.execute("select count(*) from public.reponses_validees")
-    log("      %d reponses validees chargees" % cur.fetchone()[0])
+
+    # Reponses capitalisees : conservees, et vectorisees si elles ne le sont
+    # pas encore (insertion SQL directe, sans vecteur).
+    cur.execute("select id, question, intitule, reponse from public.reponses_validees "
+                "where fiabilite = %s and embedding is null", (FIABILITE_CAPITALISEE,))
+    a_vectoriser = cur.fetchall()
+    if a_vectoriser and avec_embeddings:
+        nouveaux = embed_tout([texte_reponse(q, i, r) for _, q, i, r in a_vectoriser],
+                              "      embeddings reponses capitalisees")
+        for (id_, _, _, _), v in zip(a_vectoriser, nouveaux):
+            cur.execute("update public.reponses_validees set embedding = %s where id = %s",
+                        (vecteur_sql(v), id_))
+    elif a_vectoriser:
+        log("      ATTENTION %d reponse(s) capitalisee(s) sans vecteur : relancez sans "
+            "--no-embed pour les vectoriser." % len(a_vectoriser))
+
+    cur.execute("select count(*) filter (where fiabilite is distinct from %s), "
+                "count(*) filter (where fiabilite = %s) from public.reponses_validees",
+                (FIABILITE_CAPITALISEE, FIABILITE_CAPITALISEE))
+    n_bank, n_cap = cur.fetchone()
+    log("      %d reponses validees chargees (%d ignoree(s) comme doublon)"
+        % (n_bank, len(bank) - n_bank))
+    if n_cap:
+        log("      %d reponse(s) capitalisee(s) conservee(s)" % n_cap)
 
 
 def charger_indicateurs(cur):
@@ -530,7 +573,13 @@ def charger_indicateurs(cur):
                   int(annee), str(brut), k.get("statut"), code, k.get("date_maj")))
             n += 1
     cur.execute("select count(*) from public.indicateurs")
-    log("      %d couples indicateur x annee charges" % cur.fetchone()[0])
+    charges = cur.fetchone()[0]
+    log("      %d couples indicateur x annee charges" % charges)
+    if charges < n:
+        # Doublon sur (indicateur, annee, methode, objectif) : l'index unique
+        # l'ecarte silencieusement ; on le rend visible.
+        log("      ATTENTION %d valeur(s) ignoree(s) comme doublon d'un indicateur deja "
+            "charge pour la meme annee." % (n - charges))
 
 
 # =====================================================================
@@ -586,6 +635,47 @@ def resume(cur):
     log("=" * 62)
 
 
+def lire_env(chemin):
+    """Lit un fichier KEY=VALEUR au format .env de docker compose."""
+    valeurs = {}
+    if not os.path.isfile(chemin):
+        return valeurs
+    with open(chemin, encoding="utf-8-sig") as f:
+        for ligne in f:
+            ligne = ligne.strip()
+            if not ligne or ligne.startswith("#") or "=" not in ligne:
+                continue
+            cle, valeur = ligne.split("=", 1)
+            valeur = valeur.strip()
+            if len(valeur) >= 2 and valeur[0] == valeur[-1] and valeur[0] in "'\"":
+                valeur = valeur[1:-1]
+            valeurs[cle.strip()] = valeur
+    return valeurs
+
+
+def parametres_connexion():
+    """DATABASE_URL si elle est renseignee, sinon les identifiants de
+    docker/.env. Une DATABASE_URL restee a sa valeur d'exemple (MOTDEPASSE,
+    <...>) est ignoree plutot que de faire echouer la connexion."""
+    url = DB_URL.strip()
+    if url and not re.search(r"[<>\s]|MOTDEPASSE", url):
+        return url, "DATABASE_URL"
+    if url:
+        log("  DATABASE_URL contient un texte d'exemple : ignoree, identifiants")
+        log("  lus dans docker/.env.")
+    env = lire_env(ENV_DOCKER)
+    if not env.get("POSTGRES_PASSWORD"):
+        sys.exit("Identifiants Postgres introuvables : ni DATABASE_URL, ni "
+                 "POSTGRES_PASSWORD dans %s." % ENV_DOCKER)
+    utilisateur = env.get("POSTGRES_USER") or "logiclever"
+    base = env.get("POSTGRES_DB") or "logiclever"
+    conninfo = make_conninfo(host="127.0.0.1", port=PORT_HOTE_POSTGRES,
+                             user=utilisateur, password=env["POSTGRES_PASSWORD"],
+                             dbname=base)
+    return conninfo, "docker/.env, %s@127.0.0.1:%d/%s" % (
+        utilisateur, PORT_HOTE_POSTGRES, base)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--schema-only", action="store_true")
@@ -593,12 +683,14 @@ def main():
     ap.add_argument("--test", action="store_true")
     args = ap.parse_args()
 
-    if not DB_URL:
-        sys.exit("SUPABASE_DB_URL absente de l'environnement.\n"
-                 "Supabase > Project Settings > Database > Connection string > URI")
+    if not (args.test or args.schema_only or args.no_embed) and not OPENAI_KEY:
+        sys.exit("OPENAI_API_KEY absente de l'environnement (necessaire aux vecteurs).\n"
+                 "  PowerShell :  $env:OPENAI_API_KEY = \"sk-...\"\n"
+                 "ou relancez avec --no-embed pour recharger sans recalculer les vecteurs.")
 
-    log("Connexion a Supabase...")
-    with psycopg.connect(DB_URL, autocommit=False) as conn:
+    conninfo, origine = parametres_connexion()
+    log("Connexion a Postgres (%s)..." % origine)
+    with psycopg.connect(conninfo, autocommit=False) as conn:
         with conn.cursor() as cur:
             if args.test:
                 tester(cur)
@@ -612,7 +704,7 @@ def main():
             avec = not args.no_embed
             charger_documents(cur, avec)
             conn.commit()
-            televerser_pdfs(cur)
+            copier_fichiers_preuve(cur)
             conn.commit()
             charger_reponses(cur, avec)
             conn.commit()

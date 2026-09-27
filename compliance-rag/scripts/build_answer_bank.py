@@ -13,7 +13,8 @@ import openpyxl, os, sys, re, json, unicodedata
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-BASE = r"C:\Users\Moham\OneDrive\Desktop\Docs pour RAG"
+# Dossier "Docs pour RAG" (parent de compliance-rag/), deduit de ce fichier.
+BASE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(BASE, "compliance-rag", "seed")
 
 
@@ -24,6 +25,8 @@ def resolve(rel):
         return direct
     folder, name = os.path.split(rel)
     d = os.path.join(BASE, folder)
+    if not os.path.isdir(d):
+        return direct
     target = unicodedata.normalize("NFC", name)
     for f in os.listdir(d):
         if unicodedata.normalize("NFC", f) == target:
@@ -38,7 +41,7 @@ CHAINES = _gloss["chaines"]
 
 def fr(valeur):
     """Traduction exacte via le glossaire CyberVadis ; chaine inchangee sinon.
-    Les oublis sont signales par scripts/verifier_traduction.py."""
+    Les oublis sont signales par scripts/verifier.py (controle 2, anglais residuel)."""
     if valeur is None:
         return ""
     v = " ".join(str(valeur).replace("_x000D_", " ").split())
@@ -283,9 +286,12 @@ def parse_cybervadis():
             "question": fr(desc),
             "question_source": desc,
             "intitule": "Contrôle CyberVadis %s" % code,
+            # Seul le score du controle, lu dans le rapport, est repris : le score
+            # global et la moyenne de reference etaient tapes en dur ici (ils ne
+            # suivraient pas un nouveau rapport). Comme pour les faits socles,
+            # ils sont a lire dans le rapport cite (CV-EXEC-2025).
             "reponse": "Contrôle évalué par CyberVadis (rapport du 21/10/2025). "
-                       "Score obtenu : %s/1000. Score global Logiclever : 860/1000 "
-                       "(niveau Mature ; moyenne des entreprises évaluées : 654)." % score,
+                       "Score obtenu sur ce contrôle : %s/1000." % score,
             "sources": [{"document": "CV-PERF-2025", "pages": "", "option": ""}],
             "fiabilite": "validee_cybervadis",
         })
@@ -555,6 +561,42 @@ def parse_faits():
 
 
 # ------------------------------------------------------- 6. resolution des documents
+# Libelles bruts des feuilles EcoVadis / CyberVadis qu'aucune passe automatique
+# ne rattache a leur document, verifies un a un contre le contenu du document
+# vise (1re page de seed/documents.json) : meme document sous un autre nom.
+# Les libelles restes sans correspondance designent des pieces absentes du
+# registre (chartes, offres d'emploi, supports internes...) : les rattacher a
+# un document voisin ferait citer au client une preuve qui ne dit pas la meme
+# chose. Ils restent donc non resolus, et signales.
+ALIAS_DOCUMENTS = {
+    "Liste complet indicateurs RSE LL": "KPI-RSE",
+    "Politique SSI 2026 LL": "POL-SSI",
+    "Code de conduite LL": "CODE-CONDUITE",
+    "Onboarding LL 2026": "ONBOARDING",
+    "Processus de gestion des conflits": "CONFLITS",
+    "Processus crèche d'entreprise": "CRECHE",
+    "Gouvernance Logiclever": "GOUVERNANCE",
+    "Gouverance Logiclever": "GOUVERNANCE",
+    "Recrutement salariés": "RECRUTEMENT",
+    "Rapport cybervadis 2025 LL": "CV-EXEC-2025",
+    "Formation SSI ingéniérie Social": "FORM-SOCIAL-ENG",
+    "ingénierie sociale.pdf": "FORM-SOCIAL-ENG",
+    "SSI - Registre des revues": "SSI-REVUES",
+    "RSSI annexe - Registre des revues.pdf": "SSI-REVUES",
+    "SSI - Cartographie des risques": "SSI-RISQUES",
+    "RSSI annexe - Cartographie des risques SSI.pdf": "SSI-RISQUES",
+    "SSI - Suivi des actions": "SSI-PLAN",
+    "SSI - Suivi des actions RSSI": "SSI-PLAN",
+    "SSi - Suivi formation": "SSI-FORM-COLLAB",
+    "RSSI annexe - Suivi des formations SSI.pdf": "SSI-FORM-COLLAB",
+    "SSI - Accès Matrice": "SSI-ACCES",
+    "jpg  RSSI annexe - Matrice des accès.pdf": "SSI-ACCES",
+    "SSI - Evaluation des fournisseurs": "SSI-FOURNISSEURS",
+    "SSI - Evaluation fournisseurs cloud": "SSI-FOURNISSEURS",
+    "RSSI annexe - Evaluation fournisseurs cloud.pdf": "SSI-FOURNISSEURS",
+}
+
+
 def normaliser_pour_correspondance(s):
     s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", " ", s).strip()
@@ -607,20 +649,32 @@ def construire_resolveur_documents():
                      frozenset(w for w in normaliser_pour_correspondance(texte).split() if len(w) >= 4),
                      code) for texte, code in libelles]
 
+    alias = {normaliser_pour_correspondance(k): v for k, v in ALIAS_DOCUMENTS.items()}
+    inconnus = set(alias.values()) - set(par_code.values())
+    if inconnus:
+        raise SystemExit("ALIAS_DOCUMENTS vise des codes absents du registre : %s"
+                         % ", ".join(sorted(inconnus)))
+
     def resoudre(brut):
-        """Renvoie (valeur, methode). methode vaut "code"/"titre"/"inclusion"
-        pour une correspondance sure, "mots" pour un recouvrement partiel a
-        double-verifier, ou "aucune" (valeur alors laissee telle quelle)."""
+        """Renvoie (valeur, methode). methode vaut "code"/"alias"/"titre"/
+        "inclusion" pour une correspondance sure, "mots" pour un recouvrement
+        partiel a double-verifier, ou "aucune" (valeur alors laissee telle
+        quelle)."""
         b = (brut or "").strip()
         if not b:
             return b, "code"
         if b.lower() in par_code:
             return par_code[b.lower()], "code"
+        if normaliser_pour_correspondance(b) in alias:
+            return alias[normaliser_pour_correspondance(b)], "alias"
         bn = normaliser_pour_correspondance(b)
         if bn in par_titre:
             return par_titre[bn], "titre"
         for titre_norm, code in par_titre.items():
-            if len(titre_norm) > 6 and (titre_norm in bn or bn in titre_norm):
+            # Les DEUX cotes doivent depasser 6 caracteres : sinon une reference
+            # courte (« RSE », « Charte ») serait « incluse » dans n'importe quel
+            # titre plus long et citerait un document au hasard.
+            if len(titre_norm) > 6 and len(bn) > 6 and (titre_norm in bn or bn in titre_norm):
                 return code, "inclusion"
         mots_b = frozenset(w for w in bn.split() if len(w) >= 4)
         if mots_b:
@@ -681,8 +735,9 @@ def main():
     if non_resolues:
         total = sum(len(v) for v in non_resolues.values())
         print("\nATTENTION : %d reference(s) documentaire(s) sur les %d au total n'ont pas ete "
-              "resolues vers un code_doc reel (%d valeur(s) brute(s) distincte(s)) - elles "
-              "resteront affichees telles quelles au client et sans lien telechargeable :"
+              "resolues vers un code_doc reel (%d valeur(s) brute(s) distincte(s)) - le "
+              "workflow les ecarte des citations (non verifiables, sans lien). Si l'une "
+              "designe un document du registre, ajoutez-la a ALIAS_DOCUMENTS :"
               % (total, sum(len(e.get("sources", [])) for e in bank), len(non_resolues)))
         for valeur, refs in sorted(non_resolues.items(), key=lambda kv: -len(kv[1]))[:30]:
             print("   [%dx] %s  (ex. %s)" % (len(refs), valeur[:100], refs[0]))

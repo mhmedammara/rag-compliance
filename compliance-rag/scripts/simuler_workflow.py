@@ -105,7 +105,7 @@ RECHERCHE = {"json": {
     "registre": [
         {"code": "GES-2023", "titre": "Bilan d'emissions de GES 2023 (Greenly)",
          "categorie": "bilan_carbone", "pages": 54,
-         "url_partage": "https://x.supabase.co/storage/v1/object/public/documents-preuve/GES-2023.pdf"},
+         "url_partage": "http://localhost:8088/documents-preuve/GES-2023.pdf"},
         {"code": "KPI-RSE", "titre": "Liste des indicateurs de performance "
                                      "extra-financiere (GRI)",
          "categorie": "indicateurs", "pages": 5, "url_partage": None},
@@ -127,7 +127,7 @@ CONTROLE = {"json": {"output": {
     "reponse_finale": "Le dernier bilan carbone de Logiclever porte sur 2023...",
     "anomalies": [], "confiance_finale": 0.92, "niveau": "haute", "alerte": ""}}}
 
-PARAMETRES = {"json": {"supabase_url": "https://x.supabase.co",
+PARAMETRES = {"json": {"fichiers_url": "http://localhost:8088",
                        "modele_embedding": "text-embedding-3-large",
                        "dimensions": 1536, "nb_candidats": 18,
                        "seuil_haute_confiance": 0.75, "seuil_a_verifier": 0.5}}
@@ -155,6 +155,17 @@ def main():
     verifier(dossier["dossier"][1]["citation"] == "GES-2023, p. 12-13",
              "l'extrait documentaire cite sa page")
 
+    # une source sans document en tete de liste ne doit pas devenir la reference
+    rech_trou = json.loads(json.dumps(RECHERCHE))
+    rech_trou["json"]["candidats"][0]["sources"].insert(
+        0, {"document": "", "pages": "3", "option": "option sans document"})
+    trou = executer(code["Constituer le dossier de preuves"], [RECLASSEMENT], {
+        "Recherche": [rech_trou], "Chaque question": [QUESTION],
+        "Analyser la question": [ANALYSE]})[0]["json"]["dossier"][0]
+    verifier(trou["document"] == "GES-2023" and trou["page"] == "12, 14",
+             "document et pages tires de la 1re source valide, pages fusionnees (%s p.%s)"
+             % (trou["document"], trou["page"]))
+
     # ---------------------------------------------------- repli
     print("\n2. Repli quand le reclassement ne retient rien")
     vide = executer(code["Constituer le dossier de preuves"],
@@ -177,8 +188,38 @@ def main():
     verifier(consolide["client"] == "TotalEnergies", "client propage")
     verifier(consolide["sources"][0]["url"] and consolide["sources"][0]["url"].endswith("GES-2023.pdf"),
              "url_partage propagee dans sources[]")
-    verifier(" - https://x.supabase.co" in consolide["citation"],
+    verifier(" - http://localhost:8088/documents-preuve/" in consolide["citation"],
              "url_partage ajoutee a la citation")
+
+    # ---------------------------------------------------- niveau de confiance
+    print("\n3 bis. Niveau : le plus prudent du controleur et des seuils")
+
+    def consolider(controle=None, redaction=None, dossier_=None):
+        ctrl = {"json": {"output": dict(CONTROLE["json"]["output"], **(controle or {}))}}
+        red = {"json": {"output": dict(REDACTION["json"]["output"], **(redaction or {}))}}
+        return executer(code["Consolider la reponse"], [ctrl], {
+            "Constituer le dossier de preuves": [{"json": dossier_ or dossier}],
+            "Rediger la reponse": [red], "Parametres": [PARAMETRES],
+            "Chaque question": [QUESTION]})[0]["json"]
+
+    r = consolider({"niveau": "haute", "confiance_finale": 0.6})
+    verifier(r["niveau"] == "moyenne",
+             "« haute » sous le seuil de 0,75 ramene a moyenne (%s)" % r["niveau"])
+    r = consolider({"niveau": "haute"}, {"sources": [{"document": "DOC-INCONNU", "page": "1"}]})
+    verifier(r["niveau"] == "a_verifier" and "absente(s) du registre" in r["alerte"],
+             "sans source resolue : a_verifier + alerte (%s)" % r["niveau"])
+    r = consolider({"niveau": "haute"}, dossier_=dict(dossier, repli=True))
+    verifier(r["niveau"] == "a_verifier", "reponse batie sur le repli : a_verifier")
+    r = consolider({"niveau": "sans_reponse", "confiance_finale": 0.1})
+    verifier(r["niveau"] == "sans_reponse", "sans_reponse conserve")
+    r = consolider(redaction={"sources": [
+        {"document": "GES-2023", "page": "12"}, {"document": "GES-2023", "page": "p. 12"},
+        {"document": "Bilan d'emissions de GES 2023 (Greenly)", "page": "14"}]})
+    verifier(len(r["sources"]) == 2 and all(s["document"] == "GES-2023" for s in r["sources"]),
+             "doublons fusionnes, titre recite resolu en code_doc (%s)"
+             % [(s["document"], s["page"]) for s in r["sources"]])
+    r = consolider({"reponse_courte_finale": "Non"}, {"reponse_courte": "Oui"})
+    verifier(r["reponse_courte"] == "Non", "reponse courte corrigee par le controleur retenue")
 
     # ---------------------------------------------------- rassemblement
     print("\n4. Rassembler les reponses")
@@ -203,6 +244,10 @@ def main():
     verifier("hors alternants" in l23["Reponse"], "correction de coherence appliquee")
     verifier(l23["Niveau"] == "a_verifier", "la ligne corrigee repasse en a_verifier")
     verifier(l23["A relire"] == "OUI", "la ligne corrigee est marquee a relire")
+    verifier(l23["Reponse courte"] == "" and "reponse courte a completer" in l23["Alerte"],
+             "la reponse courte de la ligne corrigee est videe et signalee")
+    verifier(l7["Reponse courte"] == consolide["reponse_courte"],
+             "la reponse courte d'une ligne non corrigee est conservee")
     verifier("Coherence" in l7["Alerte"], "l'autre ligne du couple est signalee")
     colonnes = set(l7.keys())
     verifier(not any(c.startswith("_") for c in colonnes),

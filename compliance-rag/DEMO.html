@@ -295,8 +295,8 @@
     <h2>Ce qui a été indexé</h2>
     <p class="sous-titre">Les chiffres à citer si on vous demande sur quoi il s'appuie.</p>
     <dl class="chiffres">
-      <div><dt>Documents de preuve retenus</dt><dd>38</dd></div>
-      <div><dt>Pages indexées</dt><dd>614</dd></div>
+      <div><dt>Documents de preuve retenus</dt><dd>39</dd></div>
+      <div><dt>Pages indexées</dt><dd>617</dd></div>
       <div><dt>Doublons et versions écartés</dt><dd>10</dd></div>
       <div><dt>Réponses déjà validées</dt><dd>173</dd></div>
       <div><dt>Indicateurs × 3 exercices</dt><dd>129</dd></div>
@@ -383,16 +383,16 @@
           <div class="moment">
             <p class="label">Réponse attendue</p>
             <blockquote>
-              <p>« Logiclever n'est pas certifiée ISO 27001. Sa Politique de
-              Sécurité des Systèmes d'Information est toutefois construite sur le
-              référentiel ISO 27001, un objectif de certification y est inscrit, et
-              le dispositif a été évalué par un tiers indépendant : CyberVadis
-              attribue 860/1000, niveau Mature. »</p>
+              <p>« Non, Logiclever n'est pas certifiée ISO 9001. Sa démarche est en
+              revanche évaluée par des tiers indépendants, EcoVadis et CyberVadis,
+              dont les rapports sont cités en preuve. »</p>
             </blockquote>
             <p>Le système <strong>refuse de dire oui</strong>, puis dit ce qui existe
-              réellement à la place. Trois sujets sont verrouillés de la même
-              manière : les certifications ISO, l'objectif SBTi, et l'existence
-              d'un CSE — Logiclever a un PV de carence.</p>
+              réellement à la place. Ce n'est pas une consigne figée dans l'outil :
+              la banque de réponses porte le fait « Logiclever n'est certifiée ni
+              ISO 9001, ni ISO 14001, ni ISO 27001 », sourcé, et le contrôle final
+              rejette toute certification qu'aucune preuve n'étaye. La formulation
+              exacte varie d'une fois à l'autre ; le « non » ne varie pas.</p>
           </div>
         </div>
       </li>
@@ -414,7 +414,7 @@
         </thead>
         <tbody>
           <tr><td>Réponses déjà validées</td><td>11 faits vérifiés à la main, 30 réponses EcoVadis, 95 contrôles CyberVadis, 37 réponses déjà envoyées à des clients</td><td>la plus haute</td></tr>
-          <tr><td>Extraits documentaires</td><td>837 extraits des 38 documents, ancrés à leur page</td><td>haute</td></tr>
+          <tr><td>Extraits documentaires</td><td>855 extraits des 39 documents, ancrés à leur page</td><td>haute</td></tr>
           <tr><td>Indicateurs chiffrés</td><td>129 indicateurs, exercices 2023 à 2025, avec norme GRI et objectif</td><td>haute, datée</td></tr>
           <tr><td>Registre documentaire</td><td>titre exact et date de chaque document, pour la citation</td><td>—</td></tr>
         </tbody>
@@ -445,15 +445,16 @@
   <section>
     <h2>Le traitement d'une question</h2>
     <p class="sous-titre">Si on vous demande « comment ça marche, concrètement ». Les
-      étapes grisées ne coûtent rien : ce sont du calcul, pas de l'IA.</p>
+      étapes grisées sont du calcul (vectorisation au coût négligeable, recherche en
+      base locale) : seules les autres font appel à un modèle d'IA.</p>
     <div class="tuyau">
-      <div class="etape gratuit"><span class="i">01</span><span class="quoi">Reformuler la question dans le vocabulaire des documents internes</span><span class="qui">Haiku</span></div>
+      <div class="etape"><span class="i">01</span><span class="quoi">Reformuler la question dans le vocabulaire des documents internes</span><span class="qui">IA</span></div>
       <div class="etape gratuit"><span class="i">02</span><span class="quoi">Vectoriser la question et ses sous-questions</span><span class="qui">calcul</span></div>
       <div class="etape gratuit"><span class="i">03</span><span class="quoi">Interroger les quatre sources — sémantique + plein texte français</span><span class="qui">calcul</span></div>
-      <div class="etape"><span class="i">04</span><span class="quoi">Noter chaque preuve trouvée de 0 à 10 pour cette question</span><span class="qui">Sonnet</span></div>
-      <div class="etape"><span class="i">05</span><span class="quoi">Rédiger la réponse, avec ses citations</span><span class="qui">Opus</span></div>
-      <div class="etape"><span class="i">06</span><span class="quoi">Relire la réponse contre les preuves</span><span class="qui">Sonnet</span></div>
-      <div class="etape"><span class="i">07</span><span class="quoi">Vérifier la cohérence de tout le formulaire</span><span class="qui">Sonnet, 1×</span></div>
+      <div class="etape"><span class="i">04</span><span class="quoi">Noter chaque preuve trouvée de 0 à 10 pour cette question</span><span class="qui">IA</span></div>
+      <div class="etape"><span class="i">05</span><span class="quoi">Rédiger la réponse, avec ses citations</span><span class="qui">IA</span></div>
+      <div class="etape"><span class="i">06</span><span class="quoi">Relire la réponse contre les preuves</span><span class="qui">IA</span></div>
+      <div class="etape"><span class="i">07</span><span class="quoi">Vérifier la cohérence de tout le formulaire</span><span class="qui">IA, 1×</span></div>
     </div>
     <p>Une précision qui compte si la question vient d'un profil technique :
       <strong>la même question posée deux fois donne la même réponse</strong>.
@@ -470,16 +471,15 @@
           <tr><th>Poste</th><th>Montant</th><th></th></tr>
         </thead>
         <tbody>
-          <tr><td>Traitement d'un questionnaire de 40 questions</td><td class="n">≈ 2,80 €</td><td>rédaction incluse</td></tr>
+          <tr><td>Traitement d'un questionnaire de 40 questions</td><td class="n">161 appels d'IA</td><td>4 par question + 1 contrôle de cohérence, au tarif OpenAI en vigueur</td></tr>
           <tr><td>Durée</td><td class="n">≈ 15 min</td><td>sans intervention</td></tr>
           <tr><td>Indexation initiale du corpus</td><td class="n">&lt; 0,10 €</td><td>une seule fois</td></tr>
           <tr><td>Mise à jour après un nouveau document</td><td class="n">&lt; 0,10 €</td><td>deux commandes</td></tr>
         </tbody>
       </table>
     </div>
-    <p>À comparer à la journée passée aujourd'hui par questionnaire. Le modèle le
-      plus coûteux n'est utilisé que pour la rédaction — le seul texte que
-      l'acheteur lit réellement.</p>
+    <p>À comparer à la journée passée aujourd'hui par questionnaire. Tout le reste
+      (base de données, recherche, fichiers) tourne en local, sans abonnement.</p>
   </section>
 
   <section>
@@ -528,10 +528,10 @@
     <ul class="puces">
       <li><code>python scripts/verifier.py</code> — le corpus et les pourcentages
         sont conformes. Doit afficher « Tous les contrôles passent ».</li>
-      <li><code>python scripts/deploy_supabase.py --test</code> — la base répond.
+      <li><code>python scripts/deploy_base.py --test</code> — la base répond.
         Les six questions de test doivent remonter des preuves.</li>
-      <li>Dans n8n : le workflow est <strong>Active</strong>, et les trois
-        identifiants sont rattachés.</li>
+      <li>Dans n8n : le workflow est <strong>Active</strong>, et les deux
+        identifiants (Postgres, OpenAI) sont rattachés.</li>
       <li>Faire <strong>un passage complet à blanc</strong> sur le questionnaire
         TotalEnergies, et garder le classeur produit ouvert dans un onglet — au cas
         où le réseau lâche pendant la démo.</li>

@@ -4,30 +4,28 @@ Genere le workflow n8n :
     workflows/logiclever_reponses_questionnaires.json
 
 ATTENTION - lire avant de modifier ce fichier :
-  Ce script n'est PAS la source de verite du workflow en production. Le
-  workflow reellement deploye est
-  "workflows/Logiclever - Reponses aux questionnaires de conformite VF.json",
-  maintenu a la main dans n8n (branche chat comprise). Ce generateur est
-  adapte pour reproduire fidelement VF.json (memes modeles OpenAI, memes
-  prompts, meme branche chat) afin de rester une reference exploitable,
-  mais VF.json reste le fichier a editer pour tout changement destine a la
-  production. Executer ce script n'affecte jamais ce qui tourne dans n8n :
-  il faut reimporter son resultat, ou reporter le changement a la main dans
-  le workflow live.
+  Le workflow reellement deploye est
+  "workflows/Logiclever - Reponses aux questionnaires de conformite VF.json"
+  (c'est lui qu'on importe dans n8n). Ce generateur en est la reference
+  regenerable : memes noeuds, memes modeles, memes prompts, meme code - seuls
+  les textes des notes different. Tout changement se fait ici ET se reporte a
+  l'identique dans VF.json (id, positions et credentials de VF conserves),
+  puis on compare les deux noeud par noeud. Executer ce script n'affecte
+  jamais ce qui tourne dans n8n : il faut reimporter VF.json.
 
 Chaine deterministe : aucun agent ne choisit ses outils, toutes les sources sont
 interrogees pour chaque question. Une meme question donne toujours la meme reponse.
 
   1. Analyse de la question   sortie structuree (sous-requetes)
   2. Vectorisation            OpenAI embeddings, 1 appel
-  3. Recherche                1 appel a recherche_globale (Supabase) : banque +
+  3. Recherche                1 requete SQL recherche_globale (Postgres) : banque +
                               documents + indicateurs + registre, fusion RRF en SQL
   4. Reclassement             note de pertinence par candidat
   5. Redaction                sortie structuree + citations
   6. Controle de veracite     verification contre les preuves
   --- fin de boucle (formulaire) / sortie chat ---
   7. Controle de coherence    1 appel pour tout le formulaire (formulaire uniquement)
-  8. Restitution Excel + journal Supabase (formulaire) / reponse chat (chat)
+  8. Restitution Excel + journal Postgres (formulaire) / reponse chat (chat)
 
 Une branche "chat" (Question du chat -> Preparer la question) rejoint la chaine
 d'analyse directement, en contournant la boucle du formulaire ; en sortie,
@@ -44,7 +42,14 @@ OPENAI_CHAT = "@n8n/n8n-nodes-langchain.lmChatOpenAi"
 CHAIN = "@n8n/n8n-nodes-langchain.chainLlm"
 PARSER = "@n8n/n8n-nodes-langchain.outputParserStructured"
 
-MODELE = "gpt-5.6-luna"
+MODELE = "gpt-6-luna"
+
+# Base Postgres + pgvector locale (docker/docker-compose.yml), interrogee par
+# le noeud Postgres natif de n8n. Version >= 2.5 : une expression qui renvoie
+# un tableau fournit directement les parametres $1, $2... (objets serialises
+# en JSON), sans le decoupage par virgules des versions anterieures.
+POSTGRES = "n8n-nodes-base.postgres"
+POSTGRES_TV = 2.6
 
 noeuds, liens = [], {}
 
@@ -102,7 +107,8 @@ note("1 - Entree",
      "Le formulaire est la seule porte d'entree pour un questionnaire complet : on "
      "y depose le fichier (.xlsx/.csv) recu du service achats.\n\n"
      "La colonne des questions est detectee automatiquement : chaque client a "
-     "son propre gabarit, il n'y a rien a normaliser en amont.\n\n"
+     "son propre gabarit, il n'y a rien a normaliser en amont. Si les questions "
+     "ne sont pas sur le 1er onglet, renseigner le champ \"Onglet\".\n\n"
      "Pour une question isolee, le chat (\"Question du chat\") rejoint la chaine "
      "d'analyse directement, sans passer par le formulaire.",
      -10100, -300, 440, 320)
@@ -118,13 +124,27 @@ n("Depot d'un questionnaire", "n8n-nodes-base.formTrigger", {
         {"fieldLabel": "Fichier", "fieldType": "file",
          "acceptFileTypes": ".xlsx,.xls,.csv", "requiredField": True},
         {"fieldLabel": "Consignes particulieres", "fieldType": "textarea"},
+        # Classeurs a plusieurs onglets (ex. un onglet "Informations generales"
+        # avant les onglets de questions) : sans ce champ, seul le 1er est lu.
+        {"fieldLabel": "Onglet (optionnel)",
+         "placeholder": "Nom exact de l'onglet des questions - vide = premier onglet"},
     ]},
     "options": {"appendAttribution": False},
 }, -10016, 80, 2.2)
 
+# Plage fixe, sans ligne d'en-tete : le lecteur sort alors UNE entree par
+# ligne de la feuille, lignes vides comprises, si bien que l'entree i est la
+# ligne Excel i + 1 (colonne "Ligne" du classeur exploitable). Borner la plage
+# evite aussi de derouler le million de lignes d'une feuille dont la zone
+# utilisee est demesuree (la cause du depassement memoire corrige en ee465ab,
+# qui avait fait passer la lecture en "ligne d'en-tete" et decale la numerotation).
+LIGNES_LUES = 3000
+PLAGE_LUE = "A1:AZ%d" % LIGNES_LUES
+
 n("Lire le fichier", "n8n-nodes-base.extractFromFile", {
     "operation": "xlsx", "binaryPropertyName": "Fichier",
-    "options": {"headerRow": True, "includeEmptyCells": False},
+    "options": {"headerRow": False, "includeEmptyCells": False, "range": PLAGE_LUE,
+                "sheetName": "={{ String($json['Onglet (optionnel)'] || '').trim() }}"},
 }, -9776, 80, 1)
 lien("Depot d'un questionnaire", "Lire le fichier")
 
@@ -134,13 +154,21 @@ NORMALISER = r"""
 // La colonne des questions n'est jamais au meme endroit d'un client a l'autre :
 // on retient celle qui contient le plus de cellules ressemblant a une question.
 
+// Nombre de lignes de la plage lue par "Lire le fichier" (PLAGE_LUE dans
+// build_workflow.py) : les deux doivent rester alignes.
+const LIGNES_LUES = __LIGNES_LUES__;
+
 const sansAccent = (s) => (s || '').toString()
   .normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const nonVide = (l) => Object.values(l).some(v => String(v ?? '').trim());
 
-// Le nœud de lecture (sans ligne d'en-tete) sort chaque ligne comme un
-// tableau brut sous la cle "row" : { row: [valA, valB, ...] }. On re-ecrit
-// chaque ligne en objet indexe (c0, c1, ...) pour que la detection de
-// colonnes ci-dessous fonctionne quel que soit le gabarit client.
+// "Lire le fichier" lit une plage fixe sans ligne d'en-tete : il sort UNE
+// entree par ligne de la feuille, lignes vides comprises, chacune sous la
+// forme { row: [valA, valB, ...] }. L'entree i est donc toujours la ligne
+// Excel i + 1 : c'est ce qui rend la colonne "Ligne" du classeur exploitable
+// pour retrouver la question dans le fichier du client. On re-ecrit chaque
+// ligne en objet indexe (c0, c1, ...) pour que la detection de colonnes
+// ci-dessous fonctionne quel que soit le gabarit client.
 const lignes = $input.all().map(i => {
   const j = i.json;
   if (Array.isArray(j.row)) {
@@ -150,7 +178,14 @@ const lignes = $input.all().map(i => {
   }
   return j;
 });
-if (!lignes.length) throw new Error("Aucune ligne exploitable dans le fichier.");
+if (!lignes.some(nonVide)) throw new Error("Le fichier (ou l'onglet choisi) est vide.");
+// Une derniere ligne remplie signifie que la feuille continue au-dela de la
+// plage lue : mieux vaut s'arreter que repondre a un questionnaire tronque.
+if (lignes.length >= LIGNES_LUES && nonVide(lignes[LIGNES_LUES - 1])) {
+  throw new Error("Le questionnaire depasse " + LIGNES_LUES + " lignes : seules les "
+                  + LIGNES_LUES + " premieres sont lues. Scindez le fichier, ou augmentez "
+                  + "LIGNES_LUES dans build_workflow.py.");
+}
 
 // L'ordre de "colonnes" doit refleter l'ordre reel des colonnes de la feuille
 // pour que la detection de la section reste correcte. "Include Empty Cells"
@@ -184,17 +219,46 @@ const scoreColonne = (col) => {
 };
 
 const classement = colonnes.map(c => [c, scoreColonne(c)]).sort((a, b) => b[1] - a[1]);
-if (!classement.length || classement[0][1] <= 0) {
+
+// Repli : certains questionnaires listent des EXIGENCES a cocher plutot que
+// des questions (« Chiffrement des donnees personnelles | Oui / Non »). Une
+// ligne est une exigence si l'une de ses cellules propose le choix Oui/Non ;
+// la colonne retenue est celle qui porte le plus de libelles sur ces lignes.
+// Ne s'active que si aucune colonne de questions n'a ete trouvee.
+const OUI_NON = /^\s*(oui|yes)\s*\/\s*(non|no)\s*$/i;
+const aChoixOuiNon = (l) => Object.values(l).some(v => OUI_NON.test(String(v ?? '')));
+const estLibelle = (v) => {
+  const s = String(v ?? '').trim();
+  return s.length >= 15 && !/:\s*$/.test(s) && !OUI_NON.test(s) && !/^[\d\s.,%-]+$/.test(s);
+};
+let mode = 'question';
+let col = null;
+if (classement.length && classement[0][1] > 0) {
+  col = classement[0][0];
+} else {
+  const exigences = lignes.filter(aChoixOuiNon);
+  const candidates = colonnes
+    .map(c => [c, exigences.filter(l => estLibelle(l[c])).length])
+    .sort((a, b) => b[1] - a[1]);
+  if (candidates.length && candidates[0][1] >= 2) {
+    col = candidates[0][0];
+    mode = 'exigence';
+  }
+}
+if (col === null) {
   // Aucune cellule ne ressemble a une question : le plus souvent, le fichier
   // depose n'est pas la feuille du questionnaire (onglet de listes de choix,
   // extrait partiel...). On montre un apercu pour rendre l'erreur parlante.
-  const apercu = lignes.map(l => colonnes.map(c => String(l[c] ?? '').trim()).join(' | '))
-    .filter(Boolean).slice(0, 8).join(' / ').slice(0, 300);
-  throw new Error("Aucune question detectee dans le fichier : verifiez que la feuille deposee "
-                  + "est bien celle du questionnaire (colonnes : " + colonnes.join(', ')
-                  + (apercu ? " ; apercu : " + apercu : " ; fichier vide ?") + ")");
+  const apercu = lignes.filter(nonVide)
+    .map(l => colonnes.map(c => String(l[c] ?? '').trim()).join(' | '))
+    .slice(0, 8).join(' / ').slice(0, 300);
+  throw new Error("Aucune question detectee dans l'onglet lu : si les questions sont sur un "
+                  + "autre onglet, indiquez son nom dans le champ \"Onglet (optionnel)\" du "
+                  + "formulaire (colonnes : " + colonnes.join(', ')
+                  + (apercu ? " ; apercu : " + apercu : "") + ")");
 }
-const col = classement[0][0];
+const CONSIGNE_EXIGENCE = "Ce libelle est une exigence a cocher Oui/Non, pas une question : "
+  + "indiquer si Logiclever met en oeuvre cette mesure et comment.";
 
 // colonne de section : celle qui precede, si elle est courte et peu interrogative
 const idx = colonnes.indexOf(col);
@@ -214,20 +278,24 @@ const meta = $('Depot d\'un questionnaire').isExecuted
 const sorties = [];
 lignes.forEach((l, i) => {
   const q = String(l[col] ?? '').trim();
-  if (estQuestion(q) < 0.7) return;
+  const retenue = mode === 'question'
+    ? estQuestion(q) >= 0.7
+    : estLibelle(q) && aChoixOuiNon(l);
+  if (!retenue) return;
   sorties.push({ json: {
-    ligne: i + 1,
+    ligne: i + 1,   // ligne Excel (voir en tete)
     section: colSection ? String(l[colSection] ?? '').trim() : '',
     question: q,
     client: meta['Client'] || 'Client',
     intitule: meta['Intitule du questionnaire'] || 'Questionnaire de conformite',
-    consignes: meta['Consignes particulieres'] || '',
+    consignes: [meta['Consignes particulieres'] || '',
+                mode === 'exigence' ? CONSIGNE_EXIGENCE : ''].filter(Boolean).join(' '),
   }});
 });
 if (!sorties.length) throw new Error("Aucune question detectee dans la colonne " + col + ".");
 sorties.forEach(s => s.json.total = sorties.length);
 return sorties;
-"""
+""".replace("__LIGNES_LUES__", str(LIGNES_LUES))
 
 n("Normaliser les questions", "n8n-nodes-base.code",
   {"mode": "runOnceForAllItems", "jsCode": NORMALISER}, -9536, 80, 2)
@@ -245,15 +313,19 @@ PARAMETRES_PARTAGES = {
     "nb_candidats": 40,
     "seuil_haute_confiance": 0.75,
     "seuil_a_verifier": 0.5,
-    "supabase_url": "https://VOTRE-PROJET.supabase.co",
+    # Conteneur nginx "fichiers" : PDF de preuve et classeurs generes.
+    "fichiers_url": "http://localhost:8088",
 }
 _TYPE_N8N = {str: "string", int: "number", float: "number", bool: "boolean"}
 PARAMETRES_ASSIGNMENTS = [
     {"id": "p%d" % i, "name": k, "value": v, "type": _TYPE_N8N[type(v)]}
     for i, (k, v) in enumerate(PARAMETRES_PARTAGES.items(), 1)
 ]
-PARAMETRES_JS_LITERAL = ",\n  ".join(
-    "%s: %s" % (k, json.dumps(v)) for k, v in PARAMETRES_PARTAGES.items())
+# Chaines entre apostrophes et virgule finale : meme ecriture que VF.json, pour
+# que la comparaison noeud a noeud ne signale que de vraies differences.
+PARAMETRES_JS_LITERAL = "".join(
+    "%s: %s,\n  " % (k, "'%s'" % v if isinstance(v, str) else json.dumps(v))
+    for k, v in PARAMETRES_PARTAGES.items()).rstrip()
 
 _NOTE_PARAMETRES_DUPLIQUES = (
     "Duplique dans \"Preparer la question\" (branche chat), qui ne peut pas "
@@ -276,7 +348,7 @@ note("1 bis - Chat (question isolee)",
      "Une question posee dans le chat contourne le formulaire : \"Preparer la "
      "question\" reproduit le format de sortie de \"Normaliser les questions\" "
      "et rejoue les parametres de la branche formulaire (nb_candidats, seuils, "
-     "URL Supabase), sans toucher au nœud \"Parametres\".\n\n"
+     "URL des fichiers), sans toucher au nœud \"Parametres\".\n\n"
      "En sortie, \"Aiguiller vers chat\" (apres Consolider la reponse) separe "
      "les deux usages.",
      -10100, 250, 440, 300)
@@ -384,7 +456,7 @@ lien("Preparer la question", "Analyser la question")
 #  3. Vectorisation + recherche
 # =====================================================================
 note("3 - Recherche",
-     "**Un seul appel HTTP par question.**\n\n"
+     "**Une seule requete SQL par question.**\n\n"
      "`recherche_globale` interroge cote SQL les quatre sources - banque de "
      "reponses validees, extraits documentaires, indicateurs chiffres, registre - "
      "pour chacune des sous-requetes, puis fusionne les rangs (RRF).\n\n"
@@ -392,7 +464,7 @@ note("3 - Recherche",
      "client (mot-a-mot), avant la reformulation et les sous-requetes : la "
      "reformulation peut perdre un sigle litteral (« DPO », « RSSI »...) que "
      "seule la recherche plein texte sait retrouver mot-a-mot.\n\n"
-     "Chat et formulaire lisent leurs parametres (nb_candidats, URL Supabase) "
+     "Chat et formulaire lisent leurs parametres (nb_candidats) "
      "depuis \"Preparer la question\" si elle a ete executee, sinon depuis "
      "\"Parametres\".",
      -8420, -300, 460, 340)
@@ -413,8 +485,12 @@ QUESTION_BRUTE = (
     "($('Preparer la question').isExecuted ? $('Preparer la question').item.json.question "
     ": $('Chaque question').item.json.question)"
 )
+# Le filtre ecarte une sous-requete vide (l'API d'embeddings refuse une chaine
+# vide) ; il est applique a l'identique dans "Vectoriser" et "Recherche", qui
+# doivent envoyer exactement la meme liste, dans le meme ordre.
 REQUETES_JS = (
-    "[%s, $json.output.question_normalisee].concat($json.output.sous_requetes).slice(0, 6)"
+    "[%s, $json.output.question_normalisee].concat($json.output.sous_requetes)"
+    ".filter(s => typeof s === 'string' && s.trim()).slice(0, 6)"
     % QUESTION_BRUTE
 )
 
@@ -431,21 +507,29 @@ n("Vectoriser les requetes", "n8n-nodes-base.httpRequest", {
 }, -8336, 80, 4.2)
 lien("Analyser la question", "Vectoriser les requetes")
 
-n("Recherche", "n8n-nodes-base.httpRequest", {
-    "method": "POST",
-    "url": "={{ %s.supabase_url }}/rest/v1/rpc/recherche_globale" % PARAMS_TERNAIRE,
-    "authentication": "predefinedCredentialType", "nodeCredentialType": "supabaseApi",
-    "sendBody": True, "specifyBody": "json",
-    "jsonBody": "={{ JSON.stringify({ "
-                "requetes: %s, "
-                "requete_embeddings: $json.data.sort((a, b) => a.index - b.index)"
-                ".map(d => d.embedding), "
-                "annee_cible: $('Analyser la question').item.json.output.annee_cible ?? null, "
-                "nb_candidats: %s.nb_candidats }) }}"
+RECHERCHE_SQL = """select r->'candidats' as candidats, r->'registre' as registre
+from public.recherche_globale($1::jsonb, $2::jsonb, $3::int, $4::int) as r"""
+
+# Le resultat garde la forme de l'ancienne reponse RPC ({candidats, registre})
+# : les noeuds en aval lisent $('Recherche').item.json.candidats sans changement.
+# Les tableaux passent par JSON.stringify : pg-promise formaterait sinon un
+# tableau JS en array[...] (text[]), non convertible en jsonb.
+# annee_cible doit valoir null et jamais undefined : n8n ignore les valeurs
+# undefined du tableau, ce qui decalerait $3/$4.
+# Pas de onError : une base injoignable arrete l'execution avec l'erreur
+# Postgres, au lieu de faire rediger chaque reponse sans aucune preuve (et de
+# payer tous les appels LLM de la suite pour rien).
+n("Recherche", POSTGRES, {
+    "operation": "executeQuery",
+    "query": RECHERCHE_SQL,
+    "options": {"queryReplacement":
+                "={{ [JSON.stringify(%s), "
+                "JSON.stringify($json.data.sort((a, b) => a.index - b.index).map(d => d.embedding)), "
+                "$('Analyser la question').item.json.output.annee_cible ?? null, "
+                "%s.nb_candidats] }}"
                 % (REQUETES_JS.replace("$json.output", "$('Analyser la question').item.json.output"),
-                   PARAMS_TERNAIRE),
-    "options": {"response": {"response": {"neverError": True}}},
-}, -8096, 80, 4.2)
+                   PARAMS_TERNAIRE)},
+}, -8096, 80, POSTGRES_TV)
 lien("Vectoriser les requetes", "Recherche")
 
 
@@ -524,19 +608,31 @@ const dossier = retenus.map((x, i) => {
   // Une reponse validee porte ses propres documents justificatifs : c'est eux
   // qu'il faut citer au client, pas la reference interne de la banque
   // (FAIT/GES-SCOPES, ECOVADIS/LAB100...).
-  if (c.type === 'reponse_validee' && Array.isArray(c.sources) && c.sources.length) {
-    const detail = [...new Map(c.sources
-      .filter(s => s && s.document)
-      .map(s => [s.document, { document: s.document, page: s.pages || '' }]))
-      .values()].slice(0, 3);
+  // Une entree par document, avec TOUTES ses pages citees (« 12, 14, 50-53 ») :
+  // FAIT/GES-SCOPES cite GES-2023 trois fois, et ne garder qu'une page perdait
+  // celles qui portent les chiffres. Document et page de la preuve viennent de
+  // la 1re source VALIDE (avec un document), pas de sources[0] qui peut en
+  // etre depourvue ; sans aucune source valide, la reponse est traitee comme
+  // un extrait ordinaire (reference de la banque).
+  const pagesParDoc = new Map();
+  for (const s of (c.type === 'reponse_validee' && Array.isArray(c.sources) ? c.sources : [])) {
+    if (!s || !s.document) continue;
+    const pages = pagesParDoc.get(s.document) || [];
+    const p = String(s.pages || '').trim();
+    if (p && !pages.includes(p)) pages.push(p);
+    pagesParDoc.set(s.document, pages);
+  }
+  const detail = [...pagesParDoc].slice(0, 3)
+    .map(([document, pages]) => ({ document, page: pages.join(', ') }));
+  if (detail.length) {
     const refs = detail.map(s => s.document + (s.page ? ', p. ' + s.page : ''));
     return {
       rang: i + 1, type: c.type, note: x.note,
-      document: c.sources[0].document,
-      titre: c.titre || c.sources[0].document,
-      page: c.sources[0].pages || '',
-      citation: refs.join(' ; ') || c.reference,
-      sources_detail: detail.length ? detail : [{ document: c.reference, page: '' }],
+      document: detail[0].document,
+      titre: c.titre || detail[0].document,
+      page: detail[0].page,
+      citation: refs.join(' ; '),
+      sources_detail: detail,
       texte: String(c.texte).slice(0, 1200),
     };
   }
@@ -933,9 +1029,6 @@ const p = $('Preparer la question').isExecuted
 const q = { client: d.client, intitule: d.intitule, question: d.question_client, ligne: d.ligne, section: d.section };
 
 const confiance = controle.confiance_finale ?? redaction.confiance ?? 0;
-const niveau = controle.niveau
-  || (confiance >= p.seuil_haute_confiance ? 'haute'
-      : confiance >= p.seuil_a_verifier ? 'moyenne' : 'a_verifier');
 
 // Le modele doit recopier le code exact (POL-SSI...), mais recite parfois le
 // titre lisible a la place malgre la consigne : on retente alors sur le
@@ -953,14 +1046,38 @@ const trouverFiche = (valeur) => {
 // perimes/mal encodes (export Excel), qui ne correspondent a aucun document
 // reel : on ne les affiche jamais telles quelles au client (illisibles, non
 // verifiables), on se contente de compter combien ont ete ecartees.
+// Une source resolue porte le code_doc reel (et non le libelle recopie par le
+// modele) : c'est lui qui est journalise, et qui doit rester reutilisable si
+// la reponse rejoint un jour la banque de reponses validees.
 const toutesSources = (redaction.sources || []).map(s => {
   const fiche = trouverFiche(s.document);
   const page = String(s.page || '').replace(/^\s*p\.?\s*/i, '');
-  return { document: s.document, titre: fiche ? fiche.titre : s.document,
+  return { document: fiche ? fiche.code : s.document, titre: fiche ? fiche.titre : s.document,
            page, url: fiche ? fiche.url_partage : null, resolue: !!fiche };
 });
-const sources = toutesSources.filter(s => s.resolue);
-const nbNonResolues = toutesSources.length - sources.length;
+// Une meme preuve citee deux fois (meme document, meme page) n'apparait qu'une fois.
+const vues = new Set();
+const sources = toutesSources.filter(s => {
+  const cle = s.document + '|' + s.page;
+  if (!s.resolue || vues.has(cle)) return false;
+  vues.add(cle);
+  return true;
+});
+const nbNonResolues = toutesSources.filter(s => !s.resolue).length;
+
+// Niveau : le plus prudent entre celui du controleur et celui des seuils de
+// "Parametres" (le controleur ne peut donc pas classer « haute » une reponse
+// sous le seuil). Une reponse sans aucune source resolue, ou batie sur le
+// repli (aucune preuve jugee pertinente), n'est jamais au-dessus de
+// a_verifier : « haute » signifie adossee a une preuve citable.
+const RANG = { sans_reponse: 0, a_verifier: 1, moyenne: 2, haute: 3 };
+const parSeuil = confiance >= p.seuil_haute_confiance ? 'haute'
+  : confiance >= p.seuil_a_verifier ? 'moyenne' : 'a_verifier';
+let niveau = controle.niveau in RANG ? controle.niveau : parSeuil;
+if (niveau !== 'sans_reponse') {
+  if (RANG[parSeuil] < RANG[niveau]) niveau = parSeuil;
+  if ((!sources.length || d.repli) && RANG[niveau] > RANG.a_verifier) niveau = 'a_verifier';
+}
 
 const alertes = [];
 if (controle.alerte) alertes.push(controle.alerte);
@@ -973,8 +1090,10 @@ if ((redaction.elements_manquants || []).length) {
   alertes.push('Elements manquants : ' + redaction.elements_manquants.join(' / '));
 }
 if (nbNonResolues) {
-  alertes.push(nbNonResolues + ' reference(s) documentaire(s) non identifiee(s) '
-    + '(banque de reponses perimee) : a corriger dans answer_bank.json.');
+  // Origine possible : une reference de la banque de reponses qui ne designe
+  // aucun document du registre, ou un code mal recopie par le redacteur.
+  alertes.push(nbNonResolues + ' reference(s) documentaire(s) absente(s) du registre, '
+    + 'ecartee(s) de la citation.');
 }
 
 return [{ json: {
@@ -1068,7 +1187,7 @@ return [{ json: {
   // Texte integral (pas de troncature) : un controle de coherence qui ne
   // voit qu'un debut de reponse manque exactement les nuances/exceptions
   // qui font les vraies contradictions (meme risque que la dilution des
-  // faits de cloture corrigee dans decouper_document, deploy_supabase.py).
+  // faits de cloture corrigee dans decouper_document, deploy_base.py).
   resume: reponses.map(r => 'Ligne ' + r.ligne + ' | ' + r.question
                           + '\nReponse : ' + String(r.reponse)).join('\n\n'),
 }}];
@@ -1130,7 +1249,7 @@ note("8 - Restitution",
      "Un classeur Excel par questionnaire : la reponse, la citation exacte "
      "(document + page), la confiance et l'alerte de relecture.\n\n"
      "Les lignes **A relire = OUI** sont a reprendre en priorite.\n\n"
-     "Le journal Supabase est ecrit **apres** la passe de coherence : il contient "
+     "Le journal Postgres est ecrit **apres** la passe de coherence : il contient "
      "donc la version finale corrigee, en un seul insert.",
      -5720, -340, 420, 340)
 
@@ -1151,7 +1270,12 @@ for (const c of contradictions) {
   const cible = parLigne.get(c.ligne_a_corriger);
   if (cible && c.reponse_corrigee) {
     cible.reponse = c.reponse_corrigee;
-    cible.alerte = [cible.alerte, 'Reponse ajustee pour coherence'].filter(Boolean).join(' | ');
+    // La reponse courte (Oui/Non/valeur) decrivait l'ancienne reponse : la
+    // garder risquerait une case cochee contredisant le texte corrige. Elle
+    // est videe, a completer par le relecteur (la ligne passe en a_verifier).
+    cible.reponse_courte = '';
+    cible.alerte = [cible.alerte, 'Reponse ajustee pour coherence (reponse courte a completer)']
+      .filter(Boolean).join(' | ');
     cible.niveau = 'a_verifier';
   }
 }
@@ -1180,35 +1304,47 @@ n("Classeur de reponses", "n8n-nodes-base.convertToFile", {
 }, -5440, -16, 1.1)
 lien("Preparer la restitution", "Classeur de reponses")
 
-# Le classeur est televerse dans le bucket "documents-preuve" existant (pas
-# de nouveau bucket a creer) sous generes/, et "Terminer" relit le chemin
-# exact depuis la reponse d'upload (cle "Key") plutot que de le recalculer
-# une seconde fois - evite tout risque de decalage entre les deux noeuds.
-n("Televerser le classeur", "n8n-nodes-base.httpRequest", {
-    "method": "PUT",
-    "url": "={{ $('Parametres').first().json.supabase_url }}/storage/v1/object/documents-preuve/generes/"
-           "{{ $('Rassembler les reponses').first().json.client.replace(/[^A-Za-z0-9._-]+/g, '-') }}"
-           "-{{ $now.toFormat('yyyyLLdd-HHmmss') }}.xlsx",
-    "authentication": "predefinedCredentialType", "nodeCredentialType": "supabaseApi",
-    "sendBody": True, "contentType": "binaryData", "inputDataFieldName": "data",
+# Le classeur est ecrit dans docker/stockage/generes (monte en /files dans
+# n8n), servi par le conteneur "fichiers" ; "Terminer" relit le chemin exact
+# depuis la sortie d'ecriture (fileName) plutot que de le recalculer une
+# seconde fois - evite tout risque de decalage entre les deux noeuds.
+n("Televerser le classeur", "n8n-nodes-base.readWriteFile", {
+    "operation": "write",
+    "fileName": "=/files/generes/"
+                "{{ $('Rassembler les reponses').first().json.client.replace(/[^A-Za-z0-9._-]+/g, '-') }}"
+                "-{{ $now.toFormat('yyyyLLdd-HHmmss') }}.xlsx",
+    "dataPropertyName": "data",
     "options": {},
-}, -5200, -16, 4.2)
+}, -5200, -16, 1.1)
 lien("Classeur de reponses", "Televerser le classeur")
 
 n("Terminer", "n8n-nodes-base.form", {
     "operation": "completion",
     "respondWith": "redirect",
-    "redirectUrl": "={{ $('Parametres').first().json.supabase_url }}/storage/v1/object/public/{{ $json.Key }}",
+    "redirectUrl": "={{ $('Parametres').first().json.fichiers_url }}/generes/"
+                   "{{ $json.fileName.split('/').pop() }}",
     "options": {},
 }, -4960, -16, 1)
 lien("Televerser le classeur", "Terminer")
 
-n("Journaliser la campagne", "n8n-nodes-base.httpRequest", {
-    "method": "POST",
-    "url": "={{ $('Parametres').first().json.supabase_url }}/rest/v1/reponses_generees",
-    "authentication": "predefinedCredentialType", "nodeCredentialType": "supabaseApi",
-    "sendBody": True, "specifyBody": "json",
-    "jsonBody": "={{ JSON.stringify((() => { "
+JOURNAL_SQL = """insert into public.reponses_generees
+  (client, questionnaire, ligne, section, question, reponse, sources, confiance, niveau, alerte)
+select client, questionnaire, ligne, section, question, reponse,
+       coalesce(sources, '[]'::jsonb), confiance, niveau, alerte
+from jsonb_to_recordset($1::jsonb) as x(client text, questionnaire text, ligne int,
+       section text, question text, reponse text, sources jsonb, confiance real,
+       niveau text, alerte text)"""
+
+# executeOnce : le noeud recoit une ligne par question, mais l'expression
+# relit deja toutes les lignes - un seul insert par formulaire.
+# onError continue : le journal est secondaire, son echec ne doit pas priver
+# l'utilisateur du classeur deja produit (l'erreur reste visible dans la
+# sortie du noeud, dans l'historique d'executions n8n).
+n("Journaliser la campagne", POSTGRES, {
+    "operation": "executeQuery",
+    "query": JOURNAL_SQL,
+    "options": {"queryReplacement":
+                "={{ [JSON.stringify((() => { "
                 "const base = $('Rassembler les reponses').first().json; "
                 "const sources = new Map(base.reponses.map(r => [r.ligne, r.sources])); "
                 "return $('Preparer la restitution').all().map(i => ({ "
@@ -1216,9 +1352,8 @@ n("Journaliser la campagne", "n8n-nodes-base.httpRequest", {
                 "ligne: i.json.Ligne, section: i.json.Section, question: i.json.Question, "
                 "reponse: i.json.Reponse, sources: sources.get(i.json.Ligne) || [], "
                 "confiance: i.json.Confiance, niveau: i.json.Niveau, "
-                "alerte: i.json.Alerte })); })()) }}",
-    "options": {"response": {"response": {"neverError": True}}},
-}, -5440, 224, 4.2)
+                "alerte: i.json.Alerte })); })())] }}"},
+}, -5440, 224, POSTGRES_TV, extra={"executeOnce": True, "onError": "continueRegularOutput"})
 lien("Preparer la restitution", "Journaliser la campagne")
 
 

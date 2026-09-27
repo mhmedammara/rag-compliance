@@ -1,11 +1,11 @@
 -- =====================================================================
 --  LOGICLEVER - Base de connaissance conformite (EcoVadis / CyberVadis)
---  Schema Supabase : RAG hybride francais (vectoriel + plein texte) + SQL
+--  Schema Postgres + pgvector : RAG hybride francais (vectoriel + plein texte) + SQL
 --  A executer une seule fois. Idempotent.
 -- =====================================================================
 
--- Supabase installe ses extensions dans le schema `extensions`, un Postgres
--- nu les met dans `public`. On accepte les deux cas.
+-- Supabase installait ses extensions dans le schema `extensions`, un Postgres
+-- nu (image pgvector/pgvector) les met dans `public`. On accepte les deux cas.
 do $$
 declare ext text;
 begin
@@ -44,7 +44,7 @@ end $$;
 
 -- ---------------------------------------------------------------------
 -- 1 bis. Enveloppe d'acces a unaccent(), pour ne pas dependre du
---        search_path effectif au moment de l'appel PostgREST.
+--        search_path effectif au moment de l'appel depuis n8n.
 -- ---------------------------------------------------------------------
 create or replace function public.sans_accent(t text)
 returns text
@@ -68,7 +68,7 @@ create table if not exists public.documents (
   langue_source   text not null default 'fr',          -- langue du document d'origine
   nb_pages        int,
   md5             text,
-  url_partage     text,                                -- lien Drive a fournir au client
+  url_partage     text,                                -- lien du fichier (serveur "fichiers" local)
   cree_le         timestamptz not null default now()
 );
 
@@ -78,8 +78,8 @@ comment on table public.documents is
 
 -- ---------------------------------------------------------------------
 -- 3. Chunks documentaires
---    Table compatible avec le noeud "Supabase Vector Store" de n8n :
---    colonnes id / content / metadata / embedding.
+--    Colonnes id / content / metadata / embedding (format des vector
+--    stores n8n).
 --    Colonne tsv generee en plus pour la recherche plein texte francaise.
 -- ---------------------------------------------------------------------
 create table if not exists public.documents_rag (
@@ -575,20 +575,25 @@ select jsonb_build_object(
                'sources', sources, 'score', round(score::numeric, 6))
              order by score desc)
       from classes), '[]'::jsonb),
+  -- Le registre sert a resoudre les citations (code -> titre + lien) : il doit
+  -- couvrir tout document citable, y compris "historique" (GES-2021), que la
+  -- recherche remonte des qu'une annee est demandee. Seuls les documents
+  -- "obsolete" (remplaces, ou retires du registre) en sont exclus.
   'registre', coalesce((
       select jsonb_agg(jsonb_build_object('code', code_doc, 'titre', titre,
                                           'categorie', categorie, 'pages', nb_pages,
                                           'url_partage', url_partage)
              order by code_doc)
-      from public.documents where statut = 'actif'), '[]'::jsonb)
+      from public.documents where statut <> 'obsolete'), '[]'::jsonb)
 );
 $$;
 
 
 -- ---------------------------------------------------------------------
 -- 7. Securite : ces tables ne contiennent que des donnees d'entreprise
---    destinees a etre partagees avec les clients. RLS activee, lecture
---    ouverte au role de service utilise par n8n.
+--    destinees a etre partagees avec les clients. RLS activee ; le role
+--    proprietaire (celui de n8n et des scripts) n'y est pas soumis. La
+--    politique service_role n'existe que sur une base Supabase.
 -- ---------------------------------------------------------------------
 alter table public.documents           enable row level security;
 alter table public.documents_rag       enable row level security;
@@ -599,6 +604,9 @@ alter table public.reponses_generees   enable row level security;
 do $$
 declare t text;
 begin
+  if not exists (select 1 from pg_roles where rolname = 'service_role') then
+    return;
+  end if;
   foreach t in array array['documents', 'documents_rag', 'reponses_validees',
                            'indicateurs', 'reponses_generees']
   loop
