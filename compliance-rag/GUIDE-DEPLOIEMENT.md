@@ -28,7 +28,7 @@ compliance-rag/
 │   └── 01_schema.sql             tables, index HNSW/GIN, fonctions de recherche
 │
 ├── scripts/
-│   ├── build_registry.py         extrait les 39 documents (dédoublonnés)
+│   ├── build_registry.py         trouve, lit (OCR compris) et dédoublonne les documents
 │   ├── build_answer_bank.py      extrait 173 réponses validées + 129 indicateurs
 │   ├── deploy_base.py            ⇦ LE script de déploiement
 │   ├── build_workflow.py         régénère le JSON n8n
@@ -423,17 +423,42 @@ objectif, méthode de calcul et document source.
 
 ### Ajouter ou mettre à jour un document
 
-1. Déposez le fichier dans `a/` ou `b/`.
-2. Ajoutez une ligne dans la liste `REGISTRY` de `scripts/build_registry.py`
-   (code, chemin, titre, catégorie, date, statut). Si le document remplace une
-   version antérieure, passez l'ancienne à `"obsolete"` ou déclarez-la dans
-   `DOUBLONS` — la recherche ignore par défaut tout ce qui n'est pas `actif`.
-3. Relancez :
+1. Déposez le fichier dans `a/`, `b/` ou n'importe quel autre dossier de
+   `Docs pour RAG` (sous-dossiers compris), sauf `compliance-rag/`, `Demo/`,
+   `Recette/` et `EXemples remplies de formulaires clients/` : ce sont des
+   questionnaires, pas des preuves (liste `DOSSIERS_EXCLUS`).
+   Formats lus : PDF, Word (`.docx`), PowerPoint (`.pptx`), Excel (`.xlsx`) et
+   images (`.png`, `.jpg`, `.tif`, `.bmp`). Une page scannée ou imprimée en
+   image passe par l'OCR (Tesseract, français + anglais).
+2. Relancez :
 
 ```bash
 python scripts/build_registry.py
 python scripts/deploy_base.py
 ```
+
+`build_registry.py` affiche chaque document ajouté automatiquement avec le code,
+le titre, la catégorie et la date qu'il en a déduits : nom du fichier (ou, pour
+un nom sans signification comme `b/<uuid>.pdf`, titre du document ou première
+ligne), propriétés du fichier pour la date. Aucun modèle de langage n'intervient.
+Pour corriger ces métadonnées, ajoutez une ligne dans la liste `REGISTRY` (code,
+chemin, titre, catégorie, date, statut) : elle prime sur la déduction. Les
+codes déjà présents dans `REGISTRY` sont cités par la banque de réponses : ne
+les renommez pas.
+
+Les doublons sont écartés seuls : copie exacte (mêmes octets ou même texte),
+ou texte identique à plus de 60 % (version antérieure : la plus récente est
+gardée). Deux exceptions, signalées par un avertissement :
+
+- un fichier qui ressemble à un document de `REGISTRY` mais plus récent est
+  indexé **à côté** de l'ancien. S'il le remplace, pointez l'entrée `REGISTRY`
+  vers le nouveau fichier (le code, donc les citations, sont conservés) ;
+- une image dont l'OCR ne donne que du bruit (photo, logo) n'est pas indexée.
+  Une entrée `REGISTRY` force son indexation.
+
+`deploy_base.py` sans option re-vectorise tout le corpus (quelques centimes
+d'embeddings OpenAI) : c'est nécessaire dès qu'un document est ajouté, car
+`--no-embed` refuse les passages qui n'ont pas encore de vecteur.
 
 ### Mettre à jour les chiffres annuels
 
