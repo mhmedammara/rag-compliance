@@ -13,11 +13,13 @@
 #  Fichiers       http://localhost:8088/documents-preuve/{code_doc}.pdf
 #                 http://localhost:8088/generes/{classeur}.xlsx
 #
-#  Memoire : chaque service est plafonne (mem_limit) avec une marge au-dessus
-#  de sa consommation reelle en charge ; les tailles de tas Node / buffers
-#  Postgres sont reglees en dessous de ces plafonds pour ne jamais etre tues
-#  par le noyau (OOM). Mesure au repos : n8n ~0,5 Go, postgres ~40 Mo,
-#  fichiers ~3 Mo.
+#  Ressources : chaque service est plafonne en memoire (mem_limit) et en CPU
+#  (cpus) avec une marge au-dessus de sa consommation reelle ; les tailles de
+#  tas Node / buffers Postgres sont reglees en dessous de ces plafonds pour ne
+#  jamais etre tues par le noyau (OOM). Mesure au repos (hors cache disque) :
+#  n8n ~160 Mo (~370 Mo juste apres demarrage), postgres ~45 Mo, fichiers ~3 Mo.
+#  Les executions actuelles du workflow pesent < 1 Mo : c'est le socle de n8n
+#  (noeuds, modules LangChain) qui domine, pas les donnees traitees.
 # =====================================================================
 
 name: logiclever-conformite
@@ -34,12 +36,16 @@ services:
       # Le noeud "Televerser le classeur" ecrit dans /files/generes.
       N8N_RESTRICT_FILE_ACCESS_TO: /files
       # Tas V8 plafonne : processus principal et runner des noeuds Code.
-      NODE_OPTIONS: --max-old-space-size=512
-      N8N_RUNNERS_MAX_OLD_SPACE_SIZE: "192"
+      NODE_OPTIONS: --max-old-space-size=384
+      N8N_RUNNERS_MAX_OLD_SPACE_SIZE: "128"
       # Telemetrie et verification de version : taches de fond inutiles ici.
       N8N_DIAGNOSTICS_ENABLED: "false"
       N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
-    mem_limit: 1200m
+    # 384 + 128 Mo de tas + ~200 Mo hors tas (code, buffers) < 768 Mo.
+    # CPU : les 3 services se partagent 1 fil du processeur (0,6 + 0,3 + 0,1).
+    # Le workflow attend surtout l'API LLM ; seul le demarrage est plus lent.
+    cpus: 0.6
+    mem_limit: 768m
     volumes:
       # Volume existant du conteneur "docker run" d'origine : workflows,
       # credentials et cle de chiffrement sont conserves.
@@ -56,15 +62,21 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-logiclever}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Renseignez POSTGRES_PASSWORD dans docker/.env}
       POSTGRES_DB: ${POSTGRES_DB:-logiclever}
-    # Base de ~15 Mo : 32 Mo de buffers la contiennent entierement.
+    # Base de ~30 Mo dont ~8 Mo d'index HNSW : 16 Mo de buffers gardent les
+    # index chauds, le cache disque du noyau sert le reste. n8n n'ouvre qu'une
+    # connexion ; 10 laissent la place aux scripts Python. Les index HNSW
+    # (7 Mo au plus) se construisent entierement dans 16 Mo.
     command: >
       postgres
-      -c shared_buffers=32MB
-      -c max_connections=20
+      -c shared_buffers=16MB
+      -c max_connections=10
       -c work_mem=4MB
-      -c maintenance_work_mem=64MB
+      -c maintenance_work_mem=16MB
       -c max_parallel_workers_per_gather=0
-    mem_limit: 256m
+    # Sans requete parallele, une requete n'utilise qu'un coeur ; sur une base
+    # de cette taille elle dure quelques ms.
+    cpus: 0.3
+    mem_limit: 128m
     ports:
       # 5433 cote hote pour ne pas entrer en conflit avec un Postgres local.
       - "127.0.0.1:5433:5432"
@@ -84,8 +96,8 @@ services:
     # Sans plafond CPU, nginx lance un worker par coeur (18 ici) : 1 suffit.
     environment:
       NGINX_ENTRYPOINT_WORKER_PROCESSES_AUTOTUNE: "1"
-    cpus: 1
-    mem_limit: 32m
+    cpus: 0.1
+    mem_limit: 16m
     ports:
       - "127.0.0.1:8088:80"
     volumes:
