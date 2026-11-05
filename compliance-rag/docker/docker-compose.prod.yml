@@ -1,0 +1,42 @@
+# =====================================================================
+#  Surcouche PRODUCTION (VPS) : ajoute Caddy = HTTPS automatique devant n8n.
+#  Utilisee avec docker-compose.yml :
+#
+#    docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+#  DOMAIN est ecrit dans docker/.env par deploy/setup-vps.sh
+#  (ex. 51-210-12-34.sslip.io : nom gratuit qui pointe vers l'IP du VPS,
+#  Caddy en obtient un vrai certificat Let's Encrypt, sans domaine a acheter).
+#
+#  Seuls les ports 80 et 443 sont publics. Postgres et le serveur de fichiers
+#  restent sur 127.0.0.1 (acces par tunnel SSH) : les PDF de preuve ne sont
+#  volontairement PAS exposes sur Internet.
+# =====================================================================
+services:
+  n8n:
+    environment:
+      N8N_HOST: ${DOMAIN:?DOMAIN manquant dans docker/.env}
+      N8N_PROTOCOL: https
+      WEBHOOK_URL: https://${DOMAIN}/
+      N8N_PROXY_HOPS: "1"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    mem_limit: 64m
+    cpus: 0.2
+    depends_on:
+      - n8n
+
+volumes:
+  caddy_data:
+  caddy_config:

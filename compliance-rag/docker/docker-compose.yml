@@ -29,7 +29,9 @@ services:
     image: n8nio/n8n:latest
     restart: unless-stopped
     ports:
-      - "5678:5678"
+      # Local uniquement : en production, Caddy (docker-compose.prod.yml)
+      # est la seule porte d'entree publique, en HTTPS.
+      - "127.0.0.1:5678:5678"
     environment:
       GENERIC_TIMEZONE: Europe/Paris
       TZ: Europe/Paris
