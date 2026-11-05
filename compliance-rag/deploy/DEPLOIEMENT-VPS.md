@@ -47,15 +47,15 @@ Importez `workflows/Logiclever - Reponses aux questionnaires de conformite VF.js
 
 ## 4. Fichiers de preuve
 
-Le serveur de fichiers (port 8088) n'écoute que sur `127.0.0.1` : les PDF de
-conformité ne sont **pas** publics. Pour les parcourir depuis votre poste :
+Les documents de preuve sont **publics** : `https://<DOMAIN>/documents-preuve/`
+(les liens `url_partage` de la base pointent là, ils fonctionnent donc pour vos
+clients). Les classeurs générés (`/generes`, réponses clients) ne sont **pas**
+exposés ; le port 8088 n'écoute que sur `127.0.0.1`. Pour les parcourir :
 
 ```bash
 ssh -L 8088:127.0.0.1:8088 ubuntu@IP_DU_VPS     # puis http://localhost:8088
 ```
 
-Les liens `url_partage` restent donc internes ; joignez le PDF cité au client
-plutôt que le lien (déjà la consigne du guide).
 
 ## 5. Exploitation
 

@@ -8,9 +8,9 @@
 #  (ex. 51-210-12-34.sslip.io : nom gratuit qui pointe vers l'IP du VPS,
 #  Caddy en obtient un vrai certificat Let's Encrypt, sans domaine a acheter).
 #
-#  Seuls les ports 80 et 443 sont publics. Postgres et le serveur de fichiers
-#  restent sur 127.0.0.1 (acces par tunnel SSH) : les PDF de preuve ne sont
-#  volontairement PAS exposes sur Internet.
+#  Seuls les ports 80 et 443 sont publics. Caddy sert n8n et, en public,
+#  https://DOMAIN/documents-preuve/ (PDF de preuve). Postgres, /generes
+#  (classeurs clients) et le port 8088 restent sur 127.0.0.1 (tunnel SSH).
 # =====================================================================
 services:
   n8n:
@@ -36,6 +36,7 @@ services:
     cpus: 0.2
     depends_on:
       - n8n
+      - fichiers
 
 volumes:
   caddy_data:

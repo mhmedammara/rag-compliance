@@ -65,7 +65,7 @@ if [ -n "${OPENAI_API_KEY:-}" ]; then
   apt-get install -y python3-venv >/dev/null
   [ -d .venv ] || python3 -m venv .venv
   .venv/bin/pip install -q "psycopg[binary]>=3.1" "requests>=2.31"
-  OPENAI_API_KEY="$OPENAI_API_KEY" .venv/bin/python scripts/deploy_base.py
+  OPENAI_API_KEY="$OPENAI_API_KEY" FICHIERS_URL="https://${DOMAIN}" .venv/bin/python scripts/deploy_base.py
 else
   echo "OPENAI_API_KEY absente : etape ignoree. Pour la faire plus tard :"
   echo "  sudo OPENAI_API_KEY=sk-... bash deploy/setup-vps.sh"
