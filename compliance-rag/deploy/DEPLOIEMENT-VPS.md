@@ -74,4 +74,4 @@ docker run --rm -v n8n_data:/d -v "$PWD":/b alpine tar czf /b/n8n_data.tgz -C /d
 docker compose exec postgres pg_dump -U logiclever logiclever | gzip > logiclever.sql.gz
 ```
 
-Mémoire : `free -h` ; la pile consomme ~1 Go sur les 4 Go du VPS.
+Les limites mémoire/CPU de `docker-compose.prod.yml` sont réglées pour 2 vCPU / 4 Go (e2-medium). Surveillez avec `free -h` et `docker stats`.

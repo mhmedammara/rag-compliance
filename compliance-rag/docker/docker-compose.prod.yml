@@ -12,6 +12,13 @@
 #  https://DOMAIN/documents-preuve/ (PDF de preuve). Postgres, /generes
 #  (classeurs clients) et le port 8088 restent sur 127.0.0.1 (tunnel SSH).
 # =====================================================================
+#
+#  Ressources : regles pour un VPS de 2 vCPU / 4 Go (Google Cloud e2-medium).
+#  Le docker-compose.yml de base est plafonne pour un poste de travail (912 Mo,
+#  1 CPU) ; ici on relache les plafonds. Budget memoire : n8n 1,5 Go +
+#  Postgres 0,5 Go + Caddy/nginx 0,08 Go = ~2,1 Go, il reste ~1,9 Go pour
+#  Ubuntu, Docker et le cache disque (qui accelere Postgres). Budget CPU :
+#  1,2 + 0,6 + 0,1 + 0,1 = 2,0 coeurs.
 services:
   n8n:
     environment:
@@ -19,6 +26,29 @@ services:
       N8N_PROTOCOL: https
       WEBHOOK_URL: https://${DOMAIN}/
       N8N_PROXY_HOPS: "1"
+      # Tas V8 : 1 Go (processus principal) + 256 Mo (runner des noeuds Code)
+      # + ~250 Mo hors tas < 1,5 Go.
+      NODE_OPTIONS: --max-old-space-size=1024
+      N8N_RUNNERS_MAX_OLD_SPACE_SIZE: "256"
+    cpus: 1.2
+    mem_limit: 1536m
+
+  postgres:
+    # 128 Mo de buffers gardent toute la base (~30 Mo) et ses index HNSW en
+    # memoire ; le reste est du cache disque du noyau.
+    command: >
+      postgres
+      -c shared_buffers=128MB
+      -c effective_cache_size=1GB
+      -c max_connections=20
+      -c work_mem=8MB
+      -c maintenance_work_mem=64MB
+      -c max_parallel_workers_per_gather=1
+    cpus: 0.6
+    mem_limit: 512m
+
+  fichiers:
+    cpus: 0.1
 
   caddy:
     image: caddy:2-alpine
@@ -33,7 +63,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     mem_limit: 64m
-    cpus: 0.2
+    cpus: 0.1
     depends_on:
       - n8n
       - fichiers
