@@ -66,6 +66,8 @@ if [ -n "${OPENAI_API_KEY:-}" ]; then
   [ -d .venv ] || python3 -m venv .venv
   .venv/bin/pip install -q "psycopg[binary]>=3.1" "requests>=2.31"
   OPENAI_API_KEY="$OPENAI_API_KEY" FICHIERS_URL="https://${DOMAIN}" .venv/bin/python scripts/deploy_base.py
+  # deploy_base.py tourne en root : n8n (uid 1000) doit pouvoir ecrire dans generes/
+  chown -R 1000:1000 "$DOCKER_DIR/stockage/generes"
 else
   echo "OPENAI_API_KEY absente : etape ignoree. Pour la faire plus tard :"
   echo "  sudo OPENAI_API_KEY=sk-... bash deploy/setup-vps.sh"
